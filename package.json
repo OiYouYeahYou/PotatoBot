@@ -7,7 +7,8 @@
     "start": "npm run build:run",
     "build:run": "npm run build && node lib/bot",
     "build": "node ./node_modules/typescript/lib/tsc",
-    "devstart": "nodemon --exec './node_modules/typescript/lib/tsc && node lib/bot'"
+    "devstart": "nodemon --exec './node_modules/typescript/lib/tsc && node lib/bot'",
+    "test": "npm run buld && node lib/test"
   },
   "dependencies": {
     "discord.js": "11.1.0",
