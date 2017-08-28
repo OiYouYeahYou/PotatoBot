@@ -1,0 +1,23 @@
+{
+  "name": "lycosidae",
+  "version": "0.0.1",
+  "private": true,
+  "main": "app.js",
+  "scripts": {
+    "start": "npm run build:run",
+    "build:run": "npm run build && node lib/bot",
+    "build": "node ./node_modules/typescript/lib/tsc",
+    "devstart": "nodemon --exec './node_modules/typescript/lib/tsc && node lib/bot'"
+  },
+  "dependencies": {
+    "discord.js": "11.1.0",
+    "kindred-api": "^2.0.76",
+    "mongoose": "^4.11.7",
+    "types-kindred": "0.0.1",
+    "typescript": "^2.4.2"
+  },
+  "devDependencies": {
+    "@types/node": "^8.0.24",
+    "nodemon": "1.11.0"
+  }
+}
