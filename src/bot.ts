@@ -2,6 +2,7 @@
 //@ts-check
 /* jshint node : true, esversion : 6, laxbreak : true */
 
+require( './env' );
 import Discord = require( 'discord.js' );
 import botCommands = require( './botCommands' );
 // const kindred = require( './kindred' );
@@ -16,16 +17,14 @@ botCommands.verifyBotCommands();
 //  //  //  //  //  Client
 
 const clientOptions = { fetchAllMembers: true };
-const client = new Discord.Client( clientOptions );
+export const client: Discord.Client = new Discord.Client( clientOptions );
 
 client.on( 'ready', ready );
 client.on( 'message', messageRecived ); // Diff function to event
 client.on( 'guildMemberAdd', guildMemberAdd );
 client.on( 'guildMemberRemove', guildMemberRemove );
 
-client.login( keys.discord );
-
-module.exports = client;
+client.login( process.env.discord );
 
 //  //  //  //  //  Event Functions
 

@@ -105,7 +105,7 @@ export function verifyBotCommands( throwMe?: boolean ) {
 		function test( name, condition ) {
 			if ( condition ) return;
 
-			if ( pass ) console.warn( `Errors for : ${ key }` );
+			if ( pass ) console.warn( `Warnings for : ${ key }` );
 
 			// console.warn( `${ key } : Not ${ name }`);
 			pass = false;

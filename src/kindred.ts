@@ -1,11 +1,16 @@
+require( './env' );
 import * as kindred from 'kindred-api';
 import * as keys from './keys';
 import * as u from './util';
 
 // export var kindred = kindred; // FIXME:
 
+// console.log( env );
+// console.log( process.env );
+// env.dontShakeMe()
+
 export var k = new kindred.Kindred( {
-	key: keys.ritoplz,
+	key: process.env.ritoplz,
 } );
 
 export var regions = Object.keys( kindred.REGIONS ).reduce(
@@ -42,6 +47,8 @@ export function getleague( name, region, cb, err, summoner ) {
 	if ( err ) {
 		console.error( `Error: ${ name }` );
 		console.error( err );
+
+		u.callCB( cb )( err, summoner );
 		return;
 	}
 

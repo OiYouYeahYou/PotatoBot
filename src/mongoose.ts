@@ -2,7 +2,7 @@ import * as keys from './keys';
 import * as u from './util';
 
 var mongoose = require('mongoose');
-	mongoose.connect( keys.mlab.url );
+	mongoose.connect( process.env.mlab );
 
 var db = mongoose.connection
 	db.on('error', console.error.bind(console, 'connection error:'));
