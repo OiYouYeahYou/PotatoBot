@@ -12,7 +12,7 @@
     "devtest": "nodemon --exec npm run build:test"
   },
   "dependencies": {
-    "discord.js": "11.1.0",
+    "discord.js": "11.2.0",
     "dotenv": "^4.0.0",
     "kindred-api": "^2.0.76",
     "mongoose": "^4.11.7",
