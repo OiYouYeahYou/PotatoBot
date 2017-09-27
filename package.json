@@ -9,7 +9,9 @@
     "build:test": "npm run build && node lib/test",
     "build": "node ./node_modules/typescript/lib/tsc",
     "devstart": "nodemon --exec npm run build:start",
-    "devtest": "nodemon --exec npm run build:test"
+    "devtest": "nodemon --exec npm run build:test",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "dependencies": {
     "discord.js": "11.1.0",
@@ -17,11 +19,13 @@
     "kindred-api": "^2.0.76",
     "mongoose": "^4.11.7",
     "types-kindred": "0.0.1",
-    "typescript": "^2.4.2"
+    "typescript": "^2.4.2",
+    "snyk": "^1.41.1"
   },
   "devDependencies": {
     "@types/dotenv": "^4.0.1",
     "@types/node": "^8.0.24",
     "nodemon": "1.11.1"
-  }
+  },
+  "snyk": true
 }
