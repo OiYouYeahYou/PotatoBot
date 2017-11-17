@@ -1,33 +1,31 @@
-// tslint:disable
-import Discord = require('discord.js');
-import kindred = require('./kindred');
-import * as types from './types';
-import u = require( './util' );
+import { Guild, Message, Role, Snowflake } from 'discord.js';
+import { andSummonerLeague, regions } from './kindred';
+import {
+	IBindingResult, IBindingResults, ILeague, ISummoner, TBotRes,
+} from './types';
+import { indexOf, nin, quatch } from './util';
 
-var bindingResults: types.bindingResults = {};
+var bindingResults: IBindingResults = {};
 var guildCache = {};
 
 var toTierNumber = {
-		"challenger": 7,
-		"master": 6,
-		"diamond": 5,
-		"platinum": 4,
-		"gold": 3,
-		"silver": 2,
-		"bronze": 1,
-	},
-	toRankNumber = {
-		i: 0.8,
-		ii: 0.6,
-		iii: 0.4,
-		iv: 0.2,
-		v: 0.0,
-	}
-;
+	challenger: 7,
+	master: 6,
+	diamond: 5,
+	platinum: 4,
+	gold: 3,
+	silver: 2,
+	bronze: 1,
+};
+var toRankNumber = {
+	i: 0.8,
+	ii: 0.6,
+	iii: 0.4,
+	iv: 0.2,
+	v: 0.0,
+};
 
-module.exports = bind;
-
-function bind( message: Discord.Message, args: string ): types.botRes {
+export function bind( message: Message, args: string ): TBotRes {
 	var regionEnd: number | undefined,
 		region: string,
 		user: string;
@@ -35,81 +33,81 @@ function bind( message: Discord.Message, args: string ): types.botRes {
 	if ( !args )
 		return true;
 
-	regionEnd = u.indexOf( args, ' ' );
+	regionEnd = indexOf( args, ' ' );
 
 	if ( !regionEnd )
 		return true;
 
 	region = args.slice( 0, regionEnd ).toLowerCase().trim();
 
-	if ( u.nin( region, kindred.regions ) )
+	if ( nin( region, regions ) )
 		return 'invalid region';
 
 	user = args.slice( regionEnd ).trim();
 
-	kindred.andSummonerLeague(
+	andSummonerLeague(
 		user, region,
 		handleResult.bind( null, message )
 	);
 }
 
-function handleResult
-	(
-		message: Discord.Message,
-		err,
-		summoner: types.Summoner,
-		leagues: Array<types.League>
-	) {
-		var userId:Discord.Snowflake;
+function handleResult(
+	message: Message,
+	err,
+	summoner: ISummoner,
+	leagues: ILeague[]
+) {
+	var userId: Snowflake;
 
-		summoner.leagues = leagues;
-		userId = message.author.id;
+	summoner.leagues = leagues;
+	userId = message.author.id;
 
-		// message.channel.send( JSON.stringify( summoner, null, 4 ) ); // TODO: Make into better response
+	// message.channel.send( JSON.stringify( summoner, null, 4 ) ); // TODO: Make into better response
 
-		var res : types.bindingResult
-			= userId in bindingResults
+	var res: IBindingResult
+		= userId in bindingResults
 			? bindingResults[ userId ]
 			: bindingResults[ userId ] = {};
 
-		res[ summoner.id ] = summoner;
+	res[ summoner.id ] = summoner;
 
-		var highestScore: number = -1,
-			highestRank: string = '',
-			highestTier: string = 'unranked';
+	var highestScore: number = -1,
+		highestRank: string = '',
+		highestTier: string = 'unranked';
 
-		if ( Array.isArray( leagues ) )
-			leagues.forEach( ( element: types.League ) => {
-				var score = attachScore( element );
+	if ( Array.isArray( leagues ) )
+		leagues.forEach( ( element: ILeague ) => {
+			var score = attachScore( element );
 
-				if ( score > highestScore ) {
-					highestScore = score;
-					highestRank = element.rank;
-					highestTier = element.tier;
-				}
-			} );
+			if ( score > highestScore ) {
+				highestScore = score;
+				highestRank = element.rank;
+				highestTier = element.tier;
+			}
+		} );
 
-		highestTier = highestTier.toLowerCase();
-		highestRank = highestRank.toLowerCase();
+	highestTier = highestTier.toLowerCase();
+	highestRank = highestRank.toLowerCase();
 
-		var cache:any = guildcheck( message.guild );
-		var idRoleToApply:any = cache[ highestTier ]; // Set Rank
+	var cache: any = guildcheck( message.guild );
+	var idRoleToApply: any = cache[ highestTier ]; // Set Rank
 
-		Object.keys( cache ).forEach(
-			(key:Discord.Snowflake) => u.quatch(
-				_ => message.member.removeRole( cache[ key ] )
-			)
-		);
+	Object.keys( cache ).forEach(
+		( key: Snowflake ) => quatch(
+			() => message.member.removeRole( cache[ key ] )
+		)
+	);
 
-		u.quatch( _ => message.member.addRole( idRoleToApply ) );
+	quatch( () => message.member.addRole( idRoleToApply ) );
 
-		message.reply( `Role ${ highestTier } applied` );
+	message.reply( `Role ${ highestTier } applied` );
 
-		// TODO: make function that takes bindingResults and applyies roles
+	// TODO: make function that takes bindingResults and applyies roles
 }
 
-function attachScore( obj: types.League ) {
-	if ( 'sortScore' in obj ) obj.sortScore;
+function attachScore( obj: ILeague ) {
+	// if ( 'sortScore' in obj )
+	// 	obj.sortScore;
 
 	var sortScore: number = 0,
 		tier: string = obj.tier.toLowerCase(),
@@ -117,9 +115,7 @@ function attachScore( obj: types.League ) {
 
 	if ( tier in toTierNumber && rank in toRankNumber )
 		sortScore = toTierNumber[ tier ] + toRankNumber[ rank ];
-	// else if ( u.nin( tier, toTierNumber) )
-	// 	console.log( `Tier : ${ tier } does not exist` );
-	// else if ( u.nin( rank, toRankNumber) )
+	// else if ( nin( rank, toRankNumber) )
 	// 	console.log( `Rank : ${ rank } does not exist` );
 
 	obj.sortScore = sortScore;
@@ -127,8 +123,8 @@ function attachScore( obj: types.League ) {
 	return sortScore;
 }
 
-function guildcheck( guild: Discord.Guild, message?: Discord.Message ) {
-	var idGuild: Discord.Snowflake = guild.id,
+function guildcheck( guild: Guild, message?: Message ) {
+	var idGuild: Snowflake = guild.id,
 		cache = idGuild in guildCache
 			? guildCache[ idGuild ]
 			: guildCacheConstructor( guild, message, idGuild );
@@ -136,7 +132,9 @@ function guildcheck( guild: Discord.Guild, message?: Discord.Message ) {
 	return cache;
 }
 
-function guildCacheConstructor( guild: Discord.Guild, message: Discord.Message, idGuild: Discord.Snowflake ) {
+function guildCacheConstructor(
+	guild: Guild, message: Message, idGuild: Snowflake
+) {
 	var cache = guildCache[ idGuild ] = {
 		challenger: undefined,
 		master: undefined,
@@ -147,9 +145,9 @@ function guildCacheConstructor( guild: Discord.Guild, message: Discord.Message, 
 		bronze: undefined,
 		unranked: undefined,
 		chello: undefined,
-	}
+	};
 
-	guild.roles.forEach( ( role: Discord.Role ) => {
+	guild.roles.forEach( ( role: Role ) => {
 		var name: string = role.name.toLowerCase();
 
 		if ( name in cache ) {
@@ -166,9 +164,9 @@ function guildCacheConstructor( guild: Discord.Guild, message: Discord.Message, 
 	} );
 
 	// Validation
-	Object.keys( cache ).forEach( ( role: Discord.Snowflake ) =>
+	Object.keys( cache ).forEach( ( role: Snowflake ) =>
 		!cache[ role ] &&
-			console.error( `${ role } does not exist in ${ guild.id }` )
+		console.error( `${ role } does not exist in ${ guild.id }` )
 	);
 
 	return cache;

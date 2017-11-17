@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "@types/dotenv": "^4.0.1",
-    "@types/node": "^8.0.24",
+    "@types/node": "^8.0.53",
     "nodemon": "1.11.1"
   }
 }

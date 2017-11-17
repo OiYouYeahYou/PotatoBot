@@ -1,38 +1,28 @@
-// tslint: disable
-//@ts-check
-/* jshint node : true, esversion : 6, laxbreak : true */
-import Discord = require( 'discord.js' );
-import kindred = require( './kindred' );
-import * as t from './types';
-import u = require( './util' );
-
-import bind = require('./bind'); // External botCommand
+import { Message, RichEmbed } from 'discord.js';
+import { bind } from './bind'; // External botCommand
+import { TBotRes } from './types';
 
 export var botFuncs = {
-	bind, ping, sendhelp, avatar, wait, fancy, help, tantrum
+	avatar, bind, fancy, help, ping, sendhelp, tantrum, wait,
 };
-
-var bindingResults = {}
-
-// module.exports = { botFuncs, help };
 
 //  //  //  //  //  Command Functions
 
-function ping( message: Discord.Message, args: string ): t.botRes {
+function ping( message, args ): TBotRes {
 	message.reply( 'pong' );
 	return;
 }
 
-function sendhelp( message: Discord.Message, args: string ): t.botRes {
+function sendhelp( message, args ): TBotRes {
 	return true;
 }
 
-function avatar( message: Discord.Message, args: string ): t.botRes {
+function avatar( message, args ): TBotRes {
 	message.reply( message.author.avatarURL );
 	return;
 }
 
-function wait( message: Discord.Message, args: string ): t.botRes {
+function wait( message, args ): TBotRes {
 	message.channel.startTyping( 1 );
 	message.client.setTimeout(
 		_ => {
@@ -43,12 +33,12 @@ function wait( message: Discord.Message, args: string ): t.botRes {
 	);
 }
 
-function fancy( message: Discord.Message, args: string ): t.botRes {
+function fancy( message, args ): TBotRes {
 	message.channel.send( { embed: richEmbed() } );
 	return;
 }
 
-export function help( message: Discord.Message, command: string, result ):  t.botRes {
+export function help( message: Message, command: string, result ): TBotRes {
 	console.log( 'here' );
 	var func = getFunc( command ),
 		embed = richEmbed();
@@ -73,11 +63,13 @@ export function help( message: Discord.Message, command: string, result ):  t.bo
 	return;
 }
 
-function tantrum(): t.botRes { throw 'BooHoo : tantrum was called'; }
-namespace tantrum {
-	export var help = 'Throws an intentional tantrum';
-	export var usage = 'Throws an intentional tantrum';
+function tantrum(): TBotRes {
+	throw 'BooHoo : tantrum was called';
 }
+// namespace tantrum {
+// 	export var help = 'Throws an intentional tantrum';
+// 	export var usage = 'Throws an intentional tantrum';
+// }
 
 //  //  //  //  //  Help Text
 
@@ -121,8 +113,11 @@ export function getFunc( cmd: string ) {
 	else return false;
 }
 
-function richEmbed( message?: Discord.Message, cb?: Function ) {
-	var embed = new Discord.RichEmbed()
+function richEmbed(
+	message?: Message,
+	cb?: ( message: Message, embed: RichEmbed ) => void
+) {
+	var embed = new RichEmbed()
 		.setAuthor( 'Potato Bot' )
 		.setColor( 0x00AE86 )
 		.setFooter( 'Yours truly, your friendly neighbourhood bot' );
@@ -136,18 +131,18 @@ function richEmbed( message?: Discord.Message, cb?: Function ) {
 
 //  //  //  //  //  Initialiser
 
-Object.keys( botFuncs ).forEach( (key: string) => {
+Object.keys( botFuncs ).forEach( ( key: string ) => {
 	// Purpose:
 	//		To propagate aliases
 	//		Attach key / func name to self
 	//		Bind func to self so that func can use this
 
 	var origin = botFuncs[ key ];
-		origin.key = key;
+	origin.key = key;
 
 	var func = botFuncs[ key ] = origin.bind( origin );
 
-	Object.assign( func, origin )
+	Object.assign( func, origin );
 
 	if ( Array.isArray( origin.aliases ) && origin.aliases.length > 0 )
 		origin.aliases.forEach( alias => botFuncs[ alias ] = func );

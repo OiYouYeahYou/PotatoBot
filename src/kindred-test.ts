@@ -1,22 +1,18 @@
-// tslint:disable
-//@ts-check
-/* jshint node : true, esversion : 6, laxbreak : true */
+import { andSummonerLeague } from './kindred';
 
-import * as kindred from './kindred';
-
-kindred.andSummonerLeague( 'nallaj', 'euw', qikcb );
-kindred.andSummonerLeague( 'DaahRealLeon', 'euw', qikcb );
-kindred.andSummonerLeague( 'ØniHime', 'euw', qikcb );
-kindred.andSummonerLeague( 'Socksinbox', 'euw', qikcb );
-kindred.andSummonerLeague( 'O3i', 'euw', qikcb );
-kindred.andSummonerLeague( 'panda bella', 'euw', qikcb );
-kindred.andSummonerLeague( 'TT AstroSora', 'euw', qikcb );
-kindred.andSummonerLeague( 'TT  AstroSora'.toLowerCase(), 'euw', qikcb );
-kindred.andSummonerLeague( 'TT   AstroSora'.toUpperCase(), 'euw', qikcb );
-kindred.andSummonerLeague( 'TT    AstroSora', 'euw', qikcb );
+andSummonerLeague( 'nallaj', 'euw', qikcb );
+andSummonerLeague( 'DaahRealLeon', 'euw', qikcb );
+andSummonerLeague( 'ØniHime', 'euw', qikcb );
+andSummonerLeague( 'Socksinbox', 'euw', qikcb );
+andSummonerLeague( 'O3i', 'euw', qikcb );
+andSummonerLeague( 'panda bella', 'euw', qikcb );
+andSummonerLeague( 'TT AstroSora', 'euw', qikcb );
+andSummonerLeague( 'TT  AstroSora'.toLowerCase(), 'euw', qikcb );
+andSummonerLeague( 'TT   AstroSora'.toUpperCase(), 'euw', qikcb );
+andSummonerLeague( 'TT    AstroSora', 'euw', qikcb );
 
 function qikcb( err, summoner, leagues ) {
-    console.log( summoner );
-    console.log( err );
-    console.log( leagues );
+	console.log( summoner );
+	console.log( err );
+	console.log( leagues );
 }

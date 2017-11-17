@@ -1,5 +1,0 @@
-// tslint:disable
-
-module.exports = {};
-
-

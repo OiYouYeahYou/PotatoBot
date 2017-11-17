@@ -1,24 +1,20 @@
 var keys = [
-    'discord',
-    'ritoplz',
-    'mlab',
+	'discord',
+	'ritoplz',
+	'mlab',
 ];
-var env = process.env;
 
 ( function envTester( env ) {
-    var dotenv, res;
+	var dotenv, res;
+	var test = () => !keys.every( key => key in env );
 
-    if ( !keys.every( test ) ) {
-        dotenv = require( 'dotenv' );
-        res = dotenv.config();
-    }
+	if ( test() ) {
+		dotenv = require( 'dotenv' );
+		res = dotenv.config();
+	}
 
-    if ( !keys.every( test ) )
-        throw new Error( 'env\'s seems not to be set' );
+	if ( test() )
+		throw new Error( 'env\'s seems not to be set' );
 
-    return res;
-
-    function test( key ) {
-        return key in env;
-    }
+	return res;
 } )( process.env );

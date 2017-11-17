@@ -1,23 +1,19 @@
-// tslint:disable
-//@ts-check
-/* jshint node : true, esversion : 6, laxbreak : true */
-
+// tslint:disable-next-line:no-var-requires
 require( './env' );
-import Discord = require( 'discord.js' );
-import botCommands = require( './botCommands' );
-// const kindred = require( './kindred' );
-import keys = require( './keys' );
-import u = require( './util' );
+
+import { Client, Message } from 'discord.js';
+import { getFunc, help, verifyBotCommands } from './botCommands';
+import { indexOf, validatePrefix } from './util';
 
 var prefix = ';',
 	prefixHelp = '?';
 
-botCommands.verifyBotCommands();
+verifyBotCommands();
 
 //  //  //  //  //  Client
 
 const clientOptions = { fetchAllMembers: true };
-export const client: Discord.Client = new Discord.Client( clientOptions );
+export const client: Client = new Client( clientOptions );
 
 client.on( 'ready', ready );
 client.on( 'message', messageRecived ); // Diff function to event
@@ -30,28 +26,28 @@ client.login( process.env.discord );
 
 function ready() { console.log( 'I am ready!' ); }
 
-function messageRecived( message: Discord.Message ) { // Diff function to event
+function messageRecived( message: Message ) { // Diff function to event
 	var content, indexOfFirstSpace, hasSpace, startOfArgs, command, args, func, result;
 
 	content = message.content.trim();
 
 	// if content is not prefixed or prefix is invalid
-	if ( !u.validatePrefix( prefix, content ) ) return;
+	if ( !validatePrefix( prefix, content ) ) return;
 
 	message.channel.startTyping( 1 );
 
-	indexOfFirstSpace = u.indexOf( content, ' ' );
+	indexOfFirstSpace = indexOf( content, ' ' );
 	hasSpace = indexOfFirstSpace > 0;
 	startOfArgs = hasSpace ? indexOfFirstSpace : undefined;
 	command = content.slice( prefix.length, startOfArgs ).trim().toLowerCase();
 
-	if ( u.validatePrefix( prefixHelp, command ) ) {
+	if ( validatePrefix( prefixHelp, command ) ) {
 		command = command.slice( prefixHelp.length ).trim();
 		result = true;
 	}
 	else {
 		args = hasSpace ? content.slice( indexOfFirstSpace ).trim() : undefined;
-		func = botCommands.getFunc( command );
+		func = getFunc( command );
 	}
 
 	if ( func )
@@ -64,7 +60,7 @@ function messageRecived( message: Discord.Message ) { // Diff function to event
 	else if ( func === false )
 		result = true;
 
-	if ( result ) botCommands.help( message, command, result );
+	if ( result ) help( message, command, result );
 
 	message.channel.stopTyping();
 }
@@ -88,4 +84,3 @@ function guildMemberRemove( member ) {
 }
 
 //  //  //  //  //  Private Functions
-

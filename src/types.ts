@@ -1,54 +1,51 @@
-import Discord = require('discord.js');
+export interface ISummoner {
+	id: number;
+	accountId: number;
+	profileIconId: number;
+	revisionDate: number;
+	summonerLevel: number;
 
-export interface Summoner {
-    id: number;
-    accountId: number;
-    profileIconId: number;
-    revisionDate: number;
-    summonerLevel: number;
+	name: string;
 
-    name: string;
-
-    // Custom Extensions
-    region?: string;
-    leagues?: Array< League >;
-    tier: string;
-    rank: string;
+	// Custom Extensions
+	region?: string;
+	leagues?: ILeague[];
+	tier: string;
+	rank: string;
 }
 
-export interface League {
-    tier: string;
-    rank: string;
-    leagueName: string;
-    queueType: string;
-    playerOrTeamId: string;
-    playerOrTeamName: string;
+export interface ILeague {
+	tier: string;
+	rank: string;
+	leagueName: string;
+	queueType: string;
+	playerOrTeamId: string;
+	playerOrTeamName: string;
 
-    leaguePoints: number;
-    wins: number;
-    losses: number;
+	leaguePoints: number;
+	wins: number;
+	losses: number;
 
-    veteran: boolean;
-    inactive: boolean;
-    freshBlood: boolean;
-    hotStreak: boolean;
+	veteran: boolean;
+	inactive: boolean;
+	freshBlood: boolean;
+	hotStreak: boolean;
 
-    // Custom Extensions
-    sortScore: number;
+	// Custom Extensions
+	sortScore: number;
 }
 
-export type botRes = void | true | string | undefined;
+export type TBotRes = void | true | string | undefined;
 
-export interface bindingResults { [key: string]: bindingResult }
-export interface bindingResult { [key: string]: Summoner }
+export interface IBindingResults { [ key: string ]: IBindingResult; }
+export interface IBindingResult { [ key: string ]: ISummoner; }
 
-
-export interface botFuncs { [key: string]: botFunc }
-export type botFunc = botFuncInterface | false | object;
-export interface botFuncInterface {
-    help: string;
-    usage: string;
-    aliases: Array<string>;
-    key: string;
-    bind: () => Function
+export interface IBotFuncs { [ key: string ]: botFunc; }
+export type botFunc = IBotFunc | false | object;
+export interface IBotFunc {
+	help: string;
+	usage: string;
+	aliases: string[];
+	key: string;
+	bind: () => () => void;
 }
