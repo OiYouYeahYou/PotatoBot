@@ -2,7 +2,7 @@ console.log( 'This is a test; Do not adjust your set.\n\n' );
 
 // tslint:disable-next-line:no-var-requires
 require( './env' );
-import { client } from './bot';
+import { client } from './';
 import { andSummonerLeague } from './kindred';
 
 setTimeout( () => { client.destroy(); }, 10000 );
