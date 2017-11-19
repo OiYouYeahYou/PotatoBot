@@ -3,7 +3,7 @@ require( 'source-map-support' ).install();
 
 import { Client, Message } from 'discord.js';
 import { getCommandWrapper, help } from './commands/';
-import { indexOf, setEnv, validatePrefix } from './util';
+import { indexOf, quatch, setEnv, validatePrefix } from './util';
 
 setEnv();
 
@@ -16,7 +16,9 @@ const clientOptions = { fetchAllMembers: true };
 export const client: Client = new Client( clientOptions );
 
 client.on( 'ready', ready );
-client.on( 'message', messageRecived ); // Diff function to event
+client.on( 'message',
+	( message ) => quatch( () => messageRecived( message ) )
+);
 client.on( 'guildMemberAdd', guildMemberAdd );
 client.on( 'guildMemberRemove', guildMemberRemove );
 
@@ -26,8 +28,8 @@ client.login( process.env.discord );
 
 function ready() { console.log( 'I am ready!' ); }
 
-function messageRecived( message: Message ) { // Diff function to event
-	var content, indexOfFirstSpace, hasSpace, startOfArgs, command, args, func, result;
+function messageRecived( message: Message ) {
+	var content, indexOfFirstSpace, hasSpace, startOfArgs, command, args, commandWrapper, result;
 
 	content = message.content.trim();
 
@@ -62,27 +64,16 @@ function messageRecived( message: Message ) { // Diff function to event
 	else if ( commandWrapper === false )
 		result = true;
 
-	if ( result ) help( message, command, result );
+	if ( result )
+		help( message, command, result );
 
 	message.channel.stopTyping();
 }
 
 function guildMemberAdd( member ) {
-	// Send the message to the guilds default channel (usually #general), mentioning the member
 	member.guild.defaultChannel.send( `Welcome to the server, ${ member }!` );
-
-	// // If you want to send the message to a designated channel on a server instead
-	// // you can do the following:
-	// const channel = member.guild.channels.find( 'name', 'member-log' );
-	// // Do nothing if the channel wasn't found on this server
-	// if ( !channel ) return;
-	// // Send the message, mentioning the member
-	// channel.send( `Welcome to the server, ${member}` );
-
 }
 
 function guildMemberRemove( member ) {
 	member.guild.defaultChannel.send( `${ member } has left!` );
 }
-
-//  //  //  //  //  Private Functions
