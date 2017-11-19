@@ -1,9 +1,8 @@
-// tslint:disable-next-line:no-var-requires
-require( './env' );
-
 export { kindred } from 'kindred-api';
 import { Kindred, REGIONS } from 'kindred-api';
-import { callCB, NOGO } from './util';
+import { callCB, NOGO, setEnv } from '../util';
+
+setEnv();
 
 // export var kindred = kindred; // FIXME:
 

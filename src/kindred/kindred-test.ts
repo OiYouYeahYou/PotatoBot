@@ -1,4 +1,4 @@
-import { andSummonerLeague } from './kindred';
+import { andSummonerLeague } from './';
 
 andSummonerLeague( 'nallaj', 'euw', qikcb );
 andSummonerLeague( 'DaahRealLeon', 'euw', qikcb );

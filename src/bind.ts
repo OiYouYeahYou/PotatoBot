@@ -1,5 +1,5 @@
 import { Guild, Message, Role, Snowflake } from 'discord.js';
-import { andSummonerLeague, regions } from './kindred';
+import { andSummonerLeague, regions } from './kindred/';
 import {
 	IBindingResult, IBindingResults, ILeague, ISummoner, TBotRes,
 } from './types';
