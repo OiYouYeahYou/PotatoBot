@@ -52,6 +52,11 @@ export const commands: ICommandWrapperWrapper = {
 		usage: '',
 		disabled: true,
 	},
+	kill: {
+		function: generic.destroy,
+		help: 'destroys the client',
+		usage: '',
+	},
 };
 
 export const help = generic.help;

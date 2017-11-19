@@ -63,6 +63,17 @@ export function help(
 	return;
 }
 
+export function destroy( message, args ): TBotRes {
+	console.log( 'destroying' );
+
+	client.destroy()
+	.then( () => {
+		console.log( 'destroyed' );
+	} ).catch( () => {
+		console.log( 'failing to destroy' );
+	} );
+}
+
 export function tantrum(): TBotRes {
 	throw 'BooHoo : tantrum was called';
 }
