@@ -2,8 +2,10 @@
 require( 'source-map-support' ).install();
 
 import { Client, Message } from 'discord.js';
-import { indexOf, validatePrefix } from './util';
 import { getCommandWrapper, help } from './commands/';
+import { indexOf, setEnv, validatePrefix } from './util';
+
+setEnv();
 
 var prefix = ';',
 	prefixHelp = '?';

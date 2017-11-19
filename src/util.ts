@@ -46,3 +46,22 @@ export function indexOf(
 	var index: number = str.indexOf( search, position );
 	return index > 0 ? index : undefined;
 }
+
+export function setEnv() {
+	var env = process.env;
+	var keys = [
+		'discord',
+		'ritoplz',
+		'mlab',
+	];
+
+	var test = () => !keys.every( key => key in env );
+
+	if ( test() ) {
+		var dotenv = require( 'dotenv' );
+			dotenv.config();
+	}
+
+	if ( test() )
+		throw new Error( 'env\'s seems not to be set' );
+}
