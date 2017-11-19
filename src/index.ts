@@ -2,13 +2,11 @@
 require( './env' );
 
 import { Client, Message } from 'discord.js';
-import { getFunc, help, verifyBotCommands } from './botCommands';
 import { indexOf, validatePrefix } from './util';
+import { getCommandWrapper, help } from './commands/';
 
 var prefix = ';',
 	prefixHelp = '?';
-
-verifyBotCommands();
 
 //  //  //  //  //  Client
 
@@ -47,17 +45,19 @@ function messageRecived( message: Message ) { // Diff function to event
 	}
 	else {
 		args = hasSpace ? content.slice( indexOfFirstSpace ).trim() : undefined;
-		func = getFunc( command );
+		commandWrapper = getCommandWrapper( command );
 	}
 
-	if ( func )
-		try { result = func( message, args ); }
+	if ( commandWrapper )
+		try {
+			result = commandWrapper.function( message, args );
+		}
 		catch ( e ) {
 			console.error( e );
 			message.reply( `An error occurred, please contact a developer. But not the dev who made this` );
 			result = true;
 		}
-	else if ( func === false )
+	else if ( commandWrapper === false )
 		result = true;
 
 	if ( result ) help( message, command, result );
