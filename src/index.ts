@@ -1,5 +1,5 @@
 // tslint:disable-next-line:no-var-requires
-require( './env' );
+require( 'source-map-support' ).install();
 
 import { Client, Message } from 'discord.js';
 import { indexOf, validatePrefix } from './util';
