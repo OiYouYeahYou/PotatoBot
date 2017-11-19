@@ -1,5 +1,5 @@
 import { Message, RichEmbed } from 'discord.js';
-import { bind } from '../bind';
+import { bind } from './bind';
 import { TBotRes } from '../types';
 import * as generic from './generic';
 
