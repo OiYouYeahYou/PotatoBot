@@ -4,12 +4,8 @@
   "private": true,
   "main": "app.js",
   "scripts": {
-    "start": "npm run build:run",
-    "build:start": "npm run build && node lib/index",
-    "build:test": "npm run build && node lib/test",
-    "build": "node ./node_modules/typescript/lib/tsc",
-    "devstart": "nodemon --exec npm run build:start",
-    "devtest": "nodemon --exec npm run build:test"
+    "start": "grunt && node lib/",
+    "devstart": "grunt dev"
   },
   "dependencies": {
     "discord.js": "11.1.0",
@@ -23,6 +19,12 @@
   "devDependencies": {
     "@types/dotenv": "^4.0.1",
     "@types/node": "^8.0.53",
-    "nodemon": "1.11.1"
+    "grunt": "^1.0.1",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-develop": "^0.4.0",
+    "grunt-ts": "^6.0.0-beta.17",
+    "load-grunt-tasks": "^3.5.2",
+    "nodemon": "1.11.1",
+    "time-grunt": "^1.4.0"
   }
 }

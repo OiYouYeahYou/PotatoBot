@@ -1,6 +1,0 @@
-{
-    "ignore": [
-        "lib/*"
-    ],
-    "ext": "ts json"
-}
