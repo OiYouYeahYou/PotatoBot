@@ -1,79 +1,66 @@
-import { Message, RichEmbed } from 'discord.js';
-import { client } from '../';
+import { Message } from 'discord.js';
+import { commands } from '../commands';
 import { richEmbed } from '../discord/embed';
-import { TBotRes } from '../types';
-import { getCommandWrapper } from './';
+import { client } from '../index';
 
-type TCommandFunction = ( message: Message, args: string ) => TBotRes;
+export const WrapperTantrum = {
+	func: () => { throw 'BooHoo : tantrum was called'; },
+};
 
-export function ping( message, args ): TBotRes {
-	message.reply( 'pong' );
-	return;
-}
+export const WrapperPing = {
+	func: ( message ) => { message.reply( 'pong' ); },
+};
 
-export function sendhelp( message, args ): TBotRes {
-	return true;
-}
+export const WrapperAvatar = {
+	func: ( message ) => {
+		message.reply( message.author.avatarURL )
+			.then( () => message.channel.stopTyping( true ) )
+			.catch();
+	},
+};
 
-export function avatar( message, args ): TBotRes {
-	message.reply( message.author.avatarURL )
-		.then( msg => msg.channel.stopTyping( true ) )
-		.catch();
-}
+export const WrapperWait = {
+	func: ( message ) => {
+		message.channel.startTyping( 1 );
+		message.client.setTimeout(
+			_ => {
+				message.reply( 'I have waited' );
+				message.channel.stopTyping( true );
+			},
+			2000
+		);
+	},
+};
 
-export function wait( message, args ): TBotRes {
-	message.channel.startTyping( 1 );
-	message.client.setTimeout(
-		_ => {
-			message.reply( 'I have waited' );
-			message.channel.stopTyping( true );
-		},
-		2000
-	);
-}
+export const WrapperKill = {
+	func: ( message ) => {
+		console.log( 'destroying' );
 
-export function fancy( message, args ): TBotRes {
-	message.channel.send( { embed: richEmbed() } );
-	return;
-}
+		client.destroy().then( () => {
+			console.log( 'destroyed' );
+		} ).catch( () => {
+			console.log( 'failing to destroy' );
+		} );
+	},
+	help: 'destroys the client',
+};
 
-export function help(
-	message: Message, command: string, result?: string
-): TBotRes {
-	var commandWrapper = getCommandWrapper( command ),
-		embed = richEmbed();
+export const WrapperList = {
+	func: ( message: Message ) => {
+		var commandList = Object.keys( commands ).sort().join( '\n' );
+		message.channel.send( commandList );
+		message.channel.stopTyping( true );
+	},
+};
 
-	if ( !commandWrapper ) {
-		// TODO: Not a recognised command
-		embed
-			.setTitle( `Help : ${ command } is not recognised` )
-			.setDescription( 'Try using ;list to find your command' );
-	}
-	else {
-		embed
-			.setTitle( `Help : ${ command }` )
-			.addField( 'Usage', commandWrapper.usage || '*blank*' )
-			.addField( 'Purpose', commandWrapper.help || '*blank*' );
-	}
+export const WrapperFancy = {
+	func: ( message ) => { message.channel.send( { embed: richEmbed() } ); },
+};
 
-	if ( typeof result === 'string' )
-		embed.addField( 'What went wrong', result );
-
-	message.channel.send( { embed } );
-	return;
-}
-
-export function destroy( message, args ): TBotRes {
-	console.log( 'destroying' );
-
-	client.destroy()
-	.then( () => {
-		console.log( 'destroyed' );
-	} ).catch( () => {
-		console.log( 'failing to destroy' );
-	} );
-}
-
-export function tantrum(): TBotRes {
-	throw 'BooHoo : tantrum was called';
-}
+export const WrapperInvite = {
+	func: ( message ) => {
+		client.generateInvite().then(
+			link => message.channel.send( link )
+		);
+	},
+};

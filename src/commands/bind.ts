@@ -1,9 +1,9 @@
 import { Guild, Message, Role, Snowflake } from 'discord.js';
-import { andSummonerLeague, regions } from './kindred/';
+import { andSummonerLeague, regions } from '../kindred/';
 import {
 	IBindingResult, IBindingResults, ILeague, ISummoner, TBotRes,
-} from './types';
-import { indexOf, nin, quatch } from './util';
+} from '../types';
+import { indexOf, nin, quatch } from '../util';
 
 var bindingResults: IBindingResults = {};
 var guildCache = {};
@@ -25,7 +25,12 @@ var toRankNumber = {
 	v: 0.0,
 };
 
-export function bind( message: Message, args: string ): TBotRes {
+export const WrapperBind = {
+	func: bind,
+	disabled: true,
+};
+
+function bind( message: Message, args: string ): TBotRes {
 	var regionEnd: number | undefined,
 		region: string,
 		user: string;

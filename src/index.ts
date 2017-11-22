@@ -2,22 +2,22 @@
 require( 'source-map-support' ).install();
 
 import { Client, Message } from 'discord.js';
-import { getCommandWrapper, help } from './commands/';
-import { indexOf, quatch, setEnv, validatePrefix } from './util';
+import { getCommandWrapper, helpFunction, } from './commands';
+import { isPrefixed, quatch, setEnv, splitCommandString } from './util';
 
 setEnv();
 
 var prefix = ';',
-	prefixHelp = '?';
+	prefixHelp = prefix + '?';
 
 //  //  //  //  //  Client
 
 const clientOptions = { fetchAllMembers: true };
-export const client: Client = new Client( clientOptions );
+export const client = new Client( clientOptions );
 
 client.on( 'ready', ready );
 client.on( 'message',
-	( message ) => quatch( () => messageRecived( message ) )
+	message => quatch( () => messageRecived( message ) )
 );
 client.on( 'guildMemberAdd', guildMemberAdd );
 client.on( 'guildMemberRemove', guildMemberRemove );
@@ -26,48 +26,17 @@ client.login( process.env.discord );
 
 //  //  //  //  //  Event Functions
 
-function ready() { console.log( 'I am ready!' ); }
+function ready() {
+	console.log( 'I am ready!' );
+}
 
 function messageRecived( message: Message ) {
-	var content, indexOfFirstSpace, hasSpace, startOfArgs, command, args, commandWrapper, result;
+	var text = message.content.trim();
 
-	content = message.content.trim();
-
-	// if content is not prefixed or prefix is invalid
-	if ( !validatePrefix( prefix, content ) ) return;
-
-	message.channel.startTyping( 1 );
-
-	indexOfFirstSpace = indexOf( content, ' ' );
-	hasSpace = indexOfFirstSpace > 0;
-	startOfArgs = hasSpace ? indexOfFirstSpace : undefined;
-	command = content.slice( prefix.length, startOfArgs ).trim().toLowerCase();
-
-	if ( validatePrefix( prefixHelp, command ) ) {
-		command = command.slice( prefixHelp.length ).trim();
-		result = true;
-	}
-	else {
-		args = hasSpace ? content.slice( indexOfFirstSpace ).trim() : undefined;
-		commandWrapper = getCommandWrapper( command );
-	}
-
-	if ( commandWrapper )
-		try {
-			result = commandWrapper.function( message, args );
-		}
-		catch ( e ) {
-			console.error( e );
-			message.reply( `An error occurred, please contact a developer. But not the dev who made this` );
-			result = true;
-		}
-	else if ( commandWrapper === false )
-		result = true;
-
-	if ( result )
-		help( message, command, result );
-
-	message.channel.stopTyping();
+	if ( isPrefixed( prefixHelp, text ) )
+		return runHelp( message, text );
+	if ( isPrefixed( prefix, text ) )
+		return runCommand( message, text );
 }
 
 function guildMemberAdd( member ) {
@@ -76,4 +45,42 @@ function guildMemberAdd( member ) {
 
 function guildMemberRemove( member ) {
 	member.guild.defaultChannel.send( `${ member } has left!` );
+}
+
+function runCommand( message: Message, text: string ) {
+	message.channel.startTyping( 1 );
+
+	var [ command, args ] = splitCommandString( prefix, text );
+
+	var wrapper = getCommandWrapper( command );
+
+	if ( !wrapper )
+		return noCommandFound( message, command );
+
+	try {
+		wrapper.function( message, args );
+	} catch ( error ) {
+		message.reply( `Trying to run \`${ command }\` has failed` );
+	}
+
+	message.channel.stopTyping();
+}
+
+function runHelp(  message: Message, text: string ) {
+	message.channel.startTyping( 1 );
+
+	var [ command ] = splitCommandString( prefixHelp, text );
+
+	var wrapper = getCommandWrapper( command );
+
+	if ( !wrapper )
+		return noCommandFound( message, command );
+
+	helpFunction( message, command );
+
+	message.channel.stopTyping();
+}
+
+function noCommandFound( message: Message, command: string ) {
+	message.reply( `Cannot find \`${ command }\`` );
 }
