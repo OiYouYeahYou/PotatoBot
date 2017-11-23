@@ -18,6 +18,7 @@ registerWrapper( 'fancy', generic.WrapperFancy );
 registerWrapper( 'invite', generic.WrapperInvite );
 registerWrapper( 'bind', WrapperBind );
 registerWrapper( 'never', WrapperNever );
+registerWrapper( 'js', WrapperJS );
 
 export function getCommandWrapper( cmd: string ): ICommandWrapper | false {
 	if ( cmd in commands && !commands[ cmd ].disabled )
