@@ -4,8 +4,8 @@ import { richEmbed } from "../discord/embed";
 
 export const WrapperHelp = {
 	func: helpFunction,
-	help: 'this is not helpful',
-	usage: ';bind <region> <username>',
+	help: 'Provides information about a command',
+	usage: '<command>',
 };
 
 export function helpFunction( message: Message, command: string ) {
@@ -21,8 +21,8 @@ export function helpFunction( message: Message, command: string ) {
 	else {
 		embed
 			.setTitle( `Help : ${ command }` )
-			.addField( 'Usage', commandWrapper.usage || '*blank*' )
-			.addField( 'Purpose', commandWrapper.help || '*blank*' );
+			.addField( 'Usage', commandWrapper.usage )
+			.addField( 'Purpose', commandWrapper.help );
 	}
 
 	message.channel.send( { embed } );

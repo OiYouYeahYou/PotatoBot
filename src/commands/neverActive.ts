@@ -13,4 +13,5 @@ export function never( message: Message, args: string ) {
 
 export const WrapperNever = {
 	func: never,
+	help: 'Displays the number of people who have not sent a message',
 };

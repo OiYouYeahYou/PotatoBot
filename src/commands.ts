@@ -65,7 +65,7 @@ type TCommandFunction = ( message: Message, args: string ) => void;
 
 interface IApplicationWrapper {
 	func: TCommandFunction;
-	help?: string;
+	help: string;
 	usage?: string;
 	disabled?: boolean;
 	aliases?: string[];

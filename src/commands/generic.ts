@@ -5,10 +5,12 @@ import { client } from '../index';
 
 export const WrapperTantrum = {
 	func: () => { throw 'BooHoo : tantrum was called'; },
+	help: 'Intentionally throws an exception to test code integrity',
 };
 
 export const WrapperPing = {
 	func: ( message ) => { message.reply( 'pong' ); },
+	help: 'Tests latency of the server',
 };
 
 export const WrapperAvatar = {
@@ -17,6 +19,7 @@ export const WrapperAvatar = {
 			.then( () => message.channel.stopTyping( true ) )
 			.catch();
 	},
+	help: 'Returns the users avatar',
 };
 
 export const WrapperWait = {
@@ -30,6 +33,7 @@ export const WrapperWait = {
 			2000
 		);
 	},
+	help: 'Wait 5 seconds and responds',
 };
 
 export const WrapperKill = {
@@ -42,7 +46,7 @@ export const WrapperKill = {
 			console.log( 'failing to destroy' );
 		} );
 	},
-	help: 'destroys the client',
+	help: 'Destroys the client',
 };
 
 export const WrapperList = {
@@ -51,10 +55,12 @@ export const WrapperList = {
 		message.channel.send( commandList );
 		message.channel.stopTyping( true );
 	},
+	help: 'Provides a list of commands',
 };
 
 export const WrapperFancy = {
 	func: ( message ) => { message.channel.send( { embed: richEmbed() } ); },
+	help: 'Sends a generic embed',
 };
 
 export const WrapperInvite = {
@@ -63,4 +69,5 @@ export const WrapperInvite = {
 			link => message.channel.send( link )
 		);
 	},
+	help: 'Provides a bot inviter link',
 };
