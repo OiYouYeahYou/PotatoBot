@@ -33,10 +33,15 @@ function ready() {
 function messageRecived( message: Message ) {
 	var text = message.content.trim();
 
+	if ( message.author.bot )
+		return;
+
 	if ( isPrefixed( prefixHelp, text ) )
-		return runHelp( message, text );
-	if ( isPrefixed( prefix, text ) )
-		return runCommand( message, text );
+		runHelp( message, text );
+	else if ( isPrefixed( prefix, text ) )
+		runCommand( message, text );
+	else if ( message.mentions.everyone )
+		everyoneResponse( message );
 }
 
 function guildMemberAdd( member ) {
@@ -83,4 +88,13 @@ function runHelp(  message: Message, text: string ) {
 
 function noCommandFound( message: Message, command: string ) {
 	message.reply( `Cannot find \`${ command }\`` );
+}
+
+function everyoneResponse( message: Message ) {
+	if ( message.deletable )
+		message.delete();
+
+	message.reply( "Don't mention everyone!!", {
+		// file: "https://cdn.weeb.sh/images/ryKLMPEj-.png"
+	} );
 }
