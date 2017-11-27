@@ -25,7 +25,7 @@ registerWrapper( 'js', WrapperJS );
 registerWrapper( 'ruby', WrapperRuby );
 
 export function getCommandWrapper( cmd: string ): ICommandWrapper | false {
-	if ( cmd in commands && !commands[ cmd ].disabled )
+	if ( cmd in commands )
 		return commands[ cmd ];
 
 	return false;
@@ -48,7 +48,7 @@ export function registerWrapper( key: string, input: IApplicationWrapper ): void
 		output.aliases = `${ key }`;
 
 		input.aliases.forEach( alias => {
-			alias = alias.toLowerCase();
+			alias = alias.toLowerCase().trim();
 			output.aliases += `, ${alias}`;
 			setCommmand( alias, output );
 		});
@@ -58,9 +58,10 @@ export function registerWrapper( key: string, input: IApplicationWrapper ): void
 }
 
 function setCommmand( key: string, wrapper: ICommandWrapper ) {
-	if ( key in commands ) {
-		throw new Error( `Key already exists in commands ${ key }` );
-	}
+	if ( key in commands )
+		throw new Error( `Key already exists in commands \'${ key }\'` );
+	if ( key.indexOf( ' ' ) !== -1 )
+		throw new Error( `Key contains space \'${ key }\'` );
 
 	commands[ key ] = wrapper;
 }
@@ -80,7 +81,6 @@ interface ICommandWrapper {
 	key: string;
 	help?: string;
 	usage?: string;
-	disabled?: boolean;
 	aliases?: string;
 }
 
