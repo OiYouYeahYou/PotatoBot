@@ -28,6 +28,7 @@ var toRankNumber = {
 export const WrapperBind = {
 	func: bind,
 	help: 'Links the user to a League of Legends account and applies a role based on the accounts league rank',
+	usage: '<region> <username>',
 	disabled: true,
 };
 
