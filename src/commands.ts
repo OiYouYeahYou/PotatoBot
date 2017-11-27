@@ -1,6 +1,7 @@
 export { helpFunction } from './commands/help';
 import { Message } from "discord.js";
 import { WrapperBind } from "./commands/bind";
+import { WrapperCode, WrapperJS, WrapperRuby } from './commands/code';
 import * as generic from "./commands/generic";
 import { WrapperHelp } from './commands/help';
 import { WrapperNever } from "./commands/neverActive";
@@ -18,7 +19,9 @@ registerWrapper( 'fancy', generic.WrapperFancy );
 registerWrapper( 'invite', generic.WrapperInvite );
 registerWrapper( 'bind', WrapperBind );
 registerWrapper( 'never', WrapperNever );
+registerWrapper( 'code', WrapperCode );
 registerWrapper( 'js', WrapperJS );
+registerWrapper( 'ruby', WrapperRuby );
 
 export function getCommandWrapper( cmd: string ): ICommandWrapper | false {
 	if ( cmd in commands && !commands[ cmd ].disabled )
