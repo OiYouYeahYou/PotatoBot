@@ -17,6 +17,7 @@ registerWrapper( 'kill', generic.WrapperKill );
 registerWrapper( 'list', generic.WrapperList );
 registerWrapper( 'fancy', generic.WrapperFancy );
 registerWrapper( 'invite', generic.WrapperInvite );
+registerWrapper( 'shutup', generic.WrapperRude );
 registerWrapper( 'bind', WrapperBind );
 registerWrapper( 'never', WrapperNever );
 registerWrapper( 'code', WrapperCode );

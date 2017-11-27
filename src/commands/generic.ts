@@ -11,6 +11,7 @@ export const WrapperTantrum = {
 export const WrapperPing = {
 	func: ( message ) => { message.reply( 'pong' ); },
 	help: 'Tests latency of the server',
+	aliases: [ 'pong' ],
 };
 
 export const WrapperAvatar = {
@@ -39,14 +40,14 @@ export const WrapperWait = {
 export const WrapperKill = {
 	func: ( message ) => {
 		console.log( 'destroying' );
-
-		client.destroy().then( () => {
-			console.log( 'destroyed' );
-		} ).catch( () => {
-			console.log( 'failing to destroy' );
-		} );
+		message.reply( 'MURRDERRRR!!!' ).then(() => {
+			client.destroy()
+				.then( () => { console.log( 'destroyed' ); } )
+				.catch( () => { console.log( 'failing to destroy' ); } );
+		});
 	},
 	help: 'Destroys the client',
+	aliases: [ 'kys', ],
 };
 
 export const WrapperList = {
@@ -68,6 +69,13 @@ export const WrapperInvite = {
 		client.generateInvite().then(
 			link => message.channel.send( link )
 		);
+	},
+	help: 'Provides a bot inviter link',
+};
+
+export const WrapperRude = {
+	func: ( message ) => {
+		message.reply( 'Bitch Noooo!!!!' );
 	},
 	help: 'Provides a bot inviter link',
 };
