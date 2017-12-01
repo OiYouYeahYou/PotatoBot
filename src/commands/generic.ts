@@ -1,5 +1,5 @@
 import { Message } from 'discord.js';
-import { commands } from '../commands';
+import { commands, IApplicationWrapper } from '../commands';
 import { richEmbed } from '../discord/embed';
 import { client } from '../index';
 
@@ -37,17 +37,18 @@ export const WrapperWait = {
 	help: 'Wait 5 seconds and responds',
 };
 
-export const WrapperKill = {
+export const WrapperKill: IApplicationWrapper = {
 	func: ( message ) => {
 		console.log( 'destroying' );
-		message.reply( 'MURRDERRRR!!!' ).then(() => {
+		message.reply( 'MURRDERRRR!!!' ).then( () => {
 			client.destroy()
 				.then( () => { console.log( 'destroyed' ); } )
 				.catch( () => { console.log( 'failing to destroy' ); } );
-		});
+		} );
 	},
 	help: 'Destroys the client',
 	aliases: [ 'kys', ],
+	permisson: 'master',
 };
 
 export const WrapperList = {

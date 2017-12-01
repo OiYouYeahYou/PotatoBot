@@ -2,8 +2,8 @@
 require( 'source-map-support' ).install();
 
 import { Client, Message } from 'discord.js';
-import { getCommandWrapper, helpFunction, } from './commands';
-import { isPrefixed, quatch, setEnv, splitCommandString } from './util';
+import { getCommandWrapper, helpFunction, ICommandWrapper, } from './commands';
+import { isPrefixed, setEnv, splitCommandString } from './util';
 
 setEnv();
 
@@ -16,9 +16,7 @@ const clientOptions = { fetchAllMembers: true };
 export const client = new Client( clientOptions );
 
 client.on( 'ready', ready );
-client.on( 'message',
-	message => quatch( () => messageRecived( message ) )
-);
+client.on( 'message', messageRecived );
 client.on( 'guildMemberAdd', guildMemberAdd );
 client.on( 'guildMemberRemove', guildMemberRemove );
 
@@ -62,6 +60,9 @@ function runCommand( message: Message, text: string ) {
 	if ( !wrapper )
 		return noCommandFound( message, command );
 
+	if ( !hasAuthorityForCommand( message, wrapper ) )
+		return unauthorised( message, wrapper );
+
 	try {
 		wrapper.function( message, args );
 	} catch ( error ) {
@@ -97,4 +98,38 @@ function everyoneResponse( message: Message ) {
 	message.reply( "Don't mention everyone!!", {
 		// file: "https://cdn.weeb.sh/images/ryKLMPEj-.png"
 	} );
+}
+
+function hasAuthorityForCommand( message: Message, wrapper: ICommandWrapper ) {
+	var { permisson } = wrapper;
+	var auth = false;
+
+	if ( permisson === 'all' )
+		return true;
+	else if ( permisson === 'master' )
+		return isMaster( message );
+	else if ( permisson === 'owner' )
+		return isOwner( message ) || isMaster( message );
+	else if ( permisson === 'admin' )
+		return isAdmin( message );
+
+	return false;
+}
+
+function isOwner( message: Message ) {
+	return message.member.id === message.guild.ownerID;
+}
+
+function isMaster( message: Message ) {
+	return message.member.id === process.env.master;
+}
+
+function isAdmin( message: Message ) {
+	return message.member.hasPermission( 'ADMINISTRATOR' );
+}
+
+function unauthorised( message: Message, wrapper: ICommandWrapper ) {
+	message.reply(
+		`You are not autorised to use that command, you must be a ${ wrapper.permisson }`
+	);
 }

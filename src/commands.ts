@@ -39,8 +39,11 @@ export function registerWrapper( key: string, input: IApplicationWrapper ): void
 
 	var { func, help } = input;
 	var output: ICommandWrapper = {
-		function: func, help, key
+		function: func, help, key, permisson: 'all'
 	};
+
+	if ( input.permisson )
+		output.permisson = input.permisson;
 
 	output.usage = `;${ key } ${ input.usage || '' }`.trim();
 
@@ -68,22 +71,26 @@ function setCommmand( key: string, wrapper: ICommandWrapper ) {
 
 type TCommandFunction = ( message: Message, args: string ) => void;
 
-interface IApplicationWrapper {
+export interface IApplicationWrapper {
 	func: TCommandFunction;
 	help: string;
 	usage?: string;
 	disabled?: boolean;
 	aliases?: string[];
+	permisson?: TPermisson;
 }
 
-interface ICommandWrapper {
+export interface ICommandWrapper {
 	function: TCommandFunction;
 	key: string;
 	help?: string;
 	usage?: string;
 	aliases?: string;
+	permisson: TPermisson;
 }
 
 interface ICommands {
 	[ keys: string ]: ICommandWrapper;
 }
+
+type TPermisson = 'all' | 'master' | 'owner' | 'admin';
