@@ -9,7 +9,7 @@
     "lint": "gulp lint"
   },
   "dependencies": {
-    "discord.js": "11.1.0",
+    "discord.js": "github:hydrabolt/discord.js#11.3-dev",
     "dotenv": "^4.0.0",
     "kindred-api": "^2.0.76",
     "mongoose": "^4.11.7",

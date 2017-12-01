@@ -1,3 +1,8 @@
+import { Guild, Message, VoiceChannel } from "discord.js";
+import { client } from "./index";
+
+export const TEN = 10 * 1000;
+
 export function nin( key, obj ) { return !( key in obj ); }
 
 /**
@@ -82,6 +87,9 @@ export function setEnv() {
 export function splitByFirstSpace(
 	text: string
 ): [ string, string | undefined ] {
+	if ( !text )
+		return [ undefined, undefined ];
+
 	text = text.trim();
 
 	var indexOfFirstSpace = indexOf( text, ' ' );
@@ -103,4 +111,53 @@ export function splitCommandString( pfx: string, text: string) {
 	text = text.slice( pfx.length ).trim();
 
 	return splitByFirstSpace( text );
+}
+
+/**
+ * Creates a random string of charecters
+ * @param len The length of string to return
+ *
+ * Attribution: thepolyglotdeveloper.com/2015/03/create-a-random-nonce-string-using-javascript/
+ */
+export function randomString( len: number ) {
+	var t = "", pl = possible.length;
+
+	for ( var i = 0; i < len; i++ )
+		t += possible.charAt( Math.floor( Math.random() * pl ) );
+
+	return t;
+}
+var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+interface IDeletable {
+	deletable: boolean;
+	delete: () => Promise<any>;
+}
+
+export function safeDelete( message: IDeletable ): void {
+	if ( message.deletable )
+		message.delete().catch( noop );
+}
+
+/**
+ * Finds a Voice Channel in a guild by name
+ * @param guild
+ * @param name
+ */
+export function findVoiceChannel( guild: Guild, name: string ): VoiceChannel {
+	var channel = guild.channels.find( 'name', name );
+
+	if ( channel && channel instanceof VoiceChannel )
+	  return channel;
+  }
+
+/**
+ * Sends a reply that self destructs
+ * @param message
+ * @param text
+ */
+export function destructingReply( message: Message, text: string ): void {
+	message.reply( text )
+	  .then( ( msg: Message ) => client.setTimeout( () => msg.delete(), TEN ) )
+	  .catch( noop );
 }
