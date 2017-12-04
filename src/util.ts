@@ -161,3 +161,18 @@ export function destructingReply( message: Message, text: string ): void {
 	  .then( ( msg: Message ) => client.setTimeout( () => msg.delete(), TEN ) )
 	  .catch( noop );
 }
+
+/**
+ * Replies to a user that something went wrong, with a reference that can be referenced to server logs
+ * @param message
+ * @param err
+ */
+export function somethingWentWrong( message: Message, err: any ) {
+	var id = randomString( 6 );
+
+	if ( err instanceof Error )
+		err.message += ` (Event: ${ id })`;
+
+	message.reply( `Something went wrong (Event: ${ id })` );
+	console.log( err );
+}

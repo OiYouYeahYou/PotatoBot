@@ -1,7 +1,7 @@
 import { Message, PermissionResolvable, VoiceChannel } from "discord.js";
 import { IApplicationWrapper } from "../commands";
 import { client } from "../index";
-import { destructingReply, findVoiceChannel, noop, randomString, safeDelete, splitByFirstSpace, TEN } from "../util";
+import { destructingReply, findVoiceChannel, randomString, safeDelete, splitByFirstSpace, TEN, somethingWentWrong } from "../util";
 
 export const WrapperDemand: IApplicationWrapper = {
   func: demandRoom,
@@ -13,20 +13,22 @@ export const WrapperDemand: IApplicationWrapper = {
 const REQUIRED_PERMISSONS: PermissionResolvable[] = [
   'MANAGE_CHANNELS', 'MOVE_MEMBERS'
 ];
+const DEFAULT_NAME = 'Room of requirement';
+const DEFAULT_ARGS: [ number, string ] = [ undefined, 'Room of requirement' ];
 const position = 200;
 
 function demandRoom( message: Message, args: string ): void {
   if ( !message.member.voiceChannel )
     return destructingReply( message, 'You need to be in a Voice Channel' );
 
-  if ( !message.guild.me.hasPermissions( REQUIRED_PERMISSONS ) )
+  if ( !message.guild.me.hasPermission( REQUIRED_PERMISSONS ) )
     return destructingReply( message, 'The bot needs more permissons' );
 
   var tempName = randomString( 15 );
 
   message.guild.createChannel( tempName, 'voice' )
     .then( () => newChannelHandler( message, tempName, args ) )
-    .catch( () => message.reply( 'Something failed' ) );
+    .catch( err => somethingWentWrong( message, err ) );
 }
 
 /**
@@ -54,7 +56,7 @@ function newChannelHandler( message: Message, tmpName: string, args: string ): v
     .then( () => message.member.setVoiceChannel( channel.id ) )
     .then( () => initIntervalChecker( message, channel ) )
     .then( () => destructingReply( message, 'Done' ) )
-    .catch( noop );
+    .catch( err => somethingWentWrong( message, err ) );
 }
 
 /**
@@ -62,23 +64,19 @@ function newChannelHandler( message: Message, tmpName: string, args: string ): v
  * @param args
  */
 function processArgs( args: string ): [ number, string ] {
-  var limitString: string, limit: number, name: string;
-  if ( args ) {
-    [ limitString, name ] = splitByFirstSpace( args );
+  if ( !args )
+    return DEFAULT_ARGS;
 
-    limit = Number( limitString );
+  var [ limitString, name ] = splitByFirstSpace( args );
+  var limit = Number( limitString );
 
-    if ( Number.isNaN( limit ) ) {
-      limit = undefined;
-      name = args;
-    }
-
-    if ( !name )
-      name = 'Room of Requirement';
-  } else {
+  if ( Number.isNaN( limit ) ) {
     limit = undefined;
-    name = 'Room of Requirement';
+    name = args;
   }
+
+  if ( !name || name.length < 4 )
+    name = DEFAULT_NAME;
 
   return [ limit, name ];
 }
