@@ -10,8 +10,8 @@
 			"name": "Launch Program",
 			"program": "${workspaceRoot}/lib/index.js",
 			"cwd": "${workspaceRoot}/",
-			"preLaunchTask": "tests",
-			"console": "integratedTerminal"
+			"preLaunchTask": "build",
+			"console": "internalConsole"
 		},
 		{
 			"type": "node",

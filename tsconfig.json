@@ -20,7 +20,7 @@
 			/* Concatenate and emit output to single file. */
 		// "outFile": "./",
 			/* Redirect output structure to the directory. */
-		,"outDir": "./lib/"
+		// ,"outDir": "./lib/"
 			/* Specify the root directory of input files. Use to control the output directory structure with --outDir. */
 		// "rootDir": "./src"
 			/* Do not emit comments to output. */
