@@ -1,5 +1,4 @@
 import { Guild, Message, VoiceChannel } from "discord.js";
-import { client } from "./index";
 
 export const TEN = 10 * 1000;
 
@@ -158,8 +157,10 @@ export function findVoiceChannel( guild: Guild, name: string ): VoiceChannel {
  */
 export function destructingReply( message: Message, text: string ): void {
 	message.reply( text )
-	  .then( ( msg: Message ) => client.setTimeout( () => msg.delete(), TEN ) )
-	  .catch( noop );
+		.then( ( msg: Message ) =>
+			message.client.setTimeout( () => msg.delete(), TEN )
+		)
+		.catch( noop );
 }
 
 /**

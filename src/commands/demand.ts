@@ -1,7 +1,14 @@
 import { Message, PermissionResolvable, VoiceChannel } from "discord.js";
 import { IApplicationWrapper } from "../commands";
-import { client } from "../index";
-import { destructingReply, findVoiceChannel, randomString, safeDelete, splitByFirstSpace, TEN, somethingWentWrong } from "../util";
+import {
+  destructingReply,
+  findVoiceChannel,
+  randomString,
+  safeDelete,
+  somethingWentWrong,
+  splitByFirstSpace,
+  TEN
+} from "../util";
 
 export const WrapperDemand: IApplicationWrapper = {
   func: demandRoom,
@@ -87,11 +94,11 @@ function processArgs( args: string ): [ number, string ] {
  * @param channel
  */
 function initIntervalChecker( message: Message, channel: VoiceChannel ): void {
-  var interval = client.setInterval( () => {
+  var interval = message.client.setInterval( () => {
     if ( message.member.voiceChannelID === channel.id )
       return;
 
-    client.clearInterval( interval );
+    message.client.clearInterval( interval );
 
     safeDelete( message );
 

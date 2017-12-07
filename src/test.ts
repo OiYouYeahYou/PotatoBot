@@ -1,6 +1,6 @@
 console.log( 'This is a test; Do not adjust your set.\n\n' );
 
-import { client } from './';
+import { client } from './client/client';
 import { andSummonerLeague } from './kindred';
 import { setEnv } from './util';
 

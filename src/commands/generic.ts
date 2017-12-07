@@ -1,7 +1,6 @@
 import { Message } from 'discord.js';
 import { commands, IApplicationWrapper } from '../commands';
 import { richEmbed } from '../discord/embed';
-import { client } from '../index';
 
 export const WrapperTantrum = {
 	func: () => { throw 'BooHoo : tantrum was called'; },
@@ -41,12 +40,12 @@ export const WrapperKill: IApplicationWrapper = {
 	func: ( message ) => {
 		console.log( 'destroying' );
 		message.reply( 'MURRDERRRR!!!' ).then( () => {
-			client.destroy()
+			message.client.destroy()
 				.then( () => { console.log( 'destroyed' ); } )
 				.catch( () => { console.log( 'failing to destroy' ); } );
 		} );
 	},
-	help: 'Destroys the client',
+	help: 'Destroys the message.',
 	aliases: [ 'kys', ],
 	permisson: 'master',
 };
@@ -67,7 +66,7 @@ export const WrapperFancy = {
 
 export const WrapperInvite = {
 	func: ( message ) => {
-		client.generateInvite().then(
+		message.client.generateInvite().then(
 			link => message.channel.send( link )
 		);
 	},
