@@ -4,9 +4,8 @@
   "private": true,
   "main": "app.js",
   "scripts": {
-    "start": "grunt && node lib/",
-    "devstart": "grunt dev",
-    "lint": "gulp lint"
+    "start": "gulp && node lib/",
+    "postinstall": "gulp"
   },
   "dependencies": {
     "discord.js": "github:hydrabolt/discord.js#11.3-dev",

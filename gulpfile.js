@@ -23,3 +23,5 @@ gulp.task( 'build', () => {
 		.pipe( gulp_sourcemaps.write() )
 		.pipe( gulp.dest( 'lib/' ) );
 } );
+
+gulp.task( 'default', [ 'build' ] );
