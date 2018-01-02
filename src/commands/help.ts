@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
-import { getCommandWrapper } from "../commands";
+import { getCommandWrapper, commands } from "../commands";
 import { richEmbed } from "../discord/embed";
 
 export const WrapperHelp = {
@@ -27,3 +27,12 @@ export function helpFunction( message: Message, command: string ) {
 
 	message.channel.send( { embed } );
 }
+
+export const WrapperList = {
+	func: ( message: Message ) => {
+		var commandList = Object.keys( commands ).sort().join( '\n' );
+		message.channel.send( commandList );
+		message.channel.stopTyping( true );
+	},
+	help: 'Provides a list of commands',
+};
