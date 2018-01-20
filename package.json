@@ -10,10 +10,8 @@
   "dependencies": {
     "discord.js": "github:hydrabolt/discord.js#11.3-dev",
     "dotenv": "^4.0.0",
-    "kindred-api": "^2.0.76",
     "mongoose": "^5.0.0",
-    "source-map-support": "^0.5.0",
-    "types-kindred": "0.0.1"
+    "source-map-support": "^0.5.0"
   },
   "devDependencies": {
     "@types/dotenv": "^4.0.1",
