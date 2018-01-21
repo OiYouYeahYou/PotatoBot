@@ -7,7 +7,7 @@ import { prefix, prefixHelp } from '../constants';
 import { isPrefixed, splitCommandString } from '../util';
 
 export function ready() {
-	console.log( 'I am ready!' );
+	console.log( 'Discord client is ready!' );
 }
 
 export function messageRecived( message: Message ) {

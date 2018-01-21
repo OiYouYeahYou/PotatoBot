@@ -80,7 +80,7 @@ export function setEnv() {
 }
 
 /**
- * Splits string into
+ * Splits string into an array containg first word and remaining string
  * @param text
  */
 export function splitByFirstSpace(

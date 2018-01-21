@@ -1,6 +1,5 @@
 export { helpFunction } from './commands/help';
 import { Message } from "discord.js";
-import { WrapperBind } from "./commands/bind";
 import { WrapperCode, WrapperJS, WrapperRuby } from './commands/code';
 import { WrapperDemand } from './commands/demand';
 import * as generic from "./commands/generic";
@@ -19,7 +18,6 @@ registerWrapper( 'kill', WrapperKill );
 registerWrapper( 'list', WrapperList );
 registerWrapper( 'invite', WrapperInvite );
 registerWrapper( 'shutup', WrapperRude );
-registerWrapper( 'bind', WrapperBind );
 registerWrapper( 'never', WrapperNever );
 registerWrapper( 'code', WrapperCode );
 registerWrapper( 'js', WrapperJS );
@@ -54,9 +52,9 @@ export function registerWrapper( key: string, input: IApplicationWrapper ): void
 
 		input.aliases.forEach( alias => {
 			alias = alias.toLowerCase().trim();
-			output.aliases += `, ${alias}`;
+			output.aliases += `, ${ alias }`;
 			setCommmand( alias, output );
-		});
+		} );
 	}
 
 	setCommmand( key, output );
