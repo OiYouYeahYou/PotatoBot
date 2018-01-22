@@ -8,7 +8,7 @@
     "postinstall": "gulp"
   },
   "dependencies": {
-    "discord.js": "github:hydrabolt/discord.js#11.3-dev",
+    "discord.js": "^11.3.0",
     "dotenv": "^4.0.0",
     "mongoose": "^5.0.0",
     "source-map-support": "^0.5.0"
