@@ -55,7 +55,8 @@ function newChannelHandler( message: Message, tmpName: string, args: string ): v
   }
 
   var [ userLimit, name ] = processArgs( args );
-  var parent = message.guild.afkChannel.parent.id;
+  var parentChannel = message.guild.afkChannel.parent;
+  var parent = parentChannel ? parentChannel.id : undefined;
   var reason = 'Setting up Temporary Channel';
   var config = { name, userLimit, parent, position };
 
