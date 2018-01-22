@@ -6,8 +6,18 @@ import { getCommandWrapper, helpFunction, ICommandWrapper, } from '../commands';
 import { prefix, prefixHelp } from '../constants';
 import { isPrefixed, splitCommandString } from '../util';
 
-export function ready() {
+export const ready = () =>
 	console.log( 'Discord client is ready!' );
+
+export const disconnect = () =>
+	console.log( 'Discord client has disconnected' );
+
+export const reconnecting = () =>
+	console.log( 'Discord client is reconnecting' );
+
+export function error( err ) {
+	console.error( 'A Discord error occured' );
+	console.error( err );
 }
 
 export function messageRecived( message: Message ) {
