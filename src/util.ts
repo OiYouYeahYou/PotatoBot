@@ -68,7 +68,7 @@ export function indexOf(
 
 /** Checks if env exists, and sets if they don't */
 export function setEnv() {
-	var lookForKeys = () => ![ 'discord', 'ritoplz', 'mlab', ].every(
+	var lookForKeys = () => ![ 'discord', 'ritoplz', 'mongo', ].every(
 		key => key in process.env
 	);
 
