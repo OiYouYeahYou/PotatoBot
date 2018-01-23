@@ -5,6 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "gulp && node lib/",
+    "devstart": "nodemon -w src -e ts --exec ts-node --inspect src/",
     "postinstall": "gulp"
   },
   "dependencies": {
@@ -24,7 +25,9 @@
     "gulp-tslint": "^8.1.2",
     "gulp-typescript": "^3.2.3",
     "load-grunt-tasks": "^3.5.2",
+    "nodemon": "^1.14.11",
     "run-sequence": "^2.2.0",
+    "ts-node": "^4.1.0",
     "tslint": "^5.9.0",
     "typescript": "^2.6.1"
   }
