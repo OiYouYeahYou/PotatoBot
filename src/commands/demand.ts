@@ -64,7 +64,11 @@ function newChannelHandler( message: Message, tmpName: string, args: string ): v
     .then( () => message.member.setVoiceChannel( channel.id ) )
     .then( () => initIntervalChecker( message, channel ) )
     .then( () => destructingReply( message, 'Done' ) )
-    .catch( err => somethingWentWrong( message, err ) );
+    .catch( err => {
+      channel.delete()
+        .then( () => somethingWentWrong( message, err ) )
+        .catch( () => destructingReply( message, 'Something went really wrong after trying to tidy up after an error' ) );
+    } );
 }
 
 /**
