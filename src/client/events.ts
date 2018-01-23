@@ -45,12 +45,10 @@ export function guildMemberRemove( member ) {
 function runCommand( message: Message, text: string ) {
 	message.channel.startTyping( 1 );
 
-	var [ command, args ] = splitCommandString( prefix, text );
-
-	var wrapper = getCommandWrapper( command );
+	const [ command, args, wrapper ] = aggregator( message, prefix, text );
 
 	if ( !wrapper )
-		return noCommandFound( message, command );
+		return message.channel.stopTyping( true );
 
 	if ( !hasAuthorityForCommand( message, wrapper ) )
 		return unauthorised( message, wrapper );
@@ -58,7 +56,11 @@ function runCommand( message: Message, text: string ) {
 	try {
 		wrapper.function( message, args );
 	} catch ( error ) {
-		message.reply( `Trying to run \`${ command }\` has failed` );
+		const failMessage = `Trying to run \`${ command }\` has failed`
+
+		message.reply( failMessage );
+		console.error( failMessage );
+		console.error( error );
 	}
 
 	message.channel.stopTyping();
@@ -67,20 +69,12 @@ function runCommand( message: Message, text: string ) {
 function runHelp(  message: Message, text: string ) {
 	message.channel.startTyping( 1 );
 
-	var [ command ] = splitCommandString( prefixHelp, text );
+	const [ command, args, wrapper ] = aggregator( message, prefixHelp, text );
 
-	var wrapper = getCommandWrapper( command );
+	if ( wrapper )
+		helpFunction( message, command );
 
-	if ( !wrapper )
-		return noCommandFound( message, command );
-
-	helpFunction( message, command );
-
-	message.channel.stopTyping();
-}
-
-function noCommandFound( message: Message, command: string ) {
-	message.reply( `Cannot find \`${ command }\`` );
+	message.channel.stopTyping( true );
 }
 
 function everyoneResponse( message: Message ) {
@@ -90,6 +84,24 @@ function everyoneResponse( message: Message ) {
 	message.reply( "Don't mention everyone!!", {
 		// file: "https://cdn.weeb.sh/images/ryKLMPEj-.png"
 	} );
+}
+
+function aggregator(
+	message: Message,
+	pfx: string,
+	text: string
+): [ string, string, false | ICommandWrapper ] {
+	const [ command, args ] = splitCommandString( pfx, text );
+
+	if ( !command )
+		return [ command, args, false ];
+
+	const wrapper = getCommandWrapper( command );
+
+	if ( !wrapper )
+		message.reply( `Cannot find \`${ command }\`` );
+
+	return [ command, args, wrapper ]
 }
 
 function hasAuthorityForCommand( message: Message, wrapper: ICommandWrapper ) {
@@ -121,6 +133,7 @@ function isAdmin( message: Message ) {
 
 function unauthorised( message: Message, wrapper: ICommandWrapper ) {
 	message.reply(
-		`You are not autorised to use that command, you must be a ${ wrapper.permisson }`
-	);
+		`You are not autorised to use that command, `
+		+ `you must be a ${ wrapper.permisson }`
+	).then( () => message.channel.stopTyping( true ) );
 }
