@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
-import { splitByFirstSpace } from "../util";
+import { splitByFirstSpace, destructingReply, somethingWentWrong } from "../util";
 
 export const WrapperCode = {
 	func: ( message: Message, args: string ) => {
@@ -12,17 +12,15 @@ export const WrapperCode = {
 };
 
 export const WrapperJS = {
-	func: ( message: Message, args: string ) => {
-		sendCode( message, args, 'javascript' );
-	},
+	func: ( message: Message, args: string ) =>
+		sendCode( message, args, 'javascript' ),
 	help: 'Sends an text formatted as javascript',
 	usage: '<code snippet>',
 };
 
 export const WrapperRuby = {
-	func: ( message: Message, args: string ) => {
-		sendCode( message, args, 'ruby' );
-	},
+	func: ( message: Message, args: string ) =>
+		sendCode( message, args, 'ruby' ),
 	help: 'Sends an text formatted as ruby',
 	usage: '<code snippet>',
 };
@@ -31,5 +29,9 @@ function sendCode( message: Message, text, lang ) {
 	if ( message.delete )
 		message.delete();
 
-	message.channel.sendCode( lang, text );
+	if ( !text.trim() )
+		return destructingReply( message, 'No code was recieved' )
+
+	message.channel.sendCode( lang, text )
+		.catch( err => somethingWentWrong( message, err ) );
 }
