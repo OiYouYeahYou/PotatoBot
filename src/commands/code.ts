@@ -25,11 +25,11 @@ export const WrapperRuby = {
 	usage: '<code snippet>',
 };
 
-function sendCode( message: Message, text, lang ) {
+function sendCode( message: Message, text: string | undefined, lang ) {
 	if ( message.delete )
 		message.delete();
 
-	if ( !text.trim() )
+	if ( !text || !text.trim() )
 		return destructingReply( message, 'No code was recieved' )
 
 	message.channel.sendCode( lang, text )
