@@ -68,15 +68,19 @@ export function indexOf(
 
 /** Checks if env exists, and sets if they don't */
 export function setEnv() {
-	var lookForKeys = () => ![ 'discord', 'ritoplz', 'mongo', ].every(
-		key => key in process.env
-	);
+	const keys = [ 'discord', 'ritoplz', 'mongo' ];
 
-	if ( lookForKeys() )
+	const actionNeeded = !keys.every( key => key in process.env );
+
+	if ( actionNeeded )
 		require( 'dotenv' ).config();
 
-	if ( lookForKeys() )
-		throw new Error( 'env\'s seems not to be set' );
+	const missingEnv = keys.filter( key => !( key in process.env ) );
+
+	if ( missingEnv.length ) {
+		const missingString = missingEnv.join( ', ' );
+		throw new Error( `Enviromentals missing: ${ missingString }` );
+	}
 }
 
 /**
