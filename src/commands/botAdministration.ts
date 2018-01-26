@@ -1,5 +1,7 @@
 import { IApplicationWrapper } from "../commands";
 import { disconnect } from "../index";
+import { destructingReply } from "../util";
+import { exec } from "child_process";
 
 export const WrapperKill: IApplicationWrapper = {
 	func: async ( message ) => {
@@ -10,6 +12,31 @@ export const WrapperKill: IApplicationWrapper = {
 	},
 	help: 'Destroys the message.',
 	aliases: [ 'kys', ],
+	permisson: 'master',
+};
+
+export const WrapperRestart: IApplicationWrapper = {
+	func: async ( message ) => {
+		const { env: { restartCommand } } = process
+
+		if ( !restartCommand )
+			return destructingReply( message,
+				'This bot does not support restarting'
+			)
+
+		console.log( 'destroying' );
+		await message.reply( 'MURRDERRRR!!!' )
+		await disconnect();
+
+		exec( restartCommand, ( err, stdout, stderr ) => {
+			if ( err )
+				return destructingReply( message, 'Execution failed' );
+
+			console.log( `stdout: ${ stdout }` );
+			console.log( `stderr: ${ stderr }` );
+		} );
+	},
+	help: 'Destroys the message.',
 	permisson: 'master',
 };
 

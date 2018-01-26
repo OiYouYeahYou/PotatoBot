@@ -6,7 +6,7 @@ import * as generic from "./commands/generic";
 import { WrapperHelp, WrapperList } from './commands/help';
 import { WrapperNever } from "./commands/neverActive";
 import { WrapperRude } from './commands/humour';
-import { WrapperPing, WrapperKill, WrapperInvite } from './commands/botAdministration';
+import { WrapperPing, WrapperKill, WrapperInvite, WrapperRestart } from './commands/botAdministration';
 import { WrapperAvatar } from './commands/generic';
 
 export const commands: ICommands = {};
@@ -15,6 +15,7 @@ registerWrapper( 'help', WrapperHelp );
 registerWrapper( 'ping', WrapperPing );
 registerWrapper( 'avatar', WrapperAvatar );
 registerWrapper( 'kill', WrapperKill );
+registerWrapper( 'kill', WrapperRestart );
 registerWrapper( 'list', WrapperList );
 registerWrapper( 'invite', WrapperInvite );
 registerWrapper( 'shutup', WrapperRude );
