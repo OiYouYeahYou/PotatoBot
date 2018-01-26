@@ -1,14 +1,12 @@
 import { IApplicationWrapper } from "../commands";
-
+import { disconnect } from "../index";
 
 export const WrapperKill: IApplicationWrapper = {
-	func: ( message ) => {
+	func: async ( message ) => {
 		console.log( 'destroying' );
-		message.reply( 'MURRDERRRR!!!' ).then( () => {
-			message.client.destroy()
-				.then( () => { console.log( 'destroyed' ); } )
-				.catch( () => { console.log( 'failing to destroy' ); } );
-		} );
+		await message.reply( 'MURRDERRRR!!!' )
+		await disconnect();
+		process.exit();
 	},
 	help: 'Destroys the message.',
 	aliases: [ 'kys', ],
