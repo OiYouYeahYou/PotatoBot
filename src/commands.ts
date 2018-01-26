@@ -15,7 +15,7 @@ registerWrapper( 'help', WrapperHelp );
 registerWrapper( 'ping', WrapperPing );
 registerWrapper( 'avatar', WrapperAvatar );
 registerWrapper( 'kill', WrapperKill );
-registerWrapper( 'kill', WrapperRestart );
+registerWrapper( 'restart', WrapperRestart );
 registerWrapper( 'list', WrapperList );
 registerWrapper( 'invite', WrapperInvite );
 registerWrapper( 'shutup', WrapperRude );
