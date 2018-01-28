@@ -8,6 +8,7 @@ import { WrapperNever } from "./commands/neverActive";
 import { WrapperRude } from './commands/humour';
 import { WrapperPing, WrapperKill, WrapperInvite, WrapperRestart } from './commands/botAdministration';
 import { WrapperAvatar } from './commands/generic';
+import { WrapperConfig } from './commands/config';
 import { splitByFirstSpace } from './util';
 
 export const commands: ICommands = {};
@@ -25,6 +26,7 @@ registerWrapper( 'code', WrapperCode );
 registerWrapper( 'js', WrapperJS );
 registerWrapper( 'ruby', WrapperRuby );
 registerWrapper( 'demand', WrapperDemand );
+registerWrapper( 'config', WrapperConfig );
 
 export function getCommandWrapper( cmd: string ): ICommandWrapper | false {
 	if ( cmd in commands )
