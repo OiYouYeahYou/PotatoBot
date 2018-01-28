@@ -1,4 +1,4 @@
-import { Guild, Message, VoiceChannel } from "discord.js";
+import { Guild, Message, VoiceChannel, Snowflake } from "discord.js";
 
 export const TEN = 10 * 1000;
 
@@ -180,4 +180,8 @@ export function somethingWentWrong( message: Message, err: any ) {
 
 	message.reply( `Something went wrong (Event: ${ id })` );
 	console.log( err );
+}
+
+export function guildIDNormaliser( guild: Guild | Snowflake ): number {
+	return Number( guild instanceof Guild ? guild.id : guild );
 }
