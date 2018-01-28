@@ -8,6 +8,7 @@ import { WrapperNever } from "./commands/neverActive";
 import { WrapperRude } from './commands/humour';
 import { WrapperPing, WrapperKill, WrapperInvite, WrapperRestart } from './commands/botAdministration';
 import { WrapperAvatar } from './commands/generic';
+import { splitByFirstSpace } from './util';
 
 export const commands: ICommands = {};
 
@@ -70,6 +71,33 @@ function setCommmand( key: string, wrapper: ICommandWrapper ) {
 	commands[ key ] = wrapper;
 }
 
+export function subCommandHandler(
+	message: Message,
+	subModules: ISubCommands,
+	args: string,
+	noMain: boolean = true
+) {
+	const [ subCommand, subArguments ] = splitByFirstSpace( args );
+	const subCommandFunction = subModules[ subCommand.toLowerCase() ];
+	var error;
+
+	if ( subCommandFunction )
+		try {
+			subCommandFunction( message, subArguments );
+		} catch ( err ) {
+			error = err;
+		}
+	else if ( noMain )
+		message.reply( `Not a recocnised subcommand: ${ subCommand }` );
+
+	return [
+		subCommand,
+		subArguments,
+		subCommandFunction,
+		error
+	];
+}
+
 type TCommandFunction = ( message: Message, args: string ) => void;
 
 export interface IApplicationWrapper {
@@ -92,6 +120,10 @@ export interface ICommandWrapper {
 
 interface ICommands {
 	[ keys: string ]: ICommandWrapper;
+}
+
+export interface ISubCommands {
+	[ keys: string ]: TCommandFunction;
 }
 
 type TPermisson = 'all' | 'master' | 'owner' | 'admin';
