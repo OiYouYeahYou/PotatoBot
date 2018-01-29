@@ -17,7 +17,7 @@ export function callCB( cb ) {
 
 /** Non operation */
 // tslint:disable-next-line:no-empty
-export function noop() {}
+export function noop() { }
 
 export function NOGO() {
 	var that = this;
@@ -110,7 +110,7 @@ export function splitByFirstSpace(
  * @param pfx
  * @param text
  */
-export function splitCommandString( pfx: string, text: string) {
+export function splitCommandString( pfx: string, text: string ) {
 	text = text.slice( pfx.length ).trim();
 
 	return splitByFirstSpace( text );
@@ -151,8 +151,8 @@ export function findVoiceChannel( guild: Guild, name: string ): VoiceChannel {
 	var channel = guild.channels.find( 'name', name );
 
 	if ( channel && channel instanceof VoiceChannel )
-	  return channel;
-  }
+		return channel;
+}
 
 /**
  * Sends a reply that self destructs
