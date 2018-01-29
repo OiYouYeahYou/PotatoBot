@@ -3,6 +3,7 @@ import { destructingReply } from "../util";
 import { IApplicationWrapper, subCommandHandler } from "../commands";
 import { findGuildConfig, GuildConfigModel, configLists } from "../mongoose/guild";
 import { isFeatureEnabled } from "../configManager";
+import { all } from "../discord/featureEnum";
 
 const subModules = {
 	new: subNew,
@@ -11,8 +12,8 @@ const subModules = {
 };
 
 const defaultConfig = {
-	commands: [ 'all' ],
-	features: [ 'all', ],
+	commands: [ all ],
+	features: [ all, ],
 };
 
 export const WrapperConfig: IApplicationWrapper = {
@@ -56,7 +57,7 @@ async function getEnabledList(
 		return Promise.resolve( 'No config available' );
 
 	const list = config[ key ];
-	const all = list.includes( 'all' );
+	const all = list.includes( all );
 
 	return Promise.resolve(
 		all
@@ -109,8 +110,8 @@ async function subNew( message: Message, args: string ) {
 	const settings = new GuildConfigModel( {
 		guildID,
 		defaultChannel,
-		commands: [ 'all' ],
-		features: [ 'all' ],
+		commands: [ all ],
+		features: [ all ],
 	} );
 
 	try {

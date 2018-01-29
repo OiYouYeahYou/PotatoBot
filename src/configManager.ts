@@ -1,6 +1,7 @@
 import { Guild, Snowflake } from "discord.js";
 import { findGuildConfig, configLists } from "./mongoose/guild";
 import { Document } from "mongoose";
+import { all } from "./discord/featureEnum";
 
 export async function isFeatureEnabled(
 	guild: Guild | Snowflake, feature: string
@@ -25,7 +26,7 @@ async function dbChcker(
 		return Promise.resolve( false )
 
 	const list: string[] = config[ thing ];
-	const containsItem = list.includes( 'all' ) || list.includes( item );
+	const containsItem = list.includes( all ) || list.includes( item );
 
 	return Promise.resolve( containsItem );
 }
