@@ -1,11 +1,13 @@
 // tslint:disable-next-line:no-var-requires
 require( 'source-map-support' ).install();
 
-import { Message } from 'discord.js';
+import { Message, GuildMember, Guild } from 'discord.js';
 import { prefix, prefixHelp } from '../constants';
 import { isPrefixed, somethingWentWrong } from '../util';
 import { runHelp, runCommand } from './commandRunner';
 import { everyoneResponse } from './features';
+import { getDefaultChannel, isFeatureEnabled } from '../configManager';
+import { announceEntry, announceExit } from './featureEnum';
 
 export const ready = () =>
 	console.log( 'Discord client is ready!' );
@@ -39,11 +41,36 @@ export async function messageRecived( message: Message ) {
 	}
 }
 
-export function guildMemberAdd( member ) {
-	member.guild.defaultChannel.send( `Welcome to the server, ${ member }!` );
+export function guildMemberAdd( member: GuildMember ) {
+	defaultChannelMessage(
+		member.guild,
+		`Welcome to the server, ${ member }!`,
+		announceEntry
+	);
 }
 
-export function guildMemberRemove( member ) {
-	member.guild.defaultChannel.send( `${ member } has left!` );
+export function guildMemberRemove( member: GuildMember ) {
+	defaultChannelMessage(
+		member.guild,
+		`${ member } has left!`,
+		announceExit
+	);
 }
 
+async function defaultChannelMessage(
+	guild: Guild,
+	message: string,
+	feature: string
+) {
+	const isEnabled = await isFeatureEnabled( guild, feature );
+
+	if ( !isEnabled )
+		return;
+
+	const channel = await getDefaultChannel( guild );
+
+	if ( !channel )
+		return;
+
+	channel.send( message );
+}
