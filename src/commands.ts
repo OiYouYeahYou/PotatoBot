@@ -73,7 +73,7 @@ function setCommmand( key: string, wrapper: ICommandWrapper ) {
 	commands[ key ] = wrapper;
 }
 
-export function subCommandHandler(
+export async function subCommandHandler(
 	message: Message,
 	subModules: ISubCommands,
 	args: string,
@@ -81,16 +81,16 @@ export function subCommandHandler(
 ) {
 	const [ subCommand, subArguments ] = splitByFirstSpace( args );
 	const subCommandFunction = subModules[ subCommand.toLowerCase() ];
-	var error;
+	let error;
 
 	if ( subCommandFunction )
 		try {
-			subCommandFunction( message, subArguments );
+			await subCommandFunction( message, subArguments );
 		} catch ( err ) {
 			error = err;
 		}
 	else if ( noMain )
-		message.reply( `Not a recocnised subcommand: ${ subCommand }` );
+		await message.reply( `Not a recocnised subcommand: ${ subCommand }` );
 
 	return [
 		subCommand,
@@ -100,7 +100,7 @@ export function subCommandHandler(
 	];
 }
 
-type TCommandFunction = ( message: Message, args: string ) => void;
+type TCommandFunction = ( message: Message, args: string ) => Promise<any>;
 
 export interface IApplicationWrapper {
 	func: TCommandFunction;

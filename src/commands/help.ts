@@ -8,12 +8,11 @@ export const WrapperHelp = {
 	usage: '<command>',
 };
 
-export function helpFunction( message: Message, command: string ) {
-	var commandWrapper = getCommandWrapper( command ),
-		embed = richEmbed();
+export async function helpFunction( message: Message, command: string ) {
+	const commandWrapper = getCommandWrapper( command );
+	const embed = richEmbed();
 
 	if ( !commandWrapper ) {
-		// TODO: Not a recognised command
 		embed
 			.setTitle( `Help : ${ command } is not recognised` )
 			.setDescription( 'Try using ;list to find your command' );
@@ -25,14 +24,14 @@ export function helpFunction( message: Message, command: string ) {
 			.addField( 'Purpose', commandWrapper.help );
 	}
 
-	message.channel.send( { embed } );
+	return message.channel.send( { embed } );
 }
 
 export const WrapperList = {
-	func: ( message: Message ) => {
-		var commandList = Object.keys( commands ).sort().join( '\n' );
-		message.channel.send( commandList );
-		message.channel.stopTyping( true );
+	func: async ( message: Message ) => {
+		const commandList = Object.keys( commands ).sort().join( '\n' );
+
+		return message.channel.send( commandList );
 	},
 	help: 'Provides a list of commands',
 };

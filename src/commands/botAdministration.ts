@@ -2,12 +2,15 @@ import { IApplicationWrapper } from "../commands";
 import { disconnect } from "../index";
 import { destructingReply } from "../util";
 import { exec } from "child_process";
+import { Message } from "discord.js";
 
 export const WrapperKill: IApplicationWrapper = {
-	func: async ( message ) => {
-		console.log( 'destroying' );
+	func: async ( message: Message ) => {
+		console.log( 'Shutting down by Discord command' );
+
 		await message.reply( 'MURRDERRRR!!!' )
 		await disconnect();
+
 		process.exit();
 	},
 	help: 'Destroys the message.',
@@ -16,7 +19,7 @@ export const WrapperKill: IApplicationWrapper = {
 };
 
 export const WrapperRestart: IApplicationWrapper = {
-	func: async ( message ) => {
+	func: async ( message:Message ) => {
 		const { env: { restartCommand } } = process
 
 		if ( !restartCommand )
@@ -24,34 +27,29 @@ export const WrapperRestart: IApplicationWrapper = {
 				'This bot does not support restarting'
 			)
 
-		console.log( 'destroying' );
-		await message.reply( 'MURRDERRRR!!!' )
+		console.log( 'Restarting by Discord command' );
+
+		await message.reply( 'I\'ll be a new bot!!!' )
 		await disconnect();
 
-		exec( restartCommand, ( err, stdout, stderr ) => {
-			if ( err )
-				return destructingReply( message, 'Execution failed' );
-
-			console.log( `stdout: ${ stdout }` );
-			console.log( `stderr: ${ stderr }` );
-		} );
+		exec( restartCommand );
 	},
 	help: 'Destroys the message.',
 	permisson: 'master',
 };
 
 export const WrapperInvite = {
-	func: ( message ) => {
-		message.client.generateInvite().then(
-			link => message.channel.send( link )
-		);
+	func: async ( message ) => {
+		const invite = await message.client.generateInvite()
+		return message.channel.send( invite );
 	},
 	help: 'Provides a bot inviter link',
 };
 
 
 export const WrapperPing = {
-	func: ( message ) => { message.reply( 'pong' ); },
+	func: async ( message: Message ) =>
+		message.reply( 'pong' ),
 	help: 'Tests latency of the server',
 	aliases: [ 'pong' ],
 };

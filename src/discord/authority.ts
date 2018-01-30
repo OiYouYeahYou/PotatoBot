@@ -28,9 +28,9 @@ function isAdmin( message: Message ) {
 	return message.member.hasPermission( 'ADMINISTRATOR' );
 }
 
-export function unauthorised( message: Message, wrapper: ICommandWrapper ) {
-	message.reply(
+export async function unauthorised( message: Message, wrap: ICommandWrapper ) {
+	return message.reply(
 		`You are not autorised to use that command, `
-		+ `you must be a ${ wrapper.permisson }`
-	).then( () => message.channel.stopTyping( true ) );
+		+ `you must be a ${ wrap.permisson }`
+	);
 }

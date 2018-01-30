@@ -24,7 +24,7 @@ const DEFAULT_NAME = 'Room of requirement';
 const DEFAULT_ARGS: [ number, string ] = [ undefined, 'Room of requirement' ];
 const position = 200;
 
-function demandRoom( message: Message, args: string ): void {
+async function demandRoom( message: Message, args: string ) {
   if ( !message.member.voiceChannel )
     return destructingReply( message, 'You need to be in a Voice Channel' );
 
@@ -33,9 +33,8 @@ function demandRoom( message: Message, args: string ): void {
 
   var tempName = randomString( 15 );
 
-  message.guild.createChannel( tempName, 'voice' )
-    .then( () => newChannelHandler( message, tempName, args ) )
-    .catch( err => somethingWentWrong( message, err ) );
+  await message.guild.createChannel( tempName, 'voice' )
+  return newChannelHandler( message, tempName, args )
 }
 
 /**
@@ -45,30 +44,37 @@ function demandRoom( message: Message, args: string ): void {
  * @param userLimit User limit to be set to
  * @param name Name for channel to be set too
  */
-function newChannelHandler( message: Message, tmpName: string, args: string ): void {
-  var channel: VoiceChannel = findVoiceChannel( message.guild, tmpName );
+async function newChannelHandler(
+  message: Message,
+  tmpName: string,
+  args: string
+) {
+  const { guild, member } = message;
+  const channel: VoiceChannel = findVoiceChannel( guild, tmpName );
 
   if ( !channel ) {
-    safeDelete( message );
+    await safeDelete( message );
 
     return destructingReply( message, 'Channel can not be found, try again' );
   }
 
-  var [ userLimit, name ] = processArgs( args );
-  var parentChannel = message.guild.afkChannel.parent;
-  var parent = parentChannel ? parentChannel.id : undefined;
-  var reason = 'Setting up Temporary Channel';
-  var config = { name, userLimit, parent, position };
+  const [ userLimit, name ] = processArgs( args );
+  const parentChannel = guild.afkChannel.parent;
+  const parent = parentChannel ? parentChannel.id : undefined;
+  const reason = 'Setting up Temporary Channel';
+  const config = { name, userLimit, parent, position };
 
-  channel.edit( config, reason )
-    .then( () => message.member.setVoiceChannel( channel.id ) )
-    .then( () => initIntervalChecker( message, channel ) )
-    .then( () => destructingReply( message, 'Done' ) )
-    .catch( err => {
-      channel.delete()
-        .then( () => somethingWentWrong( message, err ) )
-        .catch( () => destructingReply( message, 'Something went really wrong after trying to tidy up after an error' ) );
-    } );
+  try {
+    await channel.edit( config, reason )
+    await member.setVoiceChannel( channel.id )
+    initIntervalChecker( message, channel )
+    await destructingReply( message, 'Done' )
+  } catch ( error ) {
+    await channel.delete()
+    await somethingWentWrong( message, error )
+  }
+
+  return Promise.resolve();
 }
 
 /**
@@ -99,16 +105,19 @@ function processArgs( args: string ): [ number, string ] {
  * @param channel
  */
 function initIntervalChecker( message: Message, channel: VoiceChannel ): void {
-  var interval = message.client.setInterval( () => {
+  const interval = message.client.setInterval( async () => {
     if ( message.member.voiceChannelID === channel.id )
       return;
 
     message.client.clearInterval( interval );
 
-    safeDelete( message );
+    await safeDelete( message );
 
-    channel.delete()
-      .then( () => destructingReply( message, 'Channel is deleted' ) )
-      .catch( () => destructingReply( message, 'Channel can\'t be deleted' ) );
+    try {
+      await channel.delete()
+      await destructingReply( message, 'Channel is deleted' )
+    } catch ( error ) {
+      await destructingReply( message, 'Channel can\'t be deleted' )
+    }
   }, TEN );
 }

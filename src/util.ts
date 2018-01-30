@@ -1,4 +1,5 @@
 import { Guild, Message, VoiceChannel, Snowflake } from "discord.js";
+import { client } from "./discord/client";
 
 export const TEN = 10 * 1000;
 
@@ -137,9 +138,9 @@ interface IDeletable {
 	delete: () => Promise<any>;
 }
 
-export function safeDelete( message: IDeletable ): void {
-	if ( message.deletable )
-		message.delete().catch( noop );
+export async function safeDelete( entity: IDeletable ): Promise<any> {
+	if ( entity.deletable )
+		return entity.delete();
 }
 
 /**
@@ -159,12 +160,20 @@ export function findVoiceChannel( guild: Guild, name: string ): VoiceChannel {
  * @param message
  * @param text
  */
-export function destructingReply( message: Message, text: string ): void {
-	message.reply( text )
-		.then( ( msg: Message ) =>
-			message.client.setTimeout( () => msg.delete(), TEN )
-		)
-		.catch( noop );
+export async function destructingReply( message: Message, text: string ) {
+	const msg = await message.reply( text )
+
+	await timer( TEN );
+
+	try {
+		if ( msg instanceof Message )
+			await msg.delete();
+		else
+			for ( const msgItem of msg )
+				await msgItem.delete();
+	} catch ( error ) {
+		console.error( error )
+	}
 }
 
 /**
@@ -172,16 +181,22 @@ export function destructingReply( message: Message, text: string ): void {
  * @param message
  * @param err
  */
-export function somethingWentWrong( message: Message, err: any ) {
-	var id = randomString( 6 );
+export async function somethingWentWrong( message: Message, err: any ) {
+	const id = randomString( 6 );
 
 	if ( err instanceof Error )
 		err.message += ` (Event: ${ id })`;
 
-	message.reply( `Something went wrong (Event: ${ id })` );
 	console.log( err );
+	return message.reply( `Something went wrong (Event: ${ id })` );
 }
 
 export function guildIDNormaliser( guild: Guild | Snowflake ): number {
 	return Number( guild instanceof Guild ? guild.id : guild );
+}
+
+export async function timer( time: number ) {
+	return new Promise( ( resolve, reject ) =>
+		client.setTimeout( () => resolve(), time )
+	);
 }

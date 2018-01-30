@@ -3,7 +3,7 @@ require( 'source-map-support' ).install();
 
 import { Message } from 'discord.js';
 import { prefix, prefixHelp } from '../constants';
-import { isPrefixed } from '../util';
+import { isPrefixed, somethingWentWrong } from '../util';
 import { runHelp, runCommand } from './commandRunner';
 import { everyoneResponse } from './features';
 
@@ -21,18 +21,22 @@ export function error( err ) {
 	console.error( err );
 }
 
-export function messageRecived( message: Message ) {
+export async function messageRecived( message: Message ) {
 	var text = message.content.trim();
 
 	if ( message.author.bot )
 		return;
 
-	if ( isPrefixed( prefixHelp, text ) )
-		runHelp( message, text );
-	else if ( isPrefixed( prefix, text ) )
-		runCommand( message, text );
-	else if ( message.mentions.everyone )
-		everyoneResponse( message );
+	try {
+		if ( isPrefixed( prefixHelp, text ) )
+			await runHelp( message, text );
+		else if ( isPrefixed( prefix, text ) )
+			await runCommand( message, text );
+		else if ( message.mentions.everyone )
+			await everyoneResponse( message );
+	} catch ( error ) {
+		await somethingWentWrong( message, error );
+	}
 }
 
 export function guildMemberAdd( member ) {

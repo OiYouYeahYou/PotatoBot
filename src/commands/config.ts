@@ -17,8 +17,8 @@ const defaultConfig = {
 };
 
 export const WrapperConfig: IApplicationWrapper = {
-	func: ( message: Message, args: string ) => {
-		subCommandHandler( message, subModules, args )
+	func: async ( message: Message, args: string ) => {
+		return subCommandHandler( message, subModules, args );
 	},
 	help: 'Sets configuration preferences',
 	permisson: 'master',
@@ -26,11 +26,11 @@ export const WrapperConfig: IApplicationWrapper = {
 };
 
 async function subEnabledFeatures( message: Message, args: string ) {
-	enabledAggreator( message, args, 'features' )
+	return enabledAggreator( message, args, 'features' )
 }
 
 async function subEnabledcommands( message: Message, args: string ) {
-	enabledAggreator( message, args, 'commands' )
+	return enabledAggreator( message, args, 'commands' )
 }
 
 async function enabledAggreator(
@@ -40,7 +40,7 @@ async function enabledAggreator(
 ) {
 	const { guild } = message;
 
-	await message.reply(
+	return message.reply(
 		args
 			? await checkEnabledList( guild, key, args )
 			: await getEnabledList( guild, key )
@@ -57,10 +57,10 @@ async function getEnabledList(
 		return Promise.resolve( 'No config available' );
 
 	const list = config[ key ];
-	const all = list.includes( all );
+	const isAll = list.includes( all );
 
 	return Promise.resolve(
-		all
+		isAll
 			? `All ${ key } are enabled`
 			: `Enabled: ${ list.join( ', ' ) }`
 	);
@@ -122,4 +122,3 @@ async function subNew( message: Message, args: string ) {
 
 	return message.reply( 'Saved' );
 }
-

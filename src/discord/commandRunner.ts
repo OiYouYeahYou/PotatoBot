@@ -4,46 +4,46 @@ import { helpFunction, ICommandWrapper, getCommandWrapper } from "../commands";
 import { splitCommandString } from "../util";
 import { hasAuthorityForCommand, unauthorised } from "./authority";
 
-export function runCommand( message: Message, text: string ) {
+export async function runCommand( message: Message, text: string ) {
 	message.channel.startTyping( 1 );
 
-	const [ command, args, wrapper ] = aggregator( message, prefix, text );
+	const [ command, args, wrapper ] = await aggregator( message, prefix, text );
 
 	if ( !wrapper )
 		return message.channel.stopTyping( true );
 
 	if ( !hasAuthorityForCommand( message, wrapper ) )
-		return unauthorised( message, wrapper );
+		await unauthorised( message, wrapper );
+	else
+		try {
+			await wrapper.function( message, args );
+		} catch ( error ) {
+			const failMessage = `Trying to run \`${ command }\` has failed`
 
-	try {
-		wrapper.function( message, args );
-	} catch ( error ) {
-		const failMessage = `Trying to run \`${ command }\` has failed`
-
-		message.reply( failMessage );
-		console.error( failMessage );
-		console.error( error );
-	}
-
-	message.channel.stopTyping();
-}
-
-export function runHelp(  message: Message, text: string ) {
-	message.channel.startTyping( 1 );
-
-	const [ command, args, wrapper ] = aggregator( message, prefixHelp, text );
-
-	if ( wrapper )
-		helpFunction( message, command );
+			await message.reply( failMessage );
+			console.error( failMessage );
+			console.error( error );
+		}
 
 	message.channel.stopTyping( true );
 }
 
-function aggregator(
+export async function runHelp(  message: Message, text: string ) {
+	message.channel.startTyping( 1 );
+
+	const [ command, args, wrapper ] = await aggregator( message, prefixHelp, text );
+
+	if ( wrapper )
+		await helpFunction( message, command );
+
+	message.channel.stopTyping( true );
+}
+
+async function aggregator(
 	message: Message,
 	pfx: string,
 	text: string
-): [ string, string, false | ICommandWrapper ] {
+): Promise<[ string, string, false | ICommandWrapper ]> {
 	const [ command, args ] = splitCommandString( pfx, text );
 
 	if ( !command )
@@ -52,7 +52,7 @@ function aggregator(
 	const wrapper = getCommandWrapper( command );
 
 	if ( !wrapper )
-		message.reply( `Cannot find \`${ command }\`` );
+		await message.reply( `Cannot find \`${ command }\`` );
 
-	return [ command, args, wrapper ]
+	return [ command, args, wrapper ];
 }

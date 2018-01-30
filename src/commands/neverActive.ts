@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
 
-export function never( message: Message, args: string ) {
+export async function never( message: Message, args: string ) {
 	var { guild } = message;
 	var { members } = guild;
 
@@ -8,7 +8,7 @@ export function never( message: Message, args: string ) {
 		member => member.lastMessage ? false : true
 	);
 
-	message.reply( inactive.length );
+	return message.reply( inactive.length );
 }
 
 export const WrapperNever = {
