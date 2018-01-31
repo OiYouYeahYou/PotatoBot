@@ -21,7 +21,7 @@ export const WrapperConfig: IApplicationWrapper = {
 		return subCommandHandler( message, subModules, args );
 	},
 	help: 'Sets configuration preferences',
-	permisson: 'master',
+	permission: 'master',
 	aliases: [ 'cfg' ],
 };
 

@@ -15,7 +15,7 @@ export const WrapperKill: IApplicationWrapper = {
 	},
 	help: 'Destroys the message.',
 	aliases: [ 'kys', ],
-	permisson: 'master',
+	permission: 'master',
 };
 
 export const WrapperRestart: IApplicationWrapper = {
@@ -35,7 +35,7 @@ export const WrapperRestart: IApplicationWrapper = {
 		exec( restartCommand );
 	},
 	help: 'Destroys the message.',
-	permisson: 'master',
+	permission: 'master',
 };
 
 export const WrapperInvite = {

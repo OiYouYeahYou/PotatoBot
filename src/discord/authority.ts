@@ -2,15 +2,15 @@ import { Message } from "discord.js";
 import { ICommandWrapper } from "../commands";
 
 export function hasAuthorityForCommand( message: Message, wrapper: ICommandWrapper ) {
-	var { permisson } = wrapper;
+	var { permission } = wrapper;
 
-	if ( permisson === 'all' )
+	if ( permission === 'all' )
 		return true;
-	else if ( permisson === 'master' )
+	else if ( permission === 'master' )
 		return isMaster( message );
-	else if ( permisson === 'owner' )
+	else if ( permission === 'owner' )
 		return isOwner( message ) || isMaster( message );
-	else if ( permisson === 'admin' )
+	else if ( permission === 'admin' )
 		return isAdmin( message );
 
 	return false;
@@ -31,6 +31,6 @@ function isAdmin( message: Message ) {
 export async function unauthorised( message: Message, wrap: ICommandWrapper ) {
 	return message.reply(
 		`You are not autorised to use that command, `
-		+ `you must be a ${ wrap.permisson }`
+		+ `you must be a ${ wrap.permission }`
 	);
 }
