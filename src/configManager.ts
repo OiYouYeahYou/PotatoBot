@@ -38,7 +38,9 @@ export async function getDefaultChannel( guild: Guild ): Promise<TextChannel> {
 		return;
 
 	const { defaultChannel } = config;
-	const channel = guild.channels.find( 'id', defaultChannel );
+	const channel = guild.channels.find(
+		ch => ch.id === String( defaultChannel )
+	);
 
 	if ( channel && channel instanceof TextChannel )
 		return channel;
