@@ -3,8 +3,9 @@ import { destructingReply } from "../util";
 import { exec } from "child_process";
 import { Message } from "discord.js";
 import { IApplicationWrapper } from "../commandList";
+import { list } from "../commands";
 
-export const WrapperKill: IApplicationWrapper = {
+list.Command( 'kill', {
 	func: async ( message: Message ) => {
 		console.log( 'Shutting down by Discord command' );
 
@@ -16,10 +17,10 @@ export const WrapperKill: IApplicationWrapper = {
 	help: 'Destroys the message.',
 	aliases: [ 'kys', ],
 	permission: 'master',
-};
+} );
 
-export const WrapperRestart: IApplicationWrapper = {
-	func: async ( message:Message ) => {
+list.Command( 'restart', {
+	func: async ( message: Message ) => {
 		const { env: { restartCommand } } = process
 
 		if ( !restartCommand )
@@ -36,20 +37,20 @@ export const WrapperRestart: IApplicationWrapper = {
 	},
 	help: 'Destroys the message.',
 	permission: 'master',
-};
+} );
 
-export const WrapperInvite = {
+list.Command( 'invite', {
 	func: async ( message ) => {
 		const invite = await message.client.generateInvite()
 		return message.channel.send( invite );
 	},
 	help: 'Provides a bot inviter link',
-};
+} );
 
 
-export const WrapperPing = {
+list.Command( 'ping', {
 	func: async ( message: Message ) =>
 		message.reply( 'pong' ),
 	help: 'Tests latency of the server',
 	aliases: [ 'pong' ],
-};
+} );

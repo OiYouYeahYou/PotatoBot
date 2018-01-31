@@ -1,4 +1,5 @@
 import { Message } from 'discord.js';
+import { list } from '../commands';
 
 export async function never( message: Message, args: string ) {
 	var { guild } = message;
@@ -11,7 +12,7 @@ export async function never( message: Message, args: string ) {
 	return message.reply( inactive.length );
 }
 
-export const WrapperNever = {
+list.Command( 'never', {
 	func: never,
 	help: 'Displays the number of people who have not sent a message',
-};
+} );

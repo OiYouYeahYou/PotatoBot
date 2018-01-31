@@ -1,6 +1,6 @@
 import { Message, Guild as TGuild } from "discord.js";
 import { destructingReply } from "../util";
-import { subCommandHandler } from "../commands";
+import { subCommandHandler, list } from "../commands";
 import { findGuildConfig, GuildConfigModel, configLists } from "../mongoose/guild";
 import { isFeatureEnabled } from "../configManager";
 import { all } from "../discord/featureEnum";
@@ -17,14 +17,14 @@ const defaultConfig = {
 	features: [ all, ],
 };
 
-export const WrapperConfig: IApplicationWrapper = {
+list.Command( 'config', {
 	func: async ( message: Message, args: string ) => {
 		return subCommandHandler( message, subModules, args );
 	},
 	help: 'Sets configuration preferences',
 	permission: 'master',
 	aliases: [ 'cfg' ],
-};
+} );
 
 async function subEnabledFeatures( message: Message, args: string ) {
 	return enabledAggreator( message, args, 'features' )
@@ -117,7 +117,7 @@ async function subNew( message: Message, args: string ) {
 
 	try {
 		await settings.save();
-	} catch (error) {
+	} catch ( error ) {
 		return message.reply( 'Failed to save' );
 	}
 

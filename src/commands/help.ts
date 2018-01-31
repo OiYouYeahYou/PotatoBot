@@ -2,11 +2,11 @@ import { Message } from "discord.js";
 import { list } from "../commands";
 import { richEmbed } from "../discord/embed";
 
-export const WrapperHelp = {
+list.Command( 'help', {
 	func: helpFunction,
 	help: 'Provides information about a command',
 	usage: '<command>',
-};
+} );
 
 export async function helpFunction( message: Message, command: string ) {
 	const commandWrapper = list.getCommandWrapper( command );
@@ -27,11 +27,11 @@ export async function helpFunction( message: Message, command: string ) {
 	return message.channel.send( { embed } );
 }
 
-export const WrapperList = {
+list.Command( 'list', {
 	func: async ( message: Message ) => {
 		const commandList = Object.keys( list.list ).sort().join( '\n' );
 
 		return message.channel.send( commandList );
 	},
 	help: 'Provides a list of commands',
-};
+} );

@@ -1,32 +1,9 @@
 import { Message } from "discord.js";
-import { splitByFirstSpace } from './util';
-import { List, FRegister } from './commandList';
-
-import { WrapperCode, WrapperJS, WrapperRuby } from './commands/code';
-import { WrapperDemand } from './commands/demand';
-import { WrapperHelp, WrapperList } from './commands/help';
-import { WrapperNever } from "./commands/neverActive";
-import { WrapperRude } from './commands/humour';
-import { WrapperPing, WrapperKill, WrapperInvite, WrapperRestart } from './commands/botAdministration';
-import { WrapperAvatar } from './commands/generic';
-import { WrapperConfig } from './commands/config';
+import { splitByFirstSpace, requireInFile } from './util';
+import { List } from './commandList';
 
 export const list = new List
-
-list.Command( 'help', WrapperHelp );
-list.Command( 'ping', WrapperPing );
-list.Command( 'avatar', WrapperAvatar );
-list.Command( 'kill', WrapperKill );
-list.Command( 'restart', WrapperRestart );
-list.Command( 'list', WrapperList );
-list.Command( 'invite', WrapperInvite );
-list.Command( 'shutup', WrapperRude );
-list.Command( 'never', WrapperNever );
-list.Command( 'code', WrapperCode );
-list.Command( 'js', WrapperJS );
-list.Command( 'ruby', WrapperRuby );
-list.Command( 'demand', WrapperDemand );
-list.Command( 'config', WrapperConfig );
+requireInFile( 'commands' );
 
 export async function subCommandHandler(
 	message: Message,

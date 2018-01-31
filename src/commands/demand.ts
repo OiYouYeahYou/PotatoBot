@@ -8,13 +8,14 @@ import {
   splitByFirstSpace,
   TEN
 } from "../util";
+import { list } from "../commands";
 
-export const WrapperDemand = {
+list.Command( 'demand', {
   func: demandRoom,
   help: 'Creates a \'Room of Requirement\'',
   usage: '[limit] [name]',
   // disabled: true,
-};
+} );
 
 const REQUIRED_PERMISSONS: PermissionResolvable[] = [
   'MANAGE_CHANNELS', 'MOVE_MEMBERS'
