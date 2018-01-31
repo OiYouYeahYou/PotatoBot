@@ -1,9 +1,10 @@
 import { Message, Guild as TGuild } from "discord.js";
 import { destructingReply } from "../util";
-import { IApplicationWrapper, subCommandHandler } from "../commands";
+import { subCommandHandler } from "../commands";
 import { findGuildConfig, GuildConfigModel, configLists } from "../mongoose/guild";
 import { isFeatureEnabled } from "../configManager";
 import { all } from "../discord/featureEnum";
+import { IApplicationWrapper } from "../commandList";
 
 const subModules = {
 	new: subNew,

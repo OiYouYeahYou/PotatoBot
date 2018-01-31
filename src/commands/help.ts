@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
-import { getCommandWrapper, commands } from "../commands";
+import { list } from "../commands";
 import { richEmbed } from "../discord/embed";
 
 export const WrapperHelp = {
@@ -9,7 +9,7 @@ export const WrapperHelp = {
 };
 
 export async function helpFunction( message: Message, command: string ) {
-	const commandWrapper = getCommandWrapper( command );
+	const commandWrapper = list.getCommandWrapper( command );
 	const embed = richEmbed();
 
 	if ( !commandWrapper ) {
@@ -29,7 +29,7 @@ export async function helpFunction( message: Message, command: string ) {
 
 export const WrapperList = {
 	func: async ( message: Message ) => {
-		const commandList = Object.keys( commands ).sort().join( '\n' );
+		const commandList = Object.keys( list.list ).sort().join( '\n' );
 
 		return message.channel.send( commandList );
 	},

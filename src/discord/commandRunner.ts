@@ -1,8 +1,10 @@
 import { Message } from "discord.js";
 import { prefix, prefixHelp } from "../constants";
-import { helpFunction, ICommandWrapper, getCommandWrapper } from "../commands";
+import { list } from "../commands";
 import { splitCommandString } from "../util";
 import { hasAuthorityForCommand, unauthorised } from "./authority";
+import { ICommand } from "../commandList";
+import { helpFunction } from "../commands/help";
 
 export async function runCommand( message: Message, text: string ) {
 	message.channel.startTyping( 1 );
@@ -16,7 +18,7 @@ export async function runCommand( message: Message, text: string ) {
 		await unauthorised( message, wrapper );
 	else
 		try {
-			await wrapper.function( message, args );
+			await wrapper.func( message, args );
 		} catch ( error ) {
 			const failMessage = `Trying to run \`${ command }\` has failed`
 
@@ -43,13 +45,13 @@ async function aggregator(
 	message: Message,
 	pfx: string,
 	text: string
-): Promise<[ string, string, false | ICommandWrapper ]> {
+): Promise<[ string, string, false | ICommand ]> {
 	const [ command, args ] = splitCommandString( pfx, text );
 
 	if ( !command )
 		return [ command, args, false ];
 
-	const wrapper = getCommandWrapper( command );
+	const wrapper = list.getCommandWrapper( command );
 
 	if ( !wrapper )
 		await message.reply( `Cannot find \`${ command }\`` );

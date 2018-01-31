@@ -1,5 +1,4 @@
 import { Message, PermissionResolvable, VoiceChannel } from "discord.js";
-import { IApplicationWrapper } from "../commands";
 import {
   destructingReply,
   findVoiceChannel,
@@ -10,7 +9,7 @@ import {
   TEN
 } from "../util";
 
-export const WrapperDemand: IApplicationWrapper = {
+export const WrapperDemand = {
   func: demandRoom,
   help: 'Creates a \'Room of Requirement\'',
   usage: '[limit] [name]',

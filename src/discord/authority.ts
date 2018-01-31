@@ -1,7 +1,7 @@
 import { Message } from "discord.js";
-import { ICommandWrapper } from "../commands";
+import { ICommand } from "../commandList";
 
-export function hasAuthorityForCommand( message: Message, wrapper: ICommandWrapper ) {
+export function hasAuthorityForCommand( message: Message, wrapper: ICommand ) {
 	var { permission } = wrapper;
 
 	if ( permission === 'all' )
@@ -28,7 +28,7 @@ function isAdmin( message: Message ) {
 	return message.member.hasPermission( 'ADMINISTRATOR' );
 }
 
-export async function unauthorised( message: Message, wrap: ICommandWrapper ) {
+export async function unauthorised( message: Message, wrap: ICommand ) {
 	return message.reply(
 		`You are not autorised to use that command, `
 		+ `you must be a ${ wrap.permission }`

@@ -1,8 +1,8 @@
-import { IApplicationWrapper } from "../commands";
 import { disconnect } from "../index";
 import { destructingReply } from "../util";
 import { exec } from "child_process";
 import { Message } from "discord.js";
+import { IApplicationWrapper } from "../commandList";
 
 export const WrapperKill: IApplicationWrapper = {
 	func: async ( message: Message ) => {
