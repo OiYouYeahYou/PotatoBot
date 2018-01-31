@@ -80,12 +80,13 @@ export async function subCommandHandler(
 	noMain: boolean = true
 ) {
 	const [ subCommand, subArguments ] = splitByFirstSpace( args );
-	const subCommandFunction = subModules[ subCommand.toLowerCase() ];
-	let error;
+	let error, result;
+	const subCommandFunction =
+		subCommand && subModules[ subCommand.toLowerCase() ];
 
 	if ( subCommandFunction )
 		try {
-			await subCommandFunction( message, subArguments );
+			result = await subCommandFunction( message, subArguments );
 		} catch ( err ) {
 			error = err;
 		}
@@ -96,6 +97,7 @@ export async function subCommandHandler(
 		subCommand,
 		subArguments,
 		subCommandFunction,
+		result,
 		error
 	];
 }

@@ -90,7 +90,7 @@ export function setEnv() {
  */
 export function splitByFirstSpace(
 	text: string
-): [ string, string | undefined ] {
+): [ string | undefined, string | undefined ] {
 	if ( !text )
 		return [ undefined, undefined ];
 
