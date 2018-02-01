@@ -89,11 +89,9 @@ export function setEnv() {
  * Splits string into an array containg first word and remaining string
  * @param text
  */
-export function splitByFirstSpace(
-	text: string
-): [ string | undefined, string | undefined ] {
+export function splitByFirstSpace( text: string ): [ string, string ] {
 	if ( !text )
-		return [ undefined, undefined ];
+		return [ '', '' ];
 
 	text = text.trim();
 
@@ -102,7 +100,7 @@ export function splitByFirstSpace(
 	var a = text.slice( 0, indexOfFirstSpace ).trim();
 	var b = indexOfFirstSpace
 		? text.slice( indexOfFirstSpace ).trim()
-		: undefined;
+		: '';
 
 	return [ a, b ];
 }
