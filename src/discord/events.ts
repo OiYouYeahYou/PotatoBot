@@ -2,9 +2,9 @@
 require( 'source-map-support' ).install();
 
 import { Message, GuildMember, Guild } from 'discord.js';
-import { prefix, prefixHelp } from '../constants';
 import { isPrefixed, somethingWentWrong } from '../util';
 import { runHelp, runCommand } from './commandRunner';
+import { prefix } from '../constants';
 import { everyoneResponse } from './features';
 import { getDefaultChannel, isFeatureEnabled } from '../configManager';
 import { announceEntry, announceExit } from './featureEnum';
@@ -30,9 +30,7 @@ export async function messageRecived( message: Message ) {
 		return;
 
 	try {
-		if ( isPrefixed( prefixHelp, text ) )
-			await runHelp( message, text );
-		else if ( isPrefixed( prefix, text ) )
+		if ( isPrefixed( prefix, text ) )
 			await runCommand( message, text );
 		else if ( message.mentions.everyone )
 			await everyoneResponse( message );
