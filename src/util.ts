@@ -43,11 +43,10 @@ export function NOGO() {
  * @param pfx prefix
  * @param str text
  */
-export function isPrefixed( pfx, str ) {
-	return (
-		typeof pfx === 'string' && pfx.length > 0 &&
-		typeof str === 'string' && str.startsWith( pfx )
-	);
+export function isPrefixed( pfx: string, str: string ) {
+	return str.length !== pfx.length
+		&& pfx.length > 0
+		&& str.startsWith( pfx );
 }
 
 /**
