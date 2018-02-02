@@ -1,8 +1,8 @@
-import { ICommand } from "../commandList";
 import { Message } from "discord.js";
+import Command from "./Command";
 
 export default class CommandRunner {
-	constructor( command: ICommand ) {
+	constructor( command: Command ) {
 		this.command = command
 
 		let runner;
@@ -17,7 +17,7 @@ export default class CommandRunner {
 		this.runner = runner
 	}
 
-	private command: ICommand
+	private command: Command
 	/** Runs code depending on on .func and .subCommands of parent Command */
 	public readonly runner: (
 		message: Message,
