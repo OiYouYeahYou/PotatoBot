@@ -1,5 +1,6 @@
 import { Message } from 'discord.js';
 import { prefix } from './constants';
+import CommandRunner from './classes/CommandRunner';
 
 export interface IApplicationWrapper {
 	func: FCommand
@@ -85,6 +86,8 @@ class Command {
 
 		if ( subCommands )
 			this.subCommands = subCommands
+
+		this.runner = new CommandRunner( this )
 	}
 
 	public readonly func: FCommand
@@ -95,4 +98,6 @@ class Command {
 	public readonly help: string
 	public readonly usage: string
 	public readonly aliases: string
+
+	readonly runner: CommandRunner
 }
