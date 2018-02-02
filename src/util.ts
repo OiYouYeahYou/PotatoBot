@@ -211,6 +211,11 @@ export function requireInFile( dir: string, ignoreIndex: boolean = true ) {
 			require( join( normalizedPath, f ) );
 }
 
+/** Removes a prefix from the start of a string */
+export function removePrefix( pfx: string, text: string ) {
+	return text.slice( pfx.length ).trim();
+}
+
 /**
  * Splits command string form rest  of text and lowercases the command
  * @param text
