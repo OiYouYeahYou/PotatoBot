@@ -1,11 +1,8 @@
-import { Message } from 'discord.js';
-import { prefix } from './constants';
-import ListRunner from './classes/ListRunner';
-import CommandRunner from './classes/CommandRunner';
-import Command from './classes/Command';
-import { IApplicationWrapper } from './classes/Command';
+import ListRunner from "./ListRunner";
+import Command from "./Command";
+import { IApplicationWrapper } from "./Command";
 
-export class List {
+export default class List {
 	constructor() {
 		this.runner = new ListRunner( this )
 	}

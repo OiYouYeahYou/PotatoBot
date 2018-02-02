@@ -1,6 +1,6 @@
 import CommandRunner from "./CommandRunner";
 import { Message } from "discord.js";
-import { List } from "../commandList";
+import List from "../classes/List";
 import { prefix } from "../constants";
 
 export interface IApplicationWrapper {

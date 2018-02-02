@@ -4,7 +4,7 @@ import { list } from "../commands";
 import { findGuildConfig, GuildConfigModel, configLists } from "../mongoose/guild";
 import { isFeatureEnabled } from "../configManager";
 import { all } from "../discord/featureEnum";
-import { List } from "../commandList";
+import List from "../classes/List";
 
 const command = list.addCommand( 'config', {
 	help: 'Sets configuration preferences',

@@ -1,4 +1,4 @@
-import { List } from "../commandList";
+import List from "../classes/List";
 import { Message } from "discord.js";
 import { processCommandString } from "../util";
 import { hasAuthorityForCommand, unauthorised } from "../discord/authority";

@@ -2,7 +2,7 @@ import { disconnect } from "../index";
 import { destructingReply } from "../util";
 import { exec } from "child_process";
 import { Message } from "discord.js";
-import { List } from "../commandList";
+import List from "../classes/List";
 import { list } from "../commands";
 
 const command = list.addCommand( 'bot', {
