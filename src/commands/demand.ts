@@ -10,7 +10,7 @@ import {
 } from "../util";
 import { list } from "../commands";
 
-list.Command( 'demand', {
+list.addCommand( 'demand', {
   func: demandRoom,
   help: 'Creates a \'Room of Requirement\'',
   usage: '[limit] [name]',

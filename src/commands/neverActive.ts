@@ -12,7 +12,7 @@ export async function never( message: Message, args: string ) {
 	return message.reply( inactive.length );
 }
 
-list.Command( 'never', {
+list.addCommand( 'never', {
 	func: never,
 	help: 'Displays the number of people who have not sent a message',
 } );

@@ -3,7 +3,7 @@ import { list } from "../commands";
 import { richEmbed } from "../discord/embed";
 import { ICommand } from "../commandList";
 
-list.Command( 'help', {
+list.addCommand( 'help', {
 	func: helpFunction,
 	help: 'Provides information about a command',
 	usage: '<command>',
@@ -31,7 +31,7 @@ export async function helpFunction( message: Message, text: string ) {
 	}
 }
 
-list.Command( 'list', {
+list.addCommand( 'list', {
 	func: async ( message: Message ) => {
 		const commandList = Object.keys( list.list ).sort().join( '\n' );
 

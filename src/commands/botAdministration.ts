@@ -5,7 +5,7 @@ import { Message } from "discord.js";
 import { IApplicationWrapper } from "../commandList";
 import { list } from "../commands";
 
-list.Command( 'kill', {
+list.addCommand( 'kill', {
 	func: async ( message: Message ) => {
 		console.log( 'Shutting down by Discord command' );
 
@@ -19,7 +19,7 @@ list.Command( 'kill', {
 	permission: 'master',
 } );
 
-list.Command( 'restart', {
+list.addCommand( 'restart', {
 	func: async ( message: Message ) => {
 		const { env: { restartCommand } } = process
 
@@ -39,7 +39,7 @@ list.Command( 'restart', {
 	permission: 'master',
 } );
 
-list.Command( 'invite', {
+list.addCommand( 'invite', {
 	func: async ( message ) => {
 		const invite = await message.client.generateInvite()
 		return message.channel.send( invite );
@@ -48,7 +48,7 @@ list.Command( 'invite', {
 } );
 
 
-list.Command( 'ping', {
+list.addCommand( 'ping', {
 	func: async ( message: Message ) =>
 		message.reply( 'pong' ),
 	help: 'Tests latency of the server',

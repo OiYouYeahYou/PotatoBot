@@ -29,7 +29,7 @@ export class List {
 	readonly runner: ListRunner
 
 	/** Creates a new class that is registered with list */
-	Command( key: string, input: IApplicationWrapper ) {
+	addCommand( key: string, input: IApplicationWrapper ) {
 		if ( input.disabled )
 			return
 

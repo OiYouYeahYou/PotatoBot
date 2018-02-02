@@ -6,24 +6,24 @@ import { isFeatureEnabled } from "../configManager";
 import { all } from "../discord/featureEnum";
 import { List } from "../commandList";
 
-const command = list.Command( 'config', {
+const command = list.addCommand( 'config', {
 	help: 'Sets configuration preferences',
 	permission: 'master',
 	aliases: [ 'cfg' ],
 	subCommands: new List,
 } );
 
-command.subCommands.Command( 'new', {
+command.subCommands.addCommand( 'new', {
 	func: subNew,
 	help: 'Creates a new config for a Guild',
 } );
 
-command.subCommands.Command( 'features', {
+command.subCommands.addCommand( 'features', {
 	func: subEnabledFeatures,
 	help: 'Returns enabled features,  or Checks if features are enabled',
 } );
 
-command.subCommands.Command( 'commands', {
+command.subCommands.addCommand( 'commands', {
 	func: subEnabledcommands,
 	help: 'Returns enabled commands,  or Checks if commands are enabled',
 } )
