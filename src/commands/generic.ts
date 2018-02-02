@@ -7,3 +7,10 @@ list.addCommand( 'avatar', {
 		await message.reply( message.author.avatarURL ),
 	help: 'Returns the users avatar',
 } );
+
+list.addCommand( 'ping', {
+	func: async ( message: Message ) =>
+		message.reply( 'pong' ),
+	help: 'Tests latency of the server',
+	aliases: [ 'pong' ],
+} );

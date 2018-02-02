@@ -46,11 +46,3 @@ list.addCommand( 'invite', {
 	},
 	help: 'Provides a bot inviter link',
 } );
-
-
-list.addCommand( 'ping', {
-	func: async ( message: Message ) =>
-		message.reply( 'pong' ),
-	help: 'Tests latency of the server',
-	aliases: [ 'pong' ],
-} );
