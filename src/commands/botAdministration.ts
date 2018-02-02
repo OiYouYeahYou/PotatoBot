@@ -2,10 +2,18 @@ import { disconnect } from "../index";
 import { destructingReply } from "../util";
 import { exec } from "child_process";
 import { Message } from "discord.js";
-import { IApplicationWrapper } from "../commandList";
+import { IApplicationWrapper, List } from "../commandList";
 import { list } from "../commands";
 
-list.addCommand( 'kill', {
+const command = list.addCommand( 'bot', {
+	help: 'Set of owner level commands to help administrate the bot',
+	subCommands: new List,
+	permission: 'owner',
+} );
+
+const sub = command.subCommands;
+
+sub.addCommand( 'kill', {
 	func: async ( message: Message ) => {
 		console.log( 'Shutting down by Discord command' );
 
@@ -19,7 +27,7 @@ list.addCommand( 'kill', {
 	permission: 'master',
 } );
 
-list.addCommand( 'restart', {
+sub.addCommand( 'restart', {
 	func: async ( message: Message ) => {
 		const { env: { restartCommand } } = process
 
@@ -39,7 +47,7 @@ list.addCommand( 'restart', {
 	permission: 'master',
 } );
 
-list.addCommand( 'invite', {
+sub.addCommand( 'invite', {
 	func: async ( message ) => {
 		const invite = await message.client.generateInvite()
 		return message.channel.send( invite );
