@@ -1,30 +1,32 @@
 import { Message, Guild as TGuild } from "discord.js";
 import { destructingReply } from "../util";
-import { subCommandHandler, list } from "../commands";
+import { list } from "../commands";
 import { findGuildConfig, GuildConfigModel, configLists } from "../mongoose/guild";
 import { isFeatureEnabled } from "../configManager";
 import { all } from "../discord/featureEnum";
-import { IApplicationWrapper } from "../commandList";
+import { List } from "../commandList";
 
-const subModules = {
-	new: subNew,
-	features: subEnabledFeatures,
-	commands: subEnabledcommands,
-};
-
-const defaultConfig = {
-	commands: [ all ],
-	features: [ all, ],
-};
-
-list.Command( 'config', {
-	func: async ( message: Message, args: string ) => {
-		return subCommandHandler( message, subModules, args );
-	},
+const command = list.Command( 'config', {
 	help: 'Sets configuration preferences',
 	permission: 'master',
 	aliases: [ 'cfg' ],
+	subCommands: new List,
 } );
+
+command.subCommands.Command( 'new', {
+	func: subNew,
+	help: 'Creates a new config for a Guild',
+} );
+
+command.subCommands.Command( 'features', {
+	func: subEnabledFeatures,
+	help: 'Returns enabled features,  or Checks if features are enabled',
+} );
+
+command.subCommands.Command( 'commands', {
+	func: subEnabledcommands,
+	help: 'Returns enabled commands,  or Checks if commands are enabled',
+} )
 
 async function subEnabledFeatures( message: Message, args: string ) {
 	return enabledAggreator( message, args, 'features' )

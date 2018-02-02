@@ -4,7 +4,7 @@ import ListRunner from './classes/ListRunner';
 import CommandRunner from './classes/CommandRunner';
 
 export interface IApplicationWrapper {
-	func: FCommand
+	func?: FCommand
 	help: string
 	usage?: string
 	disabled?: boolean
