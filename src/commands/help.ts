@@ -1,6 +1,7 @@
 import { Message } from "discord.js";
 import { list } from "../commands";
 import { richEmbed } from "../discord/embed";
+import { ICommand } from "../commandList";
 
 list.Command( 'help', {
 	func: helpFunction,
@@ -8,23 +9,26 @@ list.Command( 'help', {
 	usage: '<command>',
 } );
 
-export async function helpFunction( message: Message, command: string ) {
-	const commandWrapper = list.getCommandWrapper( command );
-	const embed = richEmbed();
+export async function helpFunction( message: Message, text: string ) {
+	const commands = text.replace( / +(?= )/g, '' ).toLowerCase().split( ' ' );
 
-	if ( !commandWrapper ) {
-		embed
-			.setTitle( `Help : ${ command } is not recognised` )
-			.setDescription( 'Try using ;list to find your command' );
-	}
-	else {
-		embed
-			.setTitle( `Help : ${ command }` )
-			.addField( 'Usage', commandWrapper.usage )
-			.addField( 'Purpose', commandWrapper.help );
-	}
+	if ( !commands.length )
+		return missingArguments( message );
+	else if ( commands.length > 5 )
+		return message.reply( 'You have requested to many arguments' )
 
-	return message.channel.send( { embed } );
+	for ( const command of commands ) {
+		if ( !command )
+			continue;
+
+		const wrapper = list.getCommandWrapper( command );
+
+		const embed = wrapper
+			? helpEmebd( command, wrapper )
+			: missingWrapper( command );
+
+		await message.channel.send( { embed } );
+	}
 }
 
 list.Command( 'list', {
@@ -35,3 +39,26 @@ list.Command( 'list', {
 	},
 	help: 'Provides a list of commands',
 } );
+
+/** Response when no arguments are given */
+async function missingArguments( message: Message ) {
+	const embed = richEmbed()
+		.setTitle( 'This command requires additional arguments' );
+
+	return message.channel.send( embed );
+}
+
+/** Response when a wrapper could not be found */
+function missingWrapper( command: string ) {
+	return richEmbed()
+		.setTitle( `Help : ${ command } is not recognised` )
+		.setDescription( 'Try using ;list to find your command' );
+}
+
+/** Converts a Command into an Embed response */
+function helpEmebd( command: string, wrapper: ICommand ) {
+	return richEmbed()
+		.setTitle( `Help : ${ command }` )
+		.addField( 'Usage', wrapper.usage )
+		.addField( 'Purpose', wrapper.help );
+}
