@@ -210,3 +210,15 @@ export function requireInFile( dir: string, ignoreIndex: boolean = true ) {
 		if ( f.endsWith( ext ) && !( ignoreIndex && f.endsWith( index ) ) )
 			require( join( normalizedPath, f ) );
 }
+
+/**
+ * Splits command string form rest  of text and lowercases the command
+ * @param text
+ */
+export function processCommandString( text: string ): [ string, string ] {
+	let [ command, args ] = splitByFirstSpace( text );
+
+	command = command.toLowerCase()
+
+	return [ command, args ]
+}

@@ -1,5 +1,6 @@
 import { Message } from 'discord.js';
 import { prefix } from './constants';
+import ListRunner from './classes/ListRunner';
 import CommandRunner from './classes/CommandRunner';
 
 export interface IApplicationWrapper {
@@ -18,8 +19,14 @@ export type FRegister = ( key: string, instance: Command ) => void
 export interface ICommand extends Command { }
 
 export class List {
+	constructor() {
+		this.runner = new ListRunner( this )
+	}
+
 	/** Contains Command instances */
 	readonly list: { [ key: string ]: Command } = {}
+	/** Class instance that conatains the logic for handling message events */
+	readonly runner: ListRunner
 
 	/** Creates a new class that is registered with list */
 	Command( key: string, input: IApplicationWrapper ) {
