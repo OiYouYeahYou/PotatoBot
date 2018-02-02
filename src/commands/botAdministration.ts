@@ -1,34 +1,36 @@
-import { disconnect } from "../index";
-import { destructingReply } from "../util";
-import { exec } from "child_process";
-import { Message } from "discord.js";
-import List from "../classes/List";
-import { list } from "../commands";
+import { disconnect } from '../index'
+import { destructingReply } from '../util'
+import { exec } from 'child_process'
+import { Message } from 'discord.js'
+import List from '../classes/List'
+import { list } from '../commands'
 
 const command = list.addCommand( 'bot', {
 	help: 'Set of owner level commands to help administrate the bot',
 	subCommands: new List,
 	permission: 'owner',
-} );
+} )
 
-const sub = command.subCommands;
+const sub = command.subCommands
 
 sub.addCommand( 'kill', {
-	func: async ( message: Message ) => {
-		console.log( 'Shutting down by Discord command' );
+	func: async ( message: Message ) =>
+	{
+		console.log( 'Shutting down by Discord command' )
 
 		await message.reply( 'MURRDERRRR!!!' )
-		await disconnect();
+		await disconnect()
 
-		process.exit();
+		process.exit()
 	},
 	help: 'Destroys the message.',
 	aliases: [ 'kys', ],
 	permission: 'master',
-} );
+} )
 
 sub.addCommand( 'restart', {
-	func: async ( message: Message ) => {
+	func: async ( message: Message ) =>
+	{
 		const { env: { restartCommand } } = process
 
 		if ( !restartCommand )
@@ -36,21 +38,22 @@ sub.addCommand( 'restart', {
 				'This bot does not support restarting'
 			)
 
-		console.log( 'Restarting by Discord command' );
+		console.log( 'Restarting by Discord command' )
 
 		await message.reply( 'I\'ll be a new bot!!!' )
-		await disconnect();
+		await disconnect()
 
-		exec( restartCommand );
+		exec( restartCommand )
 	},
 	help: 'Destroys the message.',
 	permission: 'master',
-} );
+} )
 
 sub.addCommand( 'invite', {
-	func: async ( message ) => {
+	func: async ( message ) =>
+	{
 		const invite = await message.client.generateInvite()
-		return message.channel.send( invite );
+		return message.channel.send( invite )
 	},
 	help: 'Provides a bot inviter link',
-} );
+} )

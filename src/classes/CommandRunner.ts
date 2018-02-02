@@ -1,8 +1,10 @@
-import { Message } from "discord.js";
-import Command from "./Command";
+import { Message } from 'discord.js'
+import Command from './Command'
 
-export default class CommandRunner {
-	constructor( command: Command ) {
+export default class CommandRunner
+{
+	constructor( command: Command )
+	{
 		this.command = command
 
 		let runner;
@@ -26,11 +28,14 @@ export default class CommandRunner {
 	) => Promise<any>
 
 	/** Safely execute main function */
-	private async func( message: Message, command: string, args: string ) {
-		try {
+	private async func( message: Message, command: string, args: string )
+	{
+		try
+		{
 			await this.command.func( message, args )
 		}
-		catch ( error ) {
+		catch ( error )
+		{
 			const failMessage = `Trying to run \`${ command }\` has failed`
 
 			console.error( failMessage )
@@ -40,12 +45,14 @@ export default class CommandRunner {
 	}
 
 	/** Used for Command with sub commands and no main function */
-	private async sub( message: Message, command: string, args: string ) {
+	private async sub( message: Message, command: string, args: string )
+	{
 		return this.command.subCommands.runner.commandRunner( message, args )
 	}
 
 	/** Runs when neiter a main function or sub commands list exist */
-	private async stub( message: Message, command: string ) {
+	private async stub( message: Message, command: string )
+	{
 		return message.reply(
 			`Command \`${ command }\` is a stub, soon to be available`
 		)

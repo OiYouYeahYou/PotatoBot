@@ -1,12 +1,14 @@
-import List from "../classes/List";
-import { Message } from "discord.js";
-import { processCommandString } from "../util";
-import { hasAuthorityForCommand, unauthorised } from "../discord/authority";
+import List from '../classes/List'
+import { Message } from 'discord.js'
+import { processCommandString } from '../util'
+import { hasAuthorityForCommand, unauthorised } from '../discord/authority'
 
 /** Logic for List class that handles Message events */
-export default class ListRunner {
+export default class ListRunner
+{
 	/** Logic for List class that handles Message events */
-	constructor( list: List ) {
+	constructor( list: List )
+	{
 		this.list = list
 	}
 
@@ -17,7 +19,8 @@ export default class ListRunner {
 	 * Processes input and calls Command runner,
 	 * or informs User of missing command or lacking privlages
 	 */
-	async commandRunner( message: Message, text: string ) {
+	async commandRunner( message: Message, text: string )
+	{
 		let [ command, args ] = processCommandString( text )
 
 		// Jason: Do not remove this!!! It is correct

@@ -1,9 +1,10 @@
-import CommandRunner from "./CommandRunner";
-import { Message } from "discord.js";
-import List from "../classes/List";
-import { prefix } from "../constants";
+import CommandRunner from './CommandRunner'
+import { Message, Guild } from 'discord.js'
+import List from '../classes/List'
+import { prefix } from '../constants'
 
-export interface IApplicationWrapper {
+export interface IApplicationWrapper
+{
 	func?: FCommand
 	help: string
 	usage?: string
@@ -17,9 +18,11 @@ type TPermission = 'all' | 'master' | 'owner' | 'admin'
 export type FCommand = ( message: Message, args: string ) => Promise<any>
 
 /** Command data handler */
-export default class Command {
+export default class Command
+{
 	/** Wraps the information about a command */
-	constructor( key: string, input: IApplicationWrapper ) {
+	constructor( key: string, input: IApplicationWrapper )
+	{
 		const { func, help, permission, usage, aliases, subCommands } = input
 
 		this.key = key

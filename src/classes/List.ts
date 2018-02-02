@@ -1,9 +1,11 @@
-import ListRunner from "./ListRunner";
-import Command from "./Command";
-import { IApplicationWrapper } from "./Command";
+import ListRunner from './ListRunner'
+import Command from './Command'
+import { IApplicationWrapper } from './Command'
 
-export default class List {
-	constructor() {
+export default class List
+{
+	constructor()
+	{
 		this.runner = new ListRunner( this )
 	}
 
@@ -13,7 +15,8 @@ export default class List {
 	readonly runner: ListRunner
 
 	/** Creates a new class that is registered with list */
-	addCommand( key: string, input: IApplicationWrapper ) {
+	addCommand( key: string, input: IApplicationWrapper )
+	{
 		if ( input.disabled )
 			return
 
@@ -31,7 +34,8 @@ export default class List {
 	}
 
 	/** Registers new commands in list */
-	private register( key: string, instance: Command ) {
+	private register( key: string, instance: Command )
+	{
 		key = key.trim().toLowerCase()
 
 		this.keyValidator( key )
@@ -40,7 +44,8 @@ export default class List {
 	}
 
 	/** Validates new keys to prevent invalid chars and overwrites */
-	private keyValidator( key: string ) {
+	private keyValidator( key: string )
+	{
 		if ( key.indexOf( ' ' ) !== -1 )
 			throw new Error( `Key contains space \'${ key }\'` )
 
@@ -52,7 +57,8 @@ export default class List {
 	}
 
 	/** Returns a command based on the key */
-	getCommandWrapper( cmd: string ): Command | false {
+	getCommandWrapper( cmd: string ): Command | false
+	{
 		if ( cmd in this.list )
 			return this.list[ cmd ]
 

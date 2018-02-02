@@ -1,8 +1,8 @@
-console.log( 'This is a test; Do not adjust your set.\n\n' );
+console.log( 'This is a test Do not adjust your set.\n\n' )
 
-import { client } from './discord/client';
-import { setEnv } from './util';
+import { client } from './discord/client'
+import { setEnv } from './util'
 
-setEnv();
+setEnv()
 
-setTimeout( () => { client.destroy(); }, 10000 );
+setTimeout( () => client.destroy(), 10000 )
