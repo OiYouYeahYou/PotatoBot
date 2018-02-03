@@ -10,7 +10,9 @@ list.addCommand( 'avatar', {
 
 list.addCommand( 'ping', {
 	func: async ( message: Message ) =>
-		message.reply( 'pong' ),
+		message.reply(
+			`pong: ${ parseInt( message.client.ping.toString() ) } ms`
+		),
 	help: 'Tests latency of the server',
 	aliases: [ 'pong' ],
 } )
