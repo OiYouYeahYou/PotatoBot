@@ -7,16 +7,31 @@ export default class CommandRunner
 	{
 		this.command = command
 
-		let runner;
+		let runner, type;
 
-		if ( command.func )
+		if ( command.func && command.subCommands )
+		{
 			runner = this.func
+			type = 'subcommand'
+		}
+		else if ( command.func )
+		{
+			runner = this.func
+			type = 'command'
+		}
 		else if ( command.subCommands )
+		{
 			runner = this.sub
+			type = 'submodule'
+		}
 		else
+		{
 			runner = this.stub
+			type = 'stub'
+		}
 
 		this.runner = runner
+		this.type = type
 	}
 
 	private command: Command
@@ -26,6 +41,8 @@ export default class CommandRunner
 		command: string,
 		args: string
 	) => Promise<any>
+	/** The runner type the class will use */
+	readonly type: 'stub' | 'command' | 'submodule' | 'subcommand'
 
 	/** Safely execute main function */
 	private async func( message: Message, command: string, args: string )
