@@ -11,6 +11,8 @@ export default class List
 
 	/** Contains Command instances */
 	readonly list: { [ key: string ]: Command } = {}
+	/** Contains Command instances */
+	readonly listCondesed: { [ key: string ]: string[] } = {}
 	/** Class instance that conatains the logic for handling message events */
 	readonly runner: ListRunner
 
@@ -24,11 +26,11 @@ export default class List
 
 		const instance = new Command( key, input )
 
-		this.register( key, instance )
+		this.registerMain( key, instance )
 
 		if ( input.aliases )
 			for ( const alias of input.aliases )
-				this.register( alias, instance )
+				this.registerAlias( key, alias, instance )
 
 		return instance
 	}
@@ -41,6 +43,20 @@ export default class List
 		this.keyValidator( key )
 
 		this.list[ key ] = instance
+	}
+
+	/** Registers new commands in list */
+	private registerMain( key: string, instance: Command )
+	{
+		this.register( key, instance )
+		this.listCondesed[ key ] = []
+	}
+
+	/** Registers new commands in list */
+	private registerAlias( key: string, alias: string, instance: Command )
+	{
+		this.register( alias, instance )
+		this.listCondesed[ key ].push( alias )
 	}
 
 	/** Validates new keys to prevent invalid chars and overwrites */
