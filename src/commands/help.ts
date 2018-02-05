@@ -2,6 +2,8 @@ import { Message } from 'discord.js'
 import { list } from '../commands'
 import { richEmbed } from '../discord/embed'
 import Command from '../classes/Command'
+import List from '../classes/List';
+import { codeWrap } from '../util';
 
 list.addCommand( 'help', {
 	func: helpFunction,
@@ -34,14 +36,53 @@ export async function helpFunction( message: Message, text: string )
 }
 
 list.addCommand( 'list', {
-	func: async ( message: Message ) =>
+	func: async ( message: Message, args ) =>
 	{
-		const commandList = Object.keys( list.list ).sort().join( '\n' )
+		const [ err, response ] = treeWalker( args )
 
-		return message.channel.send( commandList )
+		if ( err )
+			await message.channel.send( err )
+
+		return message.channel.send( response )
 	},
 	help: 'Provides a list of commands',
 } )
+
+function treeWalker( args )
+{
+	const argsArray = args.replace( / +(?= )/g, '' ).toLowerCase().split( ' ' )
+	let latest: List = list
+	let err: string
+	let pathString = 'main'
+
+	if ( argsArray[ 0 ] !== '' )
+	{
+		for ( const key of argsArray )
+		{
+			const command = latest.getCommandWrapper( key )
+			if ( !command )
+			{
+				err = `Cannot find command \`${ key }\` in \`${ pathString }\``
+				break
+			}
+
+			if ( !command.subCommands )
+			{
+				err = `\`${ key }\` has no sub modules`
+				break
+			}
+
+			latest = command.subCommands
+			pathString += ` / ${ key }`
+		}
+	}
+
+	const summaryString = codeWrap( latest.toSummary() )
+	return [
+		err,
+		`Supported commands in \`${ pathString }\`:\n\n${ summaryString }`
+	]
+}
 
 /** Response when no arguments are given */
 async function missingArguments( message: Message )
