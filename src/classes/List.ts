@@ -1,6 +1,7 @@
 import ListRunner from './ListRunner'
 import Command from './Command'
 import { IApplicationWrapper } from './Command'
+import { maxStringLength, padLeft, padRight } from '../util';
 
 export default class List
 {
@@ -79,6 +80,37 @@ export default class List
 			return this.list[ cmd ]
 
 		return false
+	}
+
+	/** Creates a summary of commands, subcommands and their help texts */
+	toSummary( pad: number = 0 )
+	{
+		const commandList = Object.keys( this.listCondesed )
+		const items: string[] = []
+		const maxLen = maxStringLength( commandList )
+		const leftPadding = padLeft( '', pad )
+
+		for ( const key of commandList )
+		{
+			const wrapper = this.getCommandWrapper( key )
+
+			if ( !wrapper )
+				continue
+
+			const keyText = padRight( key, maxLen )
+			const aliases = this.listCondesed[ key ]
+			let commandInfo = `${ leftPadding }${ keyText } - ${ wrapper.help }`
+
+			if ( aliases.length )
+				commandInfo += ` - [ ${ aliases.join( ', ' ) } ]`
+
+			if ( wrapper.subCommands )
+				commandInfo += '\n' + wrapper.subCommands.toSummary( pad + 2 )
+
+			items.push( commandInfo )
+		}
+
+		return items.sort().join( '\n' )
 	}
 }
 

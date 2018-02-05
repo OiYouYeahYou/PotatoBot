@@ -190,3 +190,29 @@ export function processCommandString( text: string ): [ string, string ]
 
 	return [ command, args ]
 }
+
+export function codeWrap( text: string )
+{
+	return `\`\`\`\n${ text }\n\`\`\``
+}
+
+export function padRight( text: string, len: number )
+{
+	while ( text.length < len )
+		text += ' '
+
+	return text
+}
+
+export function padLeft( text: string, len: number )
+{
+	while ( text.length < len )
+		text = ' ' + text
+
+	return text
+}
+
+export function maxStringLength( arr: string[] )
+{
+	return arr.reduce( ( acc, str ) => str.length > acc ? str.length : acc, 0 )
+}
