@@ -5,6 +5,8 @@ import { Message } from 'discord.js'
 import List from '../classes/List'
 import { list } from '../commands'
 
+let raceLock = false
+
 const command = list.addCommand( 'bot', {
 	help: 'Set of owner level commands to help administrate the bot',
 	subCommands: new List,
@@ -16,6 +18,11 @@ const sub = command.subCommands
 sub.addCommand( 'kill', {
 	func: async ( message: Message ) =>
 	{
+		if ( raceLock )
+			return message.reply( 'Cannot do that at his time' )
+
+		raceLock = true
+
 		console.log( 'Shutting down by Discord command' )
 
 		await message.reply( 'MURRDERRRR!!!' )
@@ -31,6 +38,11 @@ sub.addCommand( 'kill', {
 sub.addCommand( 'restart', {
 	func: async ( message: Message ) =>
 	{
+		if ( raceLock )
+			return message.reply( 'Cannot do that at his time' )
+
+		raceLock = true
+
 		const { env: { restartCommand } } = process
 
 		if ( !restartCommand )
