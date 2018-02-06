@@ -193,7 +193,7 @@ export function processCommandString( text: string ): [ string, string ]
 
 export function codeWrap( text: string )
 {
-	return `\`\`\`\n${ text }\n\`\`\``
+	return `\`\`\`\n${ text ? text : '...' }\n\`\`\``
 }
 
 export function padRight( text: string, len: number )
