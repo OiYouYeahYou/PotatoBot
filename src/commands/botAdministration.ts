@@ -16,7 +16,7 @@ interface megh
 let raceLock = false
 
 const command = list.addCommand( 'bot', {
-	help: 'Set of owner level commands to help administrate the bot',
+	help: 'Bot administration tools for Owner',
 	subCommands: new List,
 	permission: 'owner',
 } )
@@ -38,7 +38,7 @@ sub.addCommand( 'kill', {
 
 		process.exit()
 	},
-	help: 'Destroys the message.',
+	help: 'Destroys the bot.',
 	aliases: [ 'kys', ],
 	permission: 'master',
 } )
@@ -65,7 +65,7 @@ sub.addCommand( 'restart', {
 
 		exec( restartCommand )
 	},
-	help: 'Destroys the message.',
+	help: 'Restarts bot',
 	permission: 'master',
 } )
 
@@ -100,7 +100,7 @@ sub.addCommand( 'update', {
 		else
 			raceLock = false
 	},
-	help: 'Destroys the message.',
+	help: 'Pulls, Builds and Restarts bot',
 	permission: 'master',
 } )
 
@@ -115,7 +115,7 @@ function rsMsg(
 		? `=== out ===\n${ gulp.stdout }\n=== err ==\n${ gulp.stderr }`
 		: ''
 
-	const gitMessage = `Gulp output:\n${ codeWrap( gitSanitised ) }`
+	const gitMessage = `Git output:\n${ codeWrap( gitSanitised ) }`
 	const gulpMessage = `Gulp output:\n${ codeWrap( gulpSanitised ) }`
 
 	let restartMessage

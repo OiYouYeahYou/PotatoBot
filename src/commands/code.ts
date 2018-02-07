@@ -9,21 +9,21 @@ list.addCommand( 'code', {
 
 		return sendCode( message, text, lang )
 	},
-	help: 'Sends an text formatted in specified language',
+	help: 'Sends text formatted in specified language',
 	usage: '<code snippet>',
 } )
 
 list.addCommand( 'js', {
 	func: async ( message: Message, args: string ) =>
 		sendCode( message, args, 'javascript' ),
-	help: 'Sends an text formatted as javascript',
+	help: 'Sends text formatted as javascript',
 	usage: '<code snippet>',
 } )
 
 list.addCommand( 'ruby', {
 	func: async ( message: Message, args: string ) =>
 		sendCode( message, args, 'ruby' ),
-	help: 'Sends an text formatted as ruby',
+	help: 'Sends text formatted as ruby',
 	usage: '<code snippet>',
 } )
 
