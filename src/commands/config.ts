@@ -2,7 +2,7 @@ import { Message, Guild as TGuild } from 'discord.js'
 import { destructingReply } from '../util'
 import { list } from '../commands'
 import { findGuildConfig, GuildConfigModel, configLists } from '../mongoose/guild'
-import { isFeatureEnabled } from '../configManager'
+import { isFeatureEnabled, isCommandEnabled } from '../configManager'
 import { all } from '../discord/featureEnum'
 import List from '../classes/List'
 
@@ -14,98 +14,72 @@ const command = list.addCommand( 'config', {
 } )
 
 command.subCommands.addCommand( 'new', {
-	func: subNew,
+	func: createNewConfig,
 	help: 'Creates a new config for a Guild',
 } )
 
 command.subCommands.addCommand( 'features', {
-	func: subEnabledFeatures,
+	func: async ( message: Message, args: string ) =>
+		enabledAggreator( message, args, 'features' ),
 	help: 'Returns enabled features,  or Checks if features are enabled',
 } )
 
 command.subCommands.addCommand( 'commands', {
-	func: subEnabledcommands,
+	func: async ( message: Message, args: string ) =>
+		enabledAggreator( message, args, 'commands' ),
 	help: 'Returns enabled commands,  or Checks if commands are enabled',
 } )
 
-async function subEnabledFeatures( message: Message, args: string )
+async function enabledAggreator( msg: Message, args: string, type: configLists )
 {
-	return enabledAggreator( message, args, 'features' )
+	const response = args
+		? await listEnabled( msg.guild, type, args )
+		: await getEnabledList( msg.guild, type )
+
+	return msg.channel.send( response )
 }
 
-async function subEnabledcommands( message: Message, args: string )
-{
-	return enabledAggreator( message, args, 'commands' )
-}
-
-async function enabledAggreator(
-	message: Message,
-	args: string,
-	key: configLists
-)
-{
-	const { guild } = message
-
-	return message.reply(
-		args
-			? await checkEnabledList( guild, key, args )
-			: await getEnabledList( guild, key )
-	)
-}
-
-async function getEnabledList(
-	guild: TGuild,
-	key: configLists
-): Promise<string>
+async function getEnabledList( guild: TGuild, type: configLists )
 {
 	const config = await findGuildConfig( guild )
 
 	if ( !config )
-		return Promise.resolve( 'No config available' )
+		return 'No config available'
 
-	const list = config[ key ]
+	const list = config[ type ]
 	const isAll = list.includes( all )
-
-	return Promise.resolve(
-		isAll
-			? `All ${ key } are enabled`
-			: `Enabled: ${ list.join( ', ' ) }`
-	)
+	return isAll
+		? `All ${ type } are enabled`
+		: `Enabled: ${ list.join( ', ' ) }`
 }
 
-async function checkEnabledList(
-	guild: TGuild,
-	key: configLists,
-	args: string
-): Promise<string>
+async function listEnabled( guild: TGuild, type: configLists, args: string )
 {
 	const items = args.split( ' ' )
 	const enabled = []
 	const disabled = []
-	let reply
+	const enabledChecker = type === 'features'
+		? isFeatureEnabled : isCommandEnabled
 
 	for ( const item of items )
-	{
-		const hmmm = await isFeatureEnabled( guild, item );
-		( hmmm ? enabled : disabled ).push( item )
-	}
+		( await enabledChecker( guild, item )
+			? enabled : disabled
+		).push( item )
 
-	const stringEnabled = `Enabled: ${ enabled.join( ', ' ) }`
-	const stringDisabled = `Disabled: ${ disabled.join( ', ' ) }`
+	if ( !enabled.length || !disabled.length )
+		return 'Huh, nothing showed up?'
 
-	if ( enabled.length && disabled.length )
-		reply = `${ stringEnabled }\n${ stringDisabled }`
-	else if ( enabled.length )
-		reply = stringEnabled
-	else if ( disabled.length )
-		reply = stringDisabled
-	else
-		reply = 'Huh, nothing showed up?'
+	const reply: string[] = []
 
-	return Promise.resolve( reply )
+	if ( enabled.length )
+		reply.push( 'Enabled: ' + enabled.join( ', ' ) )
+	if ( disabled.length )
+		reply.push( 'Disabled: ' + disabled.join( ', ' ) )
+
+	return reply.join( '\n' )
 }
 
-async function subNew( message: Message, args: string )
+async function createNewConfig( message: Message, args: string )
 {
 	const {
 		channel: { id: defaultChannel },
@@ -127,7 +101,8 @@ async function subNew( message: Message, args: string )
 	try
 	{
 		await settings.save()
-	} catch ( error )
+	}
+	catch ( error )
 	{
 		return message.reply( 'Failed to save' )
 	}
