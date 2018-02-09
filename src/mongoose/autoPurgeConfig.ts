@@ -22,3 +22,20 @@ export async function getPurgeConfigs(): Promise<IPurgeConfig[]>
 
 	return Array.isArray( configs ) ? configs : [ configs ]
 }
+
+const purgeReportSchema = new mongoose.Schema( {
+	channelID: String,
+	error: String,
+	now: Number,
+	rawCount: Number,
+	deletingCount: Number,
+	guildID: String
+} )
+
+const PurgeReportModel = mongoose.model( 'PurgeReport', purgeReportSchema )
+
+export async function savePurgeReport( report )
+{
+	const doc = new PurgeReportModel( report )
+	doc.save()
+}
