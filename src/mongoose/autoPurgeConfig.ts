@@ -1,14 +1,15 @@
 import mongoose from './client'
 import { Document } from 'mongoose'
-import { Guild as GuildClass, Snowflake } from 'discord.js'
-import { guildIDNormaliser } from '../util'
+import { IPurgeReport } from '../features/channelAutoPurge';
+
+// // // // // Configs
 
 const purgeConfigSchema = new mongoose.Schema( {
 	channelID: String,
 	purgeOlderThan: Number,
 } )
 
-interface IPurgeConfig extends Document
+export interface IPurgeConfig extends Document
 {
 	channelID?: string
 	purgeOlderThan?: number
@@ -23,6 +24,8 @@ export async function getPurgeConfigs(): Promise<IPurgeConfig[]>
 	return Array.isArray( configs ) ? configs : [ configs ]
 }
 
+// // // // // Reporting
+
 const purgeReportSchema = new mongoose.Schema( {
 	channelID: String,
 	error: String,
@@ -34,7 +37,7 @@ const purgeReportSchema = new mongoose.Schema( {
 
 const PurgeReportModel = mongoose.model( 'PurgeReport', purgeReportSchema )
 
-export async function savePurgeReport( report )
+export async function savePurgeReport( report: IPurgeReport )
 {
 	const doc = new PurgeReportModel( report )
 	doc.save()

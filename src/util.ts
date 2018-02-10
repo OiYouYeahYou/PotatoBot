@@ -216,3 +216,20 @@ export function maxStringLength( arr: string[] )
 {
 	return arr.reduce( ( acc, str ) => str.length > acc ? str.length : acc, 0 )
 }
+
+export const noop = () => { }
+
+export async function safeCallAsync<T>( fn: ( ...args ) => Promise<T>, ...args )
+	: Promise<[ any, T ]>
+{
+	let val, err
+	try
+	{
+		val = await fn( ...args )
+	}
+	catch ( error )
+	{
+		err = error
+	}
+	return [ err, val ]
+}
