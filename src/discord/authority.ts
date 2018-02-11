@@ -19,17 +19,17 @@ export function hasAuthorityForCommand( message: Message, wrapper: Command )
 
 function isOwner( message: Message )
 {
-	return message.member.id === message.guild.ownerID
+	return message.member && message.member.id === message.guild.ownerID
 }
 
 function isMaster( message: Message )
 {
-	return message.member.id === process.env.master
+	return message.author.id === process.env.master
 }
 
 function isAdmin( message: Message )
 {
-	return message.member.hasPermission( 'ADMINISTRATOR' )
+	return message.member && message.member.hasPermission( 'ADMINISTRATOR' )
 }
 
 export async function unauthorised( message: Message, wrap: Command )
