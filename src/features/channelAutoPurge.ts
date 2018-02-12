@@ -134,7 +134,7 @@ async function purgeMessage( channel: TextChannel, report: IPurgeReport )
 	if ( report.error )
 		embed.addField( 'Errors Encountered', report.error )
 
-	const message = await channel.send( [ 'a', 'b', 'c' ] )
+	const message = await channel.send( embed )
 	// @ts-ignore --- We are sending one message, so deleteing one message
 	message.delete( 30 * SECONDS ).catch( noop )
 }

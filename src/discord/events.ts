@@ -13,7 +13,7 @@ import { initAutoPurge } from '../features/channelAutoPurge';
 export const ready = () =>
 {
 	console.log( 'Discord client is ready!' )
-	initAutoPurge
+	initAutoPurge()
 }
 
 export const disconnect = () =>
