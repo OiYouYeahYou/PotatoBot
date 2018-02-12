@@ -239,3 +239,18 @@ export async function safeCallAsync<T>( fn: ( ...args ) => Promise<T>, ...args )
 	}
 	return [ err, val ]
 }
+
+export function splitFirstWordAsNumber( args: string, def = 0 )
+	: [ number, string ]
+{
+	if ( !args )
+		return [ def, '' ]
+
+	const [ a, b ] = splitByFirstSpace( args )
+	const x = Number( a )
+
+	if ( Number.isNaN( x ) )
+		return [ def, b ]
+
+	return [ x, b ]
+}
