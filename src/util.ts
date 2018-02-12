@@ -196,20 +196,26 @@ export function codeWrap( text: string )
 	return `\`\`\`\n${ text ? text : '...' }\n\`\`\``
 }
 
-export function padRight( text: string, len: number )
+export function padRight( text: string | number, len: number )
 {
-	while ( text.length < len )
-		text += ' '
+	let res = text
+		? text.toString()
+		: ''
+	while ( res.length < len )
+		res += ' '
 
-	return text
+	return res
 }
 
-export function padLeft( text: string, len: number )
+export function padLeft( text: string | number, len: number )
 {
-	while ( text.length < len )
-		text = ' ' + text
+	let res = text
+		? text.toString()
+		: ''
+	while ( res.length < len )
+		res = ' ' + res
 
-	return text
+	return res
 }
 
 export function maxStringLength( arr: string[] )
