@@ -24,6 +24,20 @@ export async function getPurgeConfigs(): Promise<IPurgeConfig[]>
 	return Array.isArray( configs ) ? configs : [ configs ]
 }
 
+export async function getPurgeConfig( channelID ): Promise<IPurgeConfig[]>
+{
+	const config = await ConfigModel.find( { channelID } )
+	return Array.isArray( config ) ? config : [ config ]
+}
+
+export async function createPurgeConfig(
+	channelID: string, purgeOlderThan: number
+)
+{
+	const doc = new ConfigModel( { channelID, purgeOlderThan } )
+	return await doc.save()
+}
+
 // // // // // Reporting
 
 export interface IPurgeReport extends Document
@@ -54,4 +68,10 @@ export async function savePurgeReport( report: IInitialPurgeReport )
 {
 	const doc = new ReportModel( report )
 	return await doc.save()
+}
+
+export async function getReports( channelID: string ): Promise<IPurgeReport[]>
+{
+	const report = await ReportModel.find( { channelID } )
+	return Array.isArray( report ) ? report : [ report ]
 }
