@@ -1,6 +1,6 @@
 import mongoose from './client'
-import { Document } from 'mongoose'
-import { IPurgeReport } from '../features/channelAutoPurge';
+import { Document, Model } from 'mongoose'
+import { IInitialPurgeReport } from '../features/channelAutoPurge';
 
 // // // // // Configs
 
@@ -15,16 +15,27 @@ export interface IPurgeConfig extends Document
 	purgeOlderThan?: number
 }
 
-const PurgeConfigModel = mongoose.model( 'AutoPurgeConfig', purgeConfigSchema )
+const ConfigModel: Model<IPurgeConfig>
+	= mongoose.model( 'AutoPurgeConfig', purgeConfigSchema )
 
 export async function getPurgeConfigs(): Promise<IPurgeConfig[]>
 {
-	const configs = await PurgeConfigModel.find( {} )
-
+	const configs = await ConfigModel.find( {} )
 	return Array.isArray( configs ) ? configs : [ configs ]
 }
 
 // // // // // Reporting
+
+export interface IPurgeReport extends Document
+{
+	channelID: string
+	rawCount: number
+	deletingCount: number
+	deletedCount: number
+	error: string
+	now: number
+	guildID: string
+}
 
 const purgeReportSchema = new mongoose.Schema( {
 	channelID: String,
@@ -32,13 +43,15 @@ const purgeReportSchema = new mongoose.Schema( {
 	now: Number,
 	rawCount: Number,
 	deletingCount: Number,
+	deletedCount: Number,
 	guildID: String
 } )
 
-const PurgeReportModel = mongoose.model( 'PurgeReport', purgeReportSchema )
+const ReportModel: Model<IPurgeReport>
+	= mongoose.model( 'PurgeReport', purgeReportSchema )
 
-export async function savePurgeReport( report: IPurgeReport )
+export async function savePurgeReport( report: IInitialPurgeReport )
 {
-	const doc = new PurgeReportModel( report )
-	doc.save()
+	const doc = new ReportModel( report )
+	return await doc.save()
 }

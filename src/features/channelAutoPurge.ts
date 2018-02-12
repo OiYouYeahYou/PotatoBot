@@ -7,11 +7,12 @@ import { noop, safeCallAsync } from "../util";
 
 export const baseTime = HOURS
 
-export interface IPurgeReport
+export interface IInitialPurgeReport
 {
 	channelID: string
 	rawCount: number
 	deletingCount: number
+	deletedCount: number
 	error: string
 	now: number
 	guildID: string
@@ -27,7 +28,7 @@ export async function initAutoPurge()
 export async function autoPurge( channelIDOverride?: string )
 {
 	const now = Date.now()
-	const reports: IPurgeReport[] = []
+	const reports: IInitialPurgeReport[] = []
 	const purged: string[] = []
 	const configs = channelIDOverride
 		? await getPurgeConfig( channelIDOverride )
@@ -46,19 +47,20 @@ export async function autoPurge( channelIDOverride?: string )
 			purged.push( channelID )
 
 		let [ error, channel ] = getAndValidateChannel( channelID )
-		let rawCount, deletingCount, guildID
+		let rawCount, deletingCount, guildID, deletedCount
 
 		if ( channel )
 		{
 			const report = await purgeChannel( config, channel, now );
-			( { rawCount, deletingCount, error, guildID } = report )
+			( { rawCount, deletingCount, error, guildID, deletedCount } = report )
 
 			await purgeMessage( channel, report )
 		}
 
-		reports.push(
-			{ channelID, rawCount, deletingCount, error, now, guildID }
-		)
+		if ( deletingCount !== 0 )
+			reports.push( {
+				channelID, rawCount, deletingCount, error, now, guildID, deletedCount
+			} )
 	}
 
 	reports.forEach( savePurgeReport )
@@ -91,7 +93,7 @@ async function purgeChannel(
 	{ channelID, purgeOlderThan }: IPurgeConfig,
 	channel: TextChannel,
 	now: number
-): Promise<IPurgeReport>
+): Promise<IInitialPurgeReport>
 {
 	const messageCollection = await channel.fetchMessages( { limit: 50 } )
 	const messages = messageCollection.array()
@@ -100,16 +102,15 @@ async function purgeChannel(
 	const rawCount = messages.length
 	const deletingCount = deletables.length
 
-	const [ error ] = await safeCallAsync(
+	const [ error, deleted ] = await safeCallAsync(
 		() => channel.bulkDelete( deletables )
 	)
 
-	const report = {
+	return {
 		channelID, rawCount, deletingCount, error, now,
+		deletedCount: deleted.size,
 		guildID: channel.guild.id,
 	}
-
-	return report
 }
 
 function filterDeletables( messages: Message[], minAge: number, now: number )
@@ -127,7 +128,7 @@ function filterDeletables( messages: Message[], minAge: number, now: number )
 
 const sortByOldestFirst = ( a, b ) => a.createdTimestamp - b.createdTimestamp
 
-async function purgeMessage( channel: TextChannel, report: IPurgeReport )
+async function purgeMessage( channel: TextChannel, report: IInitialPurgeReport )
 {
 	if ( !report.deletingCount )
 		return
