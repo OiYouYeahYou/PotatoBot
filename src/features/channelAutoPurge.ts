@@ -28,6 +28,7 @@ export async function autoPurge( channelIDOverride?: string )
 {
 	const now = Date.now()
 	const reports: IPurgeReport[] = []
+	const purged: string[] = []
 	const configs = channelIDOverride
 		? await getPurgeConfig( channelIDOverride )
 		: await getPurgeConfigs()
@@ -35,6 +36,15 @@ export async function autoPurge( channelIDOverride?: string )
 	for ( const config of configs )
 	{
 		const { channelID } = config
+
+		if ( purged.includes( channelID ) )
+		{
+			config.remove()
+			continue
+		}
+		else
+			purged.push( channelID )
+
 		let [ error, channel ] = getAndValidateChannel( channelID )
 		let rawCount, deletingCount, guildID
 
