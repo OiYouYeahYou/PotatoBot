@@ -7,7 +7,7 @@ export default class CommandRunner
 	{
 		this.command = command
 
-		let runner, type;
+		let runner, type
 
 		if ( command.func && command.subCommands )
 		{

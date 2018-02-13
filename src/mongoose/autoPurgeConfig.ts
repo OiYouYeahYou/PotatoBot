@@ -1,6 +1,6 @@
 import mongoose from './client'
 import { Document, Model } from 'mongoose'
-import { IInitialPurgeReport } from '../features/channelAutoPurge';
+import { IInitialPurgeReport } from '../features/channelAutoPurge'
 
 // // // // // Configs
 

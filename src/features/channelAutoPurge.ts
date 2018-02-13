@@ -1,9 +1,9 @@
-import { TextChannel, GuildChannel, Message } from "discord.js";
-import { client } from "../discord/client";
-import { richEmbed } from "../discord/embed";
-import { getPurgeConfigs, IPurgeConfig, savePurgeReport, getPurgeConfig } from "../mongoose/autoPurgeConfig";
-import { HOURS, DAYS, SECONDS, AutoPurgeInterval } from "../constants";
-import { noop, safeCallAsync } from "../util";
+import { TextChannel, GuildChannel, Message } from "discord.js"
+import { client } from "../discord/client"
+import { richEmbed } from "../discord/embed"
+import { getPurgeConfigs, IPurgeConfig, savePurgeReport, getPurgeConfig } from "../mongoose/autoPurgeConfig"
+import { HOURS, DAYS, SECONDS, AutoPurgeInterval } from "../constants"
+import { noop, safeCallAsync } from "../util"
 
 export const baseTime = HOURS
 

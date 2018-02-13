@@ -8,7 +8,7 @@ import { everyoneResponse } from './features'
 import { getDefaultChannel, isFeatureEnabled } from '../configManager'
 import { announceEntry, announceExit } from './featureEnum'
 import { list } from '../commands'
-import { initAutoPurge } from '../features/channelAutoPurge';
+import { initAutoPurge } from '../features/channelAutoPurge'
 
 export const ready = () =>
 {

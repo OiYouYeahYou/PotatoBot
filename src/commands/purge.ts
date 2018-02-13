@@ -1,12 +1,11 @@
-import { list } from "../commands";
-import List from "../classes/List";
+import { list } from "../commands"
 import { Message, Attachment, DMChannel, GroupDMChannel, TextChannel }
-	from "discord.js";
+	from "discord.js"
 import { splitByFirstSpace, padLeft, safeCallAsync, splitFirstWordAsNumber }
-	from "../util";
+	from "../util"
 import { createPurgeConfig, getPurgeConfig, getReports, IPurgeReport }
-	from "../mongoose/autoPurgeConfig";
-import { autoPurge } from "../features/channelAutoPurge";
+	from "../mongoose/autoPurgeConfig"
+import { autoPurge } from "../features/channelAutoPurge"
 
 const defaultAgeLimit = 24
 

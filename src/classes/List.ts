@@ -1,7 +1,7 @@
 import ListRunner from './ListRunner'
 import Command from './Command'
 import { IApplicationWrapper } from './Command'
-import { maxStringLength, padLeft, padRight } from '../util';
+import { maxStringLength, padLeft, padRight } from '../util'
 
 export default class List
 {
