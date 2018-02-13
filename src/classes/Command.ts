@@ -11,7 +11,7 @@ export interface IApplicationWrapper
 	disabled?: boolean
 	aliases?: string[]
 	permission?: TPermission
-	subCommands?: List
+	subCommands?: boolean
 }
 
 type TPermission = 'all' | 'master' | 'owner' | 'admin'
@@ -35,7 +35,7 @@ export default class Command
 			this.aliases = `${ key }, ${ aliases.join( ', ' ) }`
 
 		if ( subCommands )
-			this.subCommands = subCommands
+			this.subCommands = new List
 
 		this.runner = new CommandRunner( this )
 	}
@@ -50,4 +50,12 @@ export default class Command
 	public readonly aliases: string
 
 	readonly runner: CommandRunner
+
+	addSubCommand( key: string, input: IApplicationWrapper )
+	{
+		if ( !this.subCommands )
+			throw ReferenceError( 'This command has no sub command list' )
+
+		return this.subCommands.addCommand( key, input )
+	}
 }

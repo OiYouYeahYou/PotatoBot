@@ -4,27 +4,26 @@ import { list } from '../commands'
 import { findGuildConfig, GuildConfigModel, configLists } from '../mongoose/guild'
 import { isFeatureEnabled, isCommandEnabled } from '../configManager'
 import { all } from '../discord/featureEnum'
-import List from '../classes/List'
 
 const command = list.addCommand( 'config', {
 	help: 'Sets configuration preferences',
 	permission: 'master',
 	aliases: [ 'cfg' ],
-	subCommands: new List,
+	subCommands: true
 } )
 
-command.subCommands.addCommand( 'new', {
+command.addSubCommand( 'new', {
 	func: createNewConfig,
 	help: 'Creates a new config for a Guild',
 } )
 
-command.subCommands.addCommand( 'features', {
+command.addSubCommand( 'features', {
 	func: async ( message: Message, args: string ) =>
 		enabledAggreator( message, args, 'features' ),
 	help: 'Returns enabled features,  or Checks if features are enabled',
 } )
 
-command.subCommands.addCommand( 'commands', {
+command.addSubCommand( 'commands', {
 	func: async ( message: Message, args: string ) =>
 		enabledAggreator( message, args, 'commands' ),
 	help: 'Returns enabled commands,  or Checks if commands are enabled',

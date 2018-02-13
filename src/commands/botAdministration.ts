@@ -2,9 +2,8 @@ import { disconnect } from '../index'
 import { destructingReply, codeWrap } from '../util'
 import { exec } from 'child_process'
 import { Message } from 'discord.js'
-import List from '../classes/List'
 import { list } from '../commands'
-import { promisify } from 'util';
+import { promisify } from 'util'
 
 const promisedExec = promisify( exec )
 interface megh
@@ -17,13 +16,11 @@ let raceLock = false
 
 const command = list.addCommand( 'bot', {
 	help: 'Bot administration tools for Owner',
-	subCommands: new List,
 	permission: 'owner',
+	subCommands: true,
 } )
 
-const sub = command.subCommands
-
-sub.addCommand( 'kill', {
+command.addSubCommand( 'kill', {
 	func: async ( message: Message ) =>
 	{
 		if ( raceLock )
@@ -43,7 +40,7 @@ sub.addCommand( 'kill', {
 	permission: 'master',
 } )
 
-sub.addCommand( 'restart', {
+command.addSubCommand( 'restart', {
 	func: async ( message: Message ) =>
 	{
 		if ( raceLock )
@@ -69,7 +66,7 @@ sub.addCommand( 'restart', {
 	permission: 'master',
 } )
 
-sub.addCommand( 'update', {
+command.addSubCommand( 'update', {
 	func: async ( message: Message ) =>
 	{
 		if ( raceLock )
@@ -129,7 +126,7 @@ function rsMsg(
 	return [ gitMessage, gulpMessage, restartMessage ].join( '\n\n' )
 }
 
-sub.addCommand( 'invite', {
+command.addSubCommand( 'invite', {
 	func: async ( message ) =>
 	{
 		const invite = await message.client.generateInvite()

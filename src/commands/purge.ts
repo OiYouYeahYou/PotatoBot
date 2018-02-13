@@ -10,14 +10,14 @@ import { autoPurge } from "../features/channelAutoPurge";
 
 const defaultAgeLimit = 24
 
-const { subCommands: sub } = list.addCommand( 'autopurge', {
+const command = list.addCommand( 'autopurge', {
 	help: 'Manages a guild\'s purging config',
-	subCommands: new List,
 	permission: 'owner',
-	aliases: [ 'ap' ]
+	aliases: [ 'ap' ],
+	subCommands: true,
 } )
 
-sub.addCommand( 'start', {
+command.addSubCommand( 'start', {
 	help: 'Sets the auto purger to run in the current channel',
 	func: async ( message: Message, args: string ) =>
 	{
@@ -35,7 +35,7 @@ sub.addCommand( 'start', {
 	}
 } )
 
-sub.addCommand( 'stop', {
+command.addSubCommand( 'stop', {
 	help: 'Stop the auto purger running in the current channel',
 	func: async ( message: Message ) =>
 	{
@@ -48,7 +48,7 @@ sub.addCommand( 'stop', {
 	}
 } )
 
-sub.addCommand( 'change', {
+command.addSubCommand( 'change', {
 	help: 'Changes the minimum age that will be deleted',
 	func: async ( message: Message, args: string ) =>
 	{
@@ -69,7 +69,7 @@ sub.addCommand( 'change', {
 	}
 } )
 
-sub.addCommand( 'force', {
+command.addSubCommand( 'force', {
 	help: 'Forces a Purge',
 	aliases: [ 'now' ],
 	func: async ( message: Message ) =>
@@ -84,7 +84,7 @@ sub.addCommand( 'force', {
 	},
 } )
 
-sub.addCommand( 'logs', {
+command.addSubCommand( 'logs', {
 	help: 'Provides stats about current channels purging',
 	aliases: [ 'stat', 'stats', 'log', 'info' ],
 	func: async ( message: Message ) =>

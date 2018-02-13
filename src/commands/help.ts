@@ -2,8 +2,7 @@ import { Message } from 'discord.js'
 import { list } from '../commands'
 import { richEmbed } from '../discord/embed'
 import Command from '../classes/Command'
-import List from '../classes/List';
-import { codeWrap } from '../util';
+import { codeWrap } from '../util'
 
 list.addCommand( 'help', {
 	func: helpFunction,
@@ -51,7 +50,7 @@ list.addCommand( 'list', {
 function treeWalker( args )
 {
 	const argsArray = args.replace( / +(?= )/g, '' ).toLowerCase().split( ' ' )
-	let latest: List = list
+	let latest = list
 	let err: string
 	let pathString = 'main'
 
