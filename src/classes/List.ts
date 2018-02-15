@@ -1,21 +1,16 @@
-import ListRunner from './ListRunner'
 import Command from './Command'
 import { IApplicationWrapper } from './Command'
-import { maxStringLength, padLeft, padRight } from '../util'
+import { maxStringLength, padLeft, padRight, processCommandString }
+	from '../util'
+import { Message } from 'discord.js';
+import { hasAuthorityForCommand, unauthorised } from '../discord/authority';
 
 export default class List
 {
-	constructor()
-	{
-		this.runner = new ListRunner( this )
-	}
-
 	/** Contains Command instances */
 	readonly list: { [ key: string ]: Command } = {}
 	/** Contains Command instances */
 	readonly listCondesed: { [ key: string ]: string[] } = {}
-	/** Class instance that conatains the logic for handling message events */
-	readonly runner: ListRunner
 
 	/** Creates a new class that is registered with list */
 	addCommand( key: string, input: IApplicationWrapper )
@@ -111,6 +106,28 @@ export default class List
 		}
 
 		return items.sort().join( '\n' )
+	}
+
+	/**
+	 * Processes input and calls Command runner,
+	 * or informs User of missing command or lacking privlages
+	 */
+	async commandRunner( message: Message, text: string )
+	{
+		let [ command, args ] = processCommandString( text )
+
+		// Jason: Do not remove this!!! It is correct
+		if ( !command )
+			return // Ignore prefix only string
+
+		const wrapper = this.getCommandWrapper( command )
+
+		if ( !wrapper )
+			await message.reply( `Cannot find \`${ command }\`` )
+		else if ( !hasAuthorityForCommand( message, wrapper ) )
+			await unauthorised( message, wrapper )
+		else
+			await wrapper.runner.runner( message, command, args )
 	}
 }
 

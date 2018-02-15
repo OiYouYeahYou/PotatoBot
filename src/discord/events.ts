@@ -41,7 +41,7 @@ export async function messageRecived( message: Message )
 		{
 			message.channel.startTyping( 1 )
 			const commandString = removePrefix( prefix, text )
-			await list.runner.commandRunner( message, commandString )
+			await list.commandRunner( message, commandString )
 			message.channel.stopTyping( true )
 		}
 		else if ( message.mentions.everyone )

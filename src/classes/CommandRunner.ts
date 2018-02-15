@@ -64,7 +64,7 @@ export default class CommandRunner
 	/** Used for Command with sub commands and no main function */
 	private async sub( message: Message, command: string, args: string )
 	{
-		return this.command.subCommands.runner.commandRunner( message, args )
+		return this.command.subCommands.commandRunner( message, args )
 	}
 
 	/** Runs when neiter a main function or sub commands list exist */
