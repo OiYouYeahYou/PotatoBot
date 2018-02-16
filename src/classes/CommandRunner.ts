@@ -26,8 +26,7 @@ export default class CommandRunner
 		}
 		else
 		{
-			runner = this.stub
-			type = 'stub'
+			throw new Error( 'Stubs are not supported' )
 		}
 
 		this.runner = runner
@@ -42,7 +41,7 @@ export default class CommandRunner
 		args: string
 	) => Promise<any>
 	/** The runner type the class will use */
-	readonly type: 'stub' | 'command' | 'submodule' | 'subcommand'
+	readonly type: 'command' | 'submodule' | 'subcommand'
 
 	/** Safely execute main function */
 	private async func( message: Message, command: string, args: string )
@@ -65,13 +64,5 @@ export default class CommandRunner
 	private async sub( message: Message, command: string, args: string )
 	{
 		return this.command.subCommands.commandRunner( message, args )
-	}
-
-	/** Runs when neiter a main function or sub commands list exist */
-	private async stub( message: Message, command: string )
-	{
-		return message.reply(
-			`Command \`${ command }\` is a stub, soon to be available`
-		)
 	}
 }
