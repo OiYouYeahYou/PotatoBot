@@ -14,7 +14,7 @@ interface megh
 
 let raceLock = false
 
-const command = list.addCommand( 'bot', {
+const command = list.addModule( 'bot', {
 	help: 'Bot administration tools for Owner',
 	permission: 'owner',
 	subCommands: true,

@@ -3,6 +3,7 @@ import { list } from '../commands'
 import { richEmbed } from '../discord/embed'
 import Command from '../classes/Command'
 import { codeWrap } from '../util'
+import Module from '../classes/Module';
 
 list.addCommand( 'help', {
 	func: helpFunction,
@@ -65,7 +66,7 @@ function treeWalker( args )
 				break
 			}
 
-			if ( !command.subCommands )
+			if ( !( command instanceof Module ) )
 			{
 				err = `\`${ key }\` has no sub modules`
 				break

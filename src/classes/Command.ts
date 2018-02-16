@@ -1,6 +1,4 @@
-import CommandRunner from './CommandRunner'
-import { Message, Guild } from 'discord.js'
-import List from '../classes/List'
+import { Message } from 'discord.js'
 import { prefix } from '../constants'
 
 export interface IApplicationWrapper
@@ -33,29 +31,34 @@ export default class Command
 
 		if ( aliases && aliases.length )
 			this.aliases = `${ key }, ${ aliases.join( ', ' ) }`
-
-		if ( subCommands )
-			this.subCommands = new List
-
-		this.runner = new CommandRunner( this )
 	}
 
 	public readonly func: FCommand
 	public readonly permission: TPermission
-	public readonly subCommands: List
 
 	public readonly key: string
 	public readonly help: string
 	public readonly usage: string
 	public readonly aliases: string
 
-	readonly runner: CommandRunner
+	runner: ( message: Message, command: string, args: string ) => Promise<any>
+		= this._CommandRunner
 
-	addSubCommand( key: string, input: IApplicationWrapper )
+	private async _CommandRunner(
+		message: Message, command: string, args: string
+	)
 	{
-		if ( !this.subCommands )
-			throw ReferenceError( 'This command has no sub command list' )
+		try
+		{
+			await this.func( message, args )
+		}
+		catch ( error )
+		{
+			const failMessage = `Trying to run \`${ command }\` has failed`
 
-		return this.subCommands.addCommand( key, input )
+			console.error( failMessage )
+			console.error( error )
+			await message.reply( failMessage )
+		}
 	}
 }

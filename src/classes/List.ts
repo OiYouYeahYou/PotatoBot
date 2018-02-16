@@ -4,6 +4,14 @@ import { maxStringLength, padLeft, padRight, processCommandString }
 	from '../util'
 import { Message } from 'discord.js';
 import { hasAuthorityForCommand, unauthorised } from '../discord/authority';
+import Module from './Module';
+
+interface IAddInject<inject extends Command>
+{
+	new( key, input ): inject
+}
+
+type listItems = Module | Command
 
 export default class List
 {
@@ -15,12 +23,26 @@ export default class List
 	/** Creates a new class that is registered with list */
 	addCommand( key: string, input: IApplicationWrapper )
 	{
+		return this.addToList( Command, key, input )
+	}
+
+	/** Creates a new class that is registered with list */
+	addModule( key: string, input: IApplicationWrapper )
+	{
+		return this.addToList( Module, key, input )
+	}
+
+	/** Add a new item to the list, including as an alias */
+	private addToList<inject extends Command>(
+		Inject: IAddInject<inject>, key: string, input: IApplicationWrapper
+	): inject
+	{
 		if ( input.disabled )
 			return
 
 		key = key.toLowerCase()
 
-		const instance = new Command( key, input )
+		const instance = new Inject( key, input )
 
 		this.registerMain( key, instance )
 
@@ -69,7 +91,7 @@ export default class List
 	}
 
 	/** Returns a command based on the key */
-	getCommandWrapper( cmd: string ): Command | false
+	getCommandWrapper( cmd: string ): Command | Module | false
 	{
 		if ( cmd in this.list )
 			return this.list[ cmd ]
@@ -99,7 +121,7 @@ export default class List
 			if ( aliases.length )
 				commandInfo += ` - [ ${ aliases.join( ', ' ) } ]`
 
-			if ( wrapper.subCommands )
+			if ( wrapper instanceof Module )
 				commandInfo += '\n' + wrapper.subCommands.toSummary( pad + 2 )
 
 			items.push( commandInfo )
@@ -127,7 +149,7 @@ export default class List
 		else if ( !hasAuthorityForCommand( message, wrapper ) )
 			await unauthorised( message, wrapper )
 		else
-			await wrapper.runner.runner( message, command, args )
+			await wrapper.runner( message, command, args )
 	}
 }
 

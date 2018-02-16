@@ -5,7 +5,7 @@ import { findGuildConfig, GuildConfigModel, configLists } from '../mongoose/guil
 import { isFeatureEnabled, isCommandEnabled } from '../configManager'
 import { all } from '../discord/featureEnum'
 
-const command = list.addCommand( 'config', {
+const command = list.addModule( 'config', {
 	help: 'Sets configuration preferences',
 	permission: 'master',
 	aliases: [ 'cfg' ],

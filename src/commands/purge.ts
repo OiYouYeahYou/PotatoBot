@@ -1,15 +1,14 @@
 import { list } from "../commands"
 import { Message, Attachment, DMChannel, GroupDMChannel, TextChannel }
 	from "discord.js"
-import { splitByFirstSpace, padLeft, safeCallAsync, splitFirstWordAsNumber }
-	from "../util"
+import { padLeft, safeCallAsync, splitFirstWordAsNumber } from "../util"
 import { createPurgeConfig, getPurgeConfig, getReports, IPurgeReport }
 	from "../mongoose/autoPurgeConfig"
 import { autoPurge } from "../features/channelAutoPurge"
 
 const defaultAgeLimit = 24
 
-const command = list.addCommand( 'autopurge', {
+const command = list.addModule( 'autopurge', {
 	help: 'Manages a guild\'s purging config',
 	permission: 'owner',
 	aliases: [ 'ap' ],
