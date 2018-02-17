@@ -1,5 +1,5 @@
 import { Message } from 'discord.js'
-import { list } from '../commands'
+import list from '../list'
 
 export async function never( message: Message, args: string )
 {

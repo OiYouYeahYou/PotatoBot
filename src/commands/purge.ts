@@ -1,4 +1,4 @@
-import { list } from '../commands'
+import list from '../list'
 import { Message, Attachment, DMChannel, GroupDMChannel, TextChannel }
 	from 'discord.js'
 import { padLeft, safeCallAsync, splitFirstWordAsNumber } from '../util'

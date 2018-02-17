@@ -7,7 +7,7 @@ import { isPrefixed, somethingWentWrong, removePrefix } from '../util'
 import { everyoneResponse } from './features'
 import { getDefaultChannel, isFeatureEnabled } from '../configManager'
 import { announceEntry, announceExit } from './featureEnum'
-import { list } from '../commands'
+import list from '../list'
 import { initAutoPurge } from '../features/channelAutoPurge'
 
 export const ready = () =>

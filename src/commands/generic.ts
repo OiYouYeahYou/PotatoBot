@@ -1,6 +1,6 @@
 import { Message } from 'discord.js'
 import { richEmbed } from '../discord/embed'
-import { list } from '../commands'
+import list from '../list'
 
 list.addCommand( 'avatar', {
 	func: async ( message: Message ) =>

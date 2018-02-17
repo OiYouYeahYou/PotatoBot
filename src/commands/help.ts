@@ -1,5 +1,5 @@
 import { Message } from 'discord.js'
-import { list } from '../commands'
+import list from '../list'
 import { richEmbed } from '../discord/embed'
 import { codeWrap } from '../util'
 import Module from '../classes/Module'

@@ -9,7 +9,7 @@ import
   splitByFirstSpace,
   TEN
 } from '../util'
-import { list } from '../commands'
+import list from '../list'
 
 list.addCommand( 'demand', {
   func: demandRoom,

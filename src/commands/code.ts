@@ -1,6 +1,6 @@
 import { Message } from 'discord.js'
 import { splitByFirstSpace, destructingReply, somethingWentWrong } from '../util'
-import { list } from '../commands'
+import list from '../list'
 
 list.addCommand( 'code', {
 	func: async ( message: Message, args: string ) =>

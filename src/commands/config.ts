@@ -1,6 +1,6 @@
 import { Message, Guild as TGuild } from 'discord.js'
 import { destructingReply } from '../util'
-import { list } from '../commands'
+import list from '../list'
 import { findGuildConfig, GuildConfigModel, configLists } from '../mongoose/guild'
 import { isFeatureEnabled, isCommandEnabled } from '../configManager'
 import { all } from '../discord/featureEnum'

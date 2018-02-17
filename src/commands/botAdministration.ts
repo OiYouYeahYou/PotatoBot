@@ -2,7 +2,7 @@ import { disconnect } from '../index'
 import { destructingReply, codeWrap } from '../util'
 import { exec } from 'child_process'
 import { Message } from 'discord.js'
-import { list } from '../commands'
+import list from '../list'
 import { promisify } from 'util'
 
 const promisedExec = promisify( exec )
