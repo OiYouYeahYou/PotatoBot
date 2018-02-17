@@ -17,10 +17,9 @@ let raceLock = false
 const command = list.addModule( 'bot', {
 	help: 'Bot administration tools for Owner',
 	permission: 'owner',
-	subCommands: true,
 } )
 
-command.addSubCommand( 'kill', {
+command.addCommand( 'kill', {
 	func: async ( message: Message ) =>
 	{
 		if ( raceLock )
@@ -40,7 +39,7 @@ command.addSubCommand( 'kill', {
 	permission: 'master',
 } )
 
-command.addSubCommand( 'restart', {
+command.addCommand( 'restart', {
 	func: async ( message: Message ) =>
 	{
 		if ( raceLock )
@@ -66,7 +65,7 @@ command.addSubCommand( 'restart', {
 	permission: 'master',
 } )
 
-command.addSubCommand( 'update', {
+command.addCommand( 'update', {
 	func: async ( message: Message ) =>
 	{
 		if ( raceLock )
@@ -126,7 +125,7 @@ function rsMsg(
 	return [ gitMessage, gulpMessage, restartMessage ].join( '\n\n' )
 }
 
-command.addSubCommand( 'invite', {
+command.addCommand( 'invite', {
 	func: async ( message ) =>
 	{
 		const invite = await message.client.generateInvite()

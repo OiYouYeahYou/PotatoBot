@@ -9,21 +9,20 @@ const command = list.addModule( 'config', {
 	help: 'Sets configuration preferences',
 	permission: 'master',
 	aliases: [ 'cfg' ],
-	subCommands: true
 } )
 
-command.addSubCommand( 'new', {
+command.addCommand( 'new', {
 	func: createNewConfig,
 	help: 'Creates a new config for a Guild',
 } )
 
-command.addSubCommand( 'features', {
+command.addCommand( 'features', {
 	func: async ( message: Message, args: string ) =>
 		enabledAggreator( message, args, 'features' ),
 	help: 'Returns enabled features,  or Checks if features are enabled',
 } )
 
-command.addSubCommand( 'commands', {
+command.addCommand( 'commands', {
 	func: async ( message: Message, args: string ) =>
 		enabledAggreator( message, args, 'commands' ),
 	help: 'Returns enabled commands,  or Checks if commands are enabled',

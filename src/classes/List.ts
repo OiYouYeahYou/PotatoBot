@@ -1,40 +1,33 @@
-import Command from './Command'
-import { IApplicationWrapper } from './Command'
+import Command, { CommandInfo } from './Command'
 import { maxStringLength, padLeft, padRight, processCommandString }
 	from '../util'
-import { Message } from 'discord.js';
-import { hasAuthorityForCommand, unauthorised } from '../discord/authority';
-import Module from './Module';
-
-interface IAddInject<inject extends Command>
-{
-	new( key, input ): inject
-}
-
-type listItems = Module | Command
+import { Message } from 'discord.js'
+import { hasAuthorityForCommand, unauthorised } from '../discord/authority'
+import Module from './Module'
+import AListItem, { IAbstractListItem, ListItemInfo } from './AListItem'
 
 export default class List
 {
 	/** Contains Command instances */
-	readonly list: { [ key: string ]: Command } = {}
+	readonly list: { [ key: string ]: AListItem } = {}
 	/** Contains Command instances */
 	readonly listCondesed: { [ key: string ]: string[] } = {}
 
 	/** Creates a new class that is registered with list */
-	addCommand( key: string, input: IApplicationWrapper )
+	addCommand( key: string, input: CommandInfo )
 	{
 		return this.addToList( Command, key, input )
 	}
 
 	/** Creates a new class that is registered with list */
-	addModule( key: string, input: IApplicationWrapper )
+	addModule( key: string, input: ListItemInfo )
 	{
 		return this.addToList( Module, key, input )
 	}
 
 	/** Add a new item to the list, including as an alias */
-	private addToList<inject extends Command>(
-		Inject: IAddInject<inject>, key: string, input: IApplicationWrapper
+	private addToList<inject extends AListItem>(
+		Inject: IAbstractListItem<inject>, key: string, input: ListItemInfo
 	): inject
 	{
 		if ( input.disabled )
@@ -54,7 +47,7 @@ export default class List
 	}
 
 	/** Registers new commands in list */
-	private register( key: string, instance: Command )
+	private register( key: string, instance: AListItem )
 	{
 		key = key.trim().toLowerCase()
 
@@ -64,14 +57,14 @@ export default class List
 	}
 
 	/** Registers new commands in list */
-	private registerMain( key: string, instance: Command )
+	private registerMain( key: string, instance: AListItem )
 	{
 		this.register( key, instance )
 		this.listCondesed[ key ] = []
 	}
 
 	/** Registers new commands in list */
-	private registerAlias( key: string, alias: string, instance: Command )
+	private registerAlias( key: string, alias: string, instance: AListItem )
 	{
 		this.register( alias, instance )
 		this.listCondesed[ key ].push( alias )
@@ -91,7 +84,7 @@ export default class List
 	}
 
 	/** Returns a command based on the key */
-	getCommandWrapper( cmd: string ): Command | Module | false
+	getCommandWrapper( cmd: string ): AListItem | false
 	{
 		if ( cmd in this.list )
 			return this.list[ cmd ]

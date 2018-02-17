@@ -1,9 +1,9 @@
 import { Message } from 'discord.js'
 import { list } from '../commands'
 import { richEmbed } from '../discord/embed'
-import Command from '../classes/Command'
 import { codeWrap } from '../util'
-import Module from '../classes/Module';
+import Module from '../classes/Module'
+import AListItem from '../classes/AListItem'
 
 list.addCommand( 'help', {
 	func: helpFunction,
@@ -102,7 +102,7 @@ function missingWrapper( command: string )
 }
 
 /** Converts a Command into an Embed response */
-function helpEmebd( command: string, wrapper: Command )
+function helpEmebd( command: string, wrapper: AListItem )
 {
 	return richEmbed()
 		.setTitle( `Help : ${ command }` )

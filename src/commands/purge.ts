@@ -1,10 +1,10 @@
-import { list } from "../commands"
+import { list } from '../commands'
 import { Message, Attachment, DMChannel, GroupDMChannel, TextChannel }
-	from "discord.js"
-import { padLeft, safeCallAsync, splitFirstWordAsNumber } from "../util"
+	from 'discord.js'
+import { padLeft, safeCallAsync, splitFirstWordAsNumber } from '../util'
 import { createPurgeConfig, getPurgeConfig, getReports, IPurgeReport }
-	from "../mongoose/autoPurgeConfig"
-import { autoPurge } from "../features/channelAutoPurge"
+	from '../mongoose/autoPurgeConfig'
+import { autoPurge } from '../features/channelAutoPurge'
 
 const defaultAgeLimit = 24
 
@@ -12,10 +12,9 @@ const command = list.addModule( 'autopurge', {
 	help: 'Manages a guild\'s purging config',
 	permission: 'owner',
 	aliases: [ 'ap' ],
-	subCommands: true,
 } )
 
-command.addSubCommand( 'start', {
+command.addCommand( 'start', {
 	help: 'Sets the auto purger to run in the current channel',
 	func: async ( message: Message, args: string ) =>
 	{
@@ -33,7 +32,7 @@ command.addSubCommand( 'start', {
 	}
 } )
 
-command.addSubCommand( 'stop', {
+command.addCommand( 'stop', {
 	help: 'Stop the auto purger running in the current channel',
 	func: async ( message: Message ) =>
 	{
@@ -46,7 +45,7 @@ command.addSubCommand( 'stop', {
 	}
 } )
 
-command.addSubCommand( 'change', {
+command.addCommand( 'change', {
 	help: 'Changes the minimum age that will be deleted',
 	func: async ( message: Message, args: string ) =>
 	{
@@ -67,7 +66,7 @@ command.addSubCommand( 'change', {
 	}
 } )
 
-command.addSubCommand( 'force', {
+command.addCommand( 'force', {
 	help: 'Forces a Purge',
 	aliases: [ 'now' ],
 	func: async ( message: Message ) =>
@@ -82,7 +81,7 @@ command.addSubCommand( 'force', {
 	},
 } )
 
-command.addSubCommand( 'logs', {
+command.addCommand( 'logs', {
 	help: 'Provides stats about current channels purging',
 	aliases: [ 'stat', 'stats', 'log', 'info' ],
 	func: async ( message: Message ) =>

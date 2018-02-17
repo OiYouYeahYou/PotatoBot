@@ -1,7 +1,7 @@
 import { Message } from 'discord.js'
-import Command from '../classes/Command'
+import AListItem from '../classes/AListItem'
 
-export function hasAuthorityForCommand( message: Message, wrapper: Command )
+export function hasAuthorityForCommand( message: Message, wrapper: AListItem )
 {
 	var { permission } = wrapper
 
@@ -32,7 +32,7 @@ function isAdmin( message: Message )
 	return message.member && message.member.hasPermission( 'ADMINISTRATOR' )
 }
 
-export async function unauthorised( message: Message, wrap: Command )
+export async function unauthorised( message: Message, wrap: AListItem )
 {
 	return message.reply(
 		`You are not autorised to use that command, `
