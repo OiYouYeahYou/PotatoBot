@@ -1,32 +1,36 @@
 import { Message, Guild as TGuild } from 'discord.js'
 import { destructingReply } from '../util'
-import list from '../list'
 import { findGuildConfig, GuildConfigModel, configLists } from '../mongoose/guild'
 import { isFeatureEnabled, isCommandEnabled } from '../configManager'
 import { all } from '../discord/featureEnum'
+import List from '../classes/List';
 
-const command = list.addModule( 'config', {
-	help: 'Sets configuration preferences',
-	permission: 'master',
-	aliases: [ 'cfg' ],
-} )
+export default function ( list: List )
+{
+	const command = list.addModule( 'config', {
+		help: 'Sets configuration preferences',
+		permission: 'master',
+		aliases: [ 'cfg' ],
+	} )
 
-command.addCommand( 'new', {
-	func: createNewConfig,
-	help: 'Creates a new config for a Guild',
-} )
+	command.addCommand( 'new', {
+		func: createNewConfig,
+		help: 'Creates a new config for a Guild',
+	} )
 
-command.addCommand( 'features', {
-	func: async ( message: Message, args: string ) =>
-		enabledAggreator( message, args, 'features' ),
-	help: 'Returns enabled features,  or Checks if features are enabled',
-} )
+	command.addCommand( 'features', {
+		func: async ( message: Message, args: string ) =>
+			enabledAggreator( message, args, 'features' ),
+		help: 'Returns enabled features,  or Checks if features are enabled',
+	} )
 
-command.addCommand( 'commands', {
-	func: async ( message: Message, args: string ) =>
-		enabledAggreator( message, args, 'commands' ),
-	help: 'Returns enabled commands,  or Checks if commands are enabled',
-} )
+	command.addCommand( 'commands', {
+		func: async ( message: Message, args: string ) =>
+			enabledAggreator( message, args, 'commands' ),
+		help: 'Returns enabled commands,  or Checks if commands are enabled',
+	} )
+}
+
 
 async function enabledAggreator( msg: Message, args: string, type: configLists )
 {

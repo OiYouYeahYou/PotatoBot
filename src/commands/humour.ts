@@ -1,8 +1,13 @@
 import { Message } from 'discord.js'
-import list from '../list'
+import List from '../classes/List';
 
-list.addCommand( 'shutup', {
-	func: async ( message: Message ) =>
-		message.reply( 'Bitch Noooo!!!!' ),
-	help: 'Returns a witty response',
-} )
+
+export default function ( list: List )
+{
+	list.addCommand( 'shutup', {
+		func: async ( message: Message ) =>
+			message.reply( 'Bitch Noooo!!!!' ),
+		help: 'Returns a witty response',
+	} )
+}
+

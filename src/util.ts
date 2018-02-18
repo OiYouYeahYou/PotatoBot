@@ -159,18 +159,6 @@ export async function timer( time: number )
 	)
 }
 
-export function requireInFile( dir: string, ignoreIndex: boolean = true )
-{
-	const normalizedPath = join( __dirname, dir )
-	const files = readdirSync( normalizedPath )
-	const ext = '.js'
-	const index = 'index.js'
-
-	for ( const f of files )
-		if ( f.endsWith( ext ) && !( ignoreIndex && f.endsWith( index ) ) )
-			require( join( normalizedPath, f ) )
-}
-
 /** Removes a prefix from the start of a string */
 export function removePrefix( pfx: string, text: string )
 {

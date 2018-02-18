@@ -9,14 +9,19 @@ import
   splitByFirstSpace,
   TEN
 } from '../util'
-import list from '../list'
+import List from '../classes/List';
 
-list.addCommand( 'demand', {
-  func: demandRoom,
-  help: 'Creates a \'Room of Requirement\'',
-  usage: '[limit] [name]',
-  // disabled: true,
-} )
+
+export default function ( list: List )
+{
+  list.addCommand( 'demand', {
+    func: demandRoom,
+    help: 'Creates a \'Room of Requirement\'',
+    usage: '[limit] [name]',
+    // disabled: true,
+  } )
+}
+
 
 const REQUIRED_PERMISSONS: PermissionResolvable[] = [
   'MANAGE_CHANNELS', 'MOVE_MEMBERS'

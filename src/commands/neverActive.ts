@@ -1,5 +1,15 @@
 import { Message } from 'discord.js'
-import list from '../list'
+import List from '../classes/List';
+
+
+export default function ( list: List )
+{
+
+	list.addCommand( 'never', {
+		func: never,
+		help: 'Displays the number of people who have not sent a message',
+	} )
+}
 
 export async function never( message: Message, args: string )
 {
@@ -12,8 +22,3 @@ export async function never( message: Message, args: string )
 
 	return message.reply( inactive.length )
 }
-
-list.addCommand( 'never', {
-	func: never,
-	help: 'Displays the number of people who have not sent a message',
-} )

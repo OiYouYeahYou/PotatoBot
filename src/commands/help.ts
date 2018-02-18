@@ -1,15 +1,32 @@
 import { Message } from 'discord.js'
-import list from '../list'
 import { richEmbed } from '../discord/embed'
 import { codeWrap } from '../util'
 import Module from '../classes/Module'
 import AListItem from '../classes/AListItem'
+import List from '../classes/List';
+import list from '../list';
 
-list.addCommand( 'help', {
-	func: helpFunction,
-	help: 'Provides information about a command',
-	usage: '<command>',
-} )
+export default function ( list: List )
+{
+	list.addCommand( 'help', {
+		func: helpFunction,
+		help: 'Provides information about a command',
+		usage: '<command>',
+	} )
+
+	list.addCommand( 'list', {
+		func: async ( message: Message, args ) =>
+		{
+			const [ err, response ] = treeWalker( args )
+
+			if ( err )
+				await message.channel.send( err )
+
+			return message.channel.send( response )
+		},
+		help: 'Provides a list of commands',
+	} )
+}
 
 export async function helpFunction( message: Message, text: string )
 {
@@ -34,19 +51,6 @@ export async function helpFunction( message: Message, text: string )
 		await message.channel.send( { embed } )
 	}
 }
-
-list.addCommand( 'list', {
-	func: async ( message: Message, args ) =>
-	{
-		const [ err, response ] = treeWalker( args )
-
-		if ( err )
-			await message.channel.send( err )
-
-		return message.channel.send( response )
-	},
-	help: 'Provides a list of commands',
-} )
 
 function treeWalker( args )
 {
