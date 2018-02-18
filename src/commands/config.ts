@@ -31,7 +31,6 @@ export default function ( list: List )
 	} )
 }
 
-
 async function enabledAggreator( msg: Message, args: string, type: configLists )
 {
 	const response = args

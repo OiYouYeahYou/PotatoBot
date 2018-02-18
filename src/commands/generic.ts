@@ -19,4 +19,3 @@ export default function ( list: List )
 		aliases: [ 'pong' ],
 	} )
 }
-

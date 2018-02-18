@@ -104,7 +104,6 @@ export default function ( list: List )
 	} )
 }
 
-
 async function stats( channel: TextChannel )
 {
 	const { id } = channel

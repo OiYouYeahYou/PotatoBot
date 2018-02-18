@@ -1,7 +1,6 @@
 import { Message } from 'discord.js'
 import List from '../classes/List';
 
-
 export default function ( list: List )
 {
 

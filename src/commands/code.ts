@@ -30,7 +30,6 @@ export default function ( list: List )
 	} )
 }
 
-
 async function sendCode( message: Message, text: string | undefined, lang )
 {
 	if ( message.delete )

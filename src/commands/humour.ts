@@ -1,7 +1,6 @@
 import { Message } from 'discord.js'
 import List from '../classes/List';
 
-
 export default function ( list: List )
 {
 	list.addCommand( 'shutup', {
@@ -10,4 +9,3 @@ export default function ( list: List )
 		help: 'Returns a witty response',
 	} )
 }
-

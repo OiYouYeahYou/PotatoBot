@@ -11,7 +11,6 @@ import
 } from '../util'
 import List from '../classes/List';
 
-
 export default function ( list: List )
 {
   list.addCommand( 'demand', {
@@ -21,7 +20,6 @@ export default function ( list: List )
     // disabled: true,
   } )
 }
-
 
 const REQUIRED_PERMISSONS: PermissionResolvable[] = [
   'MANAGE_CHANNELS', 'MOVE_MEMBERS'
