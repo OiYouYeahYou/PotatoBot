@@ -1,5 +1,4 @@
 import { Guild, Message, VoiceChannel, Snowflake } from 'discord.js'
-import { client } from './discord/client'
 import { join } from 'path'
 import { readdirSync } from 'fs'
 
@@ -156,7 +155,7 @@ export function guildIDNormaliser( guild: Guild | Snowflake ): number
 export async function timer( time: number )
 {
 	return new Promise( ( resolve, reject ) =>
-		client.setTimeout( () => resolve(), time )
+		setTimeout( () => resolve(), time )
 	)
 }
 
