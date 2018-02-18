@@ -10,10 +10,10 @@ import { announceEntry, announceExit } from './featureEnum'
 import list from '../list'
 import { initAutoPurge } from '../features/channelAutoPurge'
 
-export const ready = () =>
+export const ready = ( client ) =>
 {
 	console.log( 'Discord client is ready!' )
-	initAutoPurge()
+	initAutoPurge( client )
 }
 
 export const disconnect = () =>

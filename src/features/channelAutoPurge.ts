@@ -1,5 +1,4 @@
-import { TextChannel, GuildChannel, Message } from 'discord.js'
-import { client } from '../discord/client'
+import { TextChannel, GuildChannel, Message, Client } from 'discord.js'
 import { richEmbed } from '../discord/embed'
 import { getPurgeConfigs, IPurgeConfig, savePurgeReport, getPurgeConfig }
 	from '../mongoose/autoPurgeConfig'
@@ -19,14 +18,14 @@ export interface IInitialPurgeReport
 	guildID: string
 }
 
-export async function initAutoPurge()
+export async function initAutoPurge( client: Client )
 {
 	const interval = AutoPurgeInterval * baseTime
-	await safeCallAsync( autoPurge )
-	client.setInterval( () => safeCallAsync( autoPurge ), interval )
+	await safeCallAsync( autoPurge, client )
+	client.setInterval( () => safeCallAsync( autoPurge, client ), interval )
 }
 
-export async function autoPurge( channelIDOverride?: string )
+export async function autoPurge( client: Client, channelIDOverride?: string )
 {
 	const now = Date.now()
 	const reports: IInitialPurgeReport[] = []
@@ -47,7 +46,7 @@ export async function autoPurge( channelIDOverride?: string )
 		else
 			purged.push( channelID )
 
-		let [ error, channel ] = getAndValidateChannel( channelID )
+		let [ error, channel ] = getAndValidateChannel( client, channelID )
 		let rawCount, deletingCount, guildID, deletedCount
 
 		if ( channel )
@@ -55,7 +54,7 @@ export async function autoPurge( channelIDOverride?: string )
 			const report = await purgeChannel( config, channel, now );
 			( { rawCount, deletingCount, error, guildID, deletedCount } = report )
 
-			await purgeMessage( channel, report )
+			await purgeMessage( client, channel, report )
 		}
 
 		if ( deletingCount !== 0 )
@@ -67,7 +66,9 @@ export async function autoPurge( channelIDOverride?: string )
 	reports.forEach( savePurgeReport )
 }
 
-function getAndValidateChannel( id: string ): [ string, TextChannel ]
+function getAndValidateChannel(
+	client: Client, id: string
+): [ string, TextChannel ]
 {
 	const { user: self, channels } = client
 	const channel = channels.find( 'id', id )
@@ -129,7 +130,9 @@ function filterDeletables( messages: Message[], minAge: number, now: number )
 
 const sortByOldestFirst = ( a, b ) => a.createdTimestamp - b.createdTimestamp
 
-async function purgeMessage( channel: TextChannel, report: IInitialPurgeReport )
+async function purgeMessage(
+	client: Client, channel: TextChannel, report: IInitialPurgeReport
+)
 {
 	if ( !report.deletingCount )
 		return

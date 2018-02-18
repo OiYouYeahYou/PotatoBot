@@ -71,13 +71,14 @@ command.addCommand( 'force', {
 	aliases: [ 'now' ],
 	func: async ( message: Message ) =>
 	{
-		const { id } = message.channel
+		const { channel, client } = message
+		const { id } = channel
 		const [ config ] = await getPurgeConfig( id )
 
 		if ( !config )
 			return message.reply( 'Auto purge is not set up for this channel' )
 
-		await autoPurge( id )
+		await autoPurge( client, id )
 	},
 } )
 

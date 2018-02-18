@@ -20,7 +20,7 @@ const clientOptions = { fetchAllMembers: true }
 
 export const client = new Client( clientOptions )
 
-client.on( 'ready', ready )
+client.on( 'ready', () => ready( client ) )
 client.on( 'error', error )
 client.on( 'disconnect', disconnect )
 client.on( 'reconnecting', reconnecting )
