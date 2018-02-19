@@ -10,25 +10,17 @@ export default class Module extends AListItem
 	constructor( key: string, input: ModuleInfo )
 	{
 		super( key, input, runner )
-
-		this.subCommands = new List
 	}
 
-	public readonly subCommands: List
+	public readonly subCommands = new List
 
 	addCommand( key: string, input: CommandInfo )
 	{
-		if ( !this.subCommands )
-			throw ReferenceError( 'This command has no sub command list' )
-
 		return this.subCommands.addCommand( key, input )
 	}
 
 	addModule( key: string, input: ModuleInfo )
 	{
-		if ( !this.subCommands )
-			throw ReferenceError( 'This command has no sub command list' )
-
 		return this.subCommands.addModule( key, input )
 	}
 }
