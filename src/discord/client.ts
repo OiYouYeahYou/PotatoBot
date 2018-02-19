@@ -2,7 +2,6 @@
 require( 'source-map-support' ).install()
 
 import { Client } from 'discord.js'
-import { setEnv } from '../util'
 import
 {
 	guildMemberAdd,
@@ -14,11 +13,10 @@ import
 	reconnecting
 } from './events'
 
-setEnv()
-
 const clientOptions = { fetchAllMembers: true }
 
-export const client = new Client( clientOptions )
+const client = new Client( clientOptions )
+export default client
 
 client.on( 'ready', () => ready( client ) )
 client.on( 'error', error )
