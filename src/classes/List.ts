@@ -1,7 +1,7 @@
 import Command, { CommandInfo } from './Command'
 import { maxStringLength, padLeft, padRight, processCommandString }
 	from '../util'
-import { Message } from 'discord.js'
+import Request from './Request';
 import { hasAuthorityForCommand, unauthorised } from '../discord/authority'
 import Module from './Module'
 import AListItem, { IAbstractListItem, ListItemInfo } from './AListItem'
@@ -127,7 +127,7 @@ export default class List
 	 * Processes input and calls Command runner,
 	 * or informs User of missing command or lacking privlages
 	 */
-	async commandRunner( message: Message, text: string )
+	async commandRunner( req: Request, text: string )
 	{
 		let [ command, args ] = processCommandString( text )
 
@@ -138,11 +138,11 @@ export default class List
 		const wrapper = this.getCommandWrapper( command )
 
 		if ( !wrapper )
-			await message.reply( `Cannot find \`${ command }\`` )
-		else if ( !hasAuthorityForCommand( message, wrapper ) )
-			await unauthorised( message, wrapper )
+			await req.reply( `Cannot find \`${ command }\`` )
+		else if ( !hasAuthorityForCommand( req, wrapper ) )
+			await unauthorised( req, wrapper )
 		else
-			await wrapper.runner( message, command, args )
+			await wrapper.runner( req, command, args )
 	}
 }
 

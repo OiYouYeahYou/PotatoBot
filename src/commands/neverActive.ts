@@ -1,4 +1,4 @@
-import { Message } from 'discord.js'
+import Request from '../classes/Request';
 import List from '../classes/List';
 
 export default function ( list: List )
@@ -10,14 +10,14 @@ export default function ( list: List )
 	} )
 }
 
-export async function never( message: Message, args: string )
+export async function never( req: Request, args: string )
 {
-	var { guild } = message
+	var { guild } = req
 	var { members } = guild
 
 	var inactive = members.filterArray(
 		member => member.lastMessage ? false : true
 	)
 
-	return message.reply( inactive.length )
+	return req.reply( inactive.length )
 }

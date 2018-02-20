@@ -1,4 +1,4 @@
-import { Message } from 'discord.js'
+import Request from './Request';
 import { prefix } from '../constants'
 import AListItem, { ListItemInfo } from './AListItem'
 
@@ -7,7 +7,7 @@ export interface CommandInfo extends ListItemInfo
 	func: FCommand
 }
 
-export type FCommand = ( message: Message, args: string ) => Promise<any>
+export type FCommand = ( req: Request, args: string ) => Promise<any>
 
 /** Command data handler */
 export default class Command extends AListItem
@@ -23,12 +23,12 @@ export default class Command extends AListItem
 }
 
 async function runner(
-	this: Command, message: Message, command: string, args: string
+	this: Command, req: Request, command: string, args: string
 )
 {
 	try
 	{
-		await this.func( message, args )
+		await this.func( req, args )
 	}
 	catch ( error )
 	{
@@ -36,6 +36,6 @@ async function runner(
 
 		console.error( failMessage )
 		console.error( error )
-		await message.reply( failMessage )
+		await req.reply( failMessage )
 	}
 }

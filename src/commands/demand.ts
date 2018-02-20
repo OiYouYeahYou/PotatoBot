@@ -1,4 +1,4 @@
-import { Message, PermissionResolvable, VoiceChannel } from 'discord.js'
+import { PermissionResolvable, VoiceChannel } from 'discord.js'
 import
 {
   destructingReply,
@@ -10,6 +10,7 @@ import
   TEN
 } from '../util'
 import List from '../classes/List';
+import Request from '../classes/Request';
 
 export default function ( list: List )
 {
@@ -28,41 +29,41 @@ const DEFAULT_NAME = 'Room of requirement'
 const DEFAULT_ARGS: [ number, string ] = [ undefined, 'Room of requirement' ]
 const position = 200
 
-async function demandRoom( message: Message, args: string )
+async function demandRoom( req: Request, args: string )
 {
-  if ( !message.member.voiceChannel )
-    return destructingReply( message, 'You need to be in a Voice Channel' )
+  if ( !req.member.voiceChannel )
+    return req.destructingReply( 'You need to be in a Voice Channel' )
 
-  if ( !message.guild.me.hasPermission( REQUIRED_PERMISSONS ) )
-    return destructingReply( message, 'The bot needs more permissons' )
+  if ( !req.guild.me.hasPermission( REQUIRED_PERMISSONS ) )
+    return req.destructingReply( 'The bot needs more permissons' )
 
   var tempName = randomString( 15 )
 
-  await message.guild.createChannel( tempName, 'voice' )
-  return newChannelHandler( message, tempName, args )
+  await req.guild.createChannel( tempName, 'voice' )
+  return newChannelHandler( req, tempName, args )
 }
 
 /**
  *
- * @param message Message event
+ * @param req Message event
  * @param tmpName Temporary name used to create and find channel
  * @param userLimit User limit to be set to
  * @param name Name for channel to be set too
  */
 async function newChannelHandler(
-  message: Message,
+  req: Request,
   tmpName: string,
   args: string
 )
 {
-  const { guild, member } = message
+  const { guild, member } = req
   const channel: VoiceChannel = findVoiceChannel( guild, tmpName )
 
   if ( !channel )
   {
-    await safeDelete( message )
+    await req.delete()
 
-    return destructingReply( message, 'Channel can not be found, try again' )
+    return req.destructingReply( 'Channel can not be found, try again' )
   }
 
   const [ userLimit, name ] = processArgs( args )
@@ -76,12 +77,12 @@ async function newChannelHandler(
   {
     await channel.edit( config, reason )
     await member.setVoiceChannel( channel.id )
-    initIntervalChecker( message, channel )
-    await destructingReply( message, 'Done' )
+    initIntervalChecker( req, channel )
+    await req.destructingReply( 'Done' )
   } catch ( error )
   {
     await channel.delete()
-    await somethingWentWrong( message, error )
+    await req.somethingWentWrong( error )
   }
 
   return Promise.resolve()
@@ -113,27 +114,27 @@ function processArgs( args: string ): [ number, string ]
 
 /**
  * Cretaes an interval that deletes the channel if the owner is not present
- * @param message
+ * @param req
  * @param channel
  */
-function initIntervalChecker( message: Message, channel: VoiceChannel ): void
+function initIntervalChecker( req: Request, channel: VoiceChannel ): void
 {
-  const interval = message.client.setInterval( async () =>
+  const interval = req.client.setInterval( async () =>
   {
-    if ( message.member.voiceChannelID === channel.id )
+    if ( req.member.voiceChannelID === channel.id )
       return
 
-    message.client.clearInterval( interval )
+    req.client.clearInterval( interval )
 
-    await safeDelete( message )
+    await req.delete()
 
     try
     {
       await channel.delete()
-      await destructingReply( message, 'Channel is deleted' )
+      await req.destructingReply( 'Channel is deleted' )
     } catch ( error )
     {
-      await destructingReply( message, 'Channel can\'t be deleted' )
+      await req.destructingReply( 'Channel can\'t be deleted' )
     }
   }, TEN )
 }

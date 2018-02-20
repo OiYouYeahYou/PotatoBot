@@ -1,5 +1,5 @@
 import List from './List'
-import { Message } from 'discord.js'
+import Request from './Request';
 import AListItem, { ListItemInfo } from './AListItem'
 import { CommandInfo } from './Command'
 
@@ -25,7 +25,7 @@ export default class Module extends AListItem
 	}
 }
 /** Used for Command with sub commands and no main function */
-async function runner( this: Module, msg: Message, cmd: string, args: string )
+async function runner( this: Module, req: Request, cmd: string, args: string )
 {
-	return this.subCommands.commandRunner( msg, args )
+	return this.subCommands.commandRunner( req, args )
 }

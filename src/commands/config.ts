@@ -1,9 +1,10 @@
-import { Message, Guild as TGuild } from 'discord.js'
+import { Guild as TGuild } from 'discord.js'
 import { destructingReply } from '../util'
 import { findGuildConfig, GuildConfigModel, configLists } from '../mongoose/guild'
 import { isFeatureEnabled, isCommandEnabled } from '../configManager'
 import { all } from '../discord/featureEnum'
 import List from '../classes/List';
+import Request from '../classes/Request';
 
 export default function ( list: List )
 {
@@ -19,25 +20,25 @@ export default function ( list: List )
 	} )
 
 	command.addCommand( 'features', {
-		func: async ( message: Message, args: string ) =>
-			enabledAggreator( message, args, 'features' ),
+		func: async ( req: Request, args: string ) =>
+			enabledAggreator( req, args, 'features' ),
 		help: 'Returns enabled features,  or Checks if features are enabled',
 	} )
 
 	command.addCommand( 'commands', {
-		func: async ( message: Message, args: string ) =>
-			enabledAggreator( message, args, 'commands' ),
+		func: async ( req: Request, args: string ) =>
+			enabledAggreator( req, args, 'commands' ),
 		help: 'Returns enabled commands,  or Checks if commands are enabled',
 	} )
 }
 
-async function enabledAggreator( msg: Message, args: string, type: configLists )
+async function enabledAggreator( req: Request, args: string, type: configLists )
 {
 	const response = args
-		? await listEnabled( msg.guild, type, args )
-		: await getEnabledList( msg.guild, type )
+		? await listEnabled( req.guild, type, args )
+		: await getEnabledList( req.guild, type )
 
-	return msg.channel.send( response )
+	return req.send( response )
 }
 
 async function getEnabledList( guild: TGuild, type: configLists )
@@ -80,17 +81,17 @@ async function listEnabled( guild: TGuild, type: configLists, args: string )
 	return reply.join( '\n' )
 }
 
-async function createNewConfig( message: Message, args: string )
+async function createNewConfig( req: Request, args: string )
 {
 	const {
 		channel: { id: defaultChannel },
 		guild: { id: guildID },
-	} = message
+	} = req
 
 	const existingGuilds = await findGuildConfig( guildID )
 
 	if ( existingGuilds )
-		return destructingReply( message, 'This guild already has a config' )
+		return req.destructingReply( 'This guild already has a config' )
 
 	const settings = new GuildConfigModel( {
 		guildID,
@@ -105,8 +106,8 @@ async function createNewConfig( message: Message, args: string )
 	}
 	catch ( error )
 	{
-		return message.reply( 'Failed to save' )
+		return req.reply( 'Failed to save' )
 	}
 
-	return message.reply( 'Saved' )
+	return req.reply( 'Saved' )
 }

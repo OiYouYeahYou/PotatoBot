@@ -1,19 +1,19 @@
-import { Message } from 'discord.js'
+import Request from '../classes/Request';
 import { richEmbed } from '../discord/embed'
 import List from '../classes/List';
 
 export default function ( list: List )
 {
 	list.addCommand( 'avatar', {
-		func: async ( message: Message ) =>
-			await message.reply( message.author.avatarURL ),
+		func: async ( req: Request ) =>
+			await req.reply( req.author.avatarURL ),
 		help: 'Returns the users avatar',
 	} )
 
 	list.addCommand( 'ping', {
-		func: async ( message: Message ) =>
-			message.reply(
-				`pong: ${ parseInt( message.client.ping.toString() ) } ms`
+		func: async ( req: Request ) =>
+			req.reply(
+				`pong: ${ parseInt( req.client.ping.toString() ) } ms`
 			),
 		help: 'Tests latency of the server',
 		aliases: [ 'pong' ],

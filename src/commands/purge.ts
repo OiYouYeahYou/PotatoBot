@@ -1,10 +1,11 @@
-import { Message, Attachment, DMChannel, GroupDMChannel, TextChannel }
+import { Attachment, DMChannel, GroupDMChannel, TextChannel }
 	from 'discord.js'
 import { padLeft, safeCallAsync, splitFirstWordAsNumber } from '../util'
 import { createPurgeConfig, getPurgeConfig, getReports, IPurgeReport }
 	from '../mongoose/autoPurgeConfig'
 import { autoPurge } from '../features/channelAutoPurge'
 import List from '../classes/List';
+import Request from '../classes/Request';
 
 const defaultAgeLimit = 24
 
@@ -18,17 +19,17 @@ export default function ( list: List )
 
 	command.addCommand( 'start', {
 		help: 'Sets the auto purger to run in the current channel',
-		func: async ( message: Message, args: string ) =>
+		func: async ( req: Request, args: string ) =>
 		{
-			const { id } = message.channel
+			const { id } = req.channel
 			const [ config ] = await getPurgeConfig( id )
 			const [ ageLimit ] = splitFirstWordAsNumber( args, defaultAgeLimit )
 
 			if ( config )
-				return await message.reply( 'This channel is already being purged' )
+				return await req.reply( 'This channel is already being purged' )
 
 			await safeCallAsync( createPurgeConfig, id, ageLimit )
-			await message.reply(
+			await req.reply(
 				`This channel will now be purged every ${ ageLimit } hours`
 			)
 		}
@@ -36,32 +37,32 @@ export default function ( list: List )
 
 	command.addCommand( 'stop', {
 		help: 'Stop the auto purger running in the current channel',
-		func: async ( message: Message ) =>
+		func: async ( req: Request ) =>
 		{
-			const cfgs = await getPurgeConfig( message.channel.id )
+			const cfgs = await getPurgeConfig( req.channel.id )
 
 			for ( const cfg of cfgs )
 				await cfg.remove()
 
-			await message.reply( 'Job done' )
+			await req.reply( 'Job done' )
 		}
 	} )
 
 	command.addCommand( 'change', {
 		help: 'Changes the minimum age that will be deleted',
-		func: async ( message: Message, args: string ) =>
+		func: async ( req: Request, args: string ) =>
 		{
-			const [ config ] = await getPurgeConfig( message.channel.id )
+			const [ config ] = await getPurgeConfig( req.channel.id )
 			const { purgeOlderThan: oldMinAge } = config
 			const [ newMinAge ] = splitFirstWordAsNumber( args, defaultAgeLimit )
 
 			if ( newMinAge === oldMinAge )
-				return await message.reply( 'That is already the interval' )
+				return await req.reply( 'That is already the interval' )
 
 			config.purgeOlderThan = newMinAge
 			await config.save()
 
-			await message.reply(
+			await req.reply(
 				`Purging interaval changed to ${ newMinAge } hours `
 				+ `from ${ oldMinAge } hours`
 			)
@@ -71,14 +72,14 @@ export default function ( list: List )
 	command.addCommand( 'force', {
 		help: 'Forces a Purge',
 		aliases: [ 'now' ],
-		func: async ( message: Message ) =>
+		func: async ( req: Request ) =>
 		{
-			const { channel, client } = message
+			const { channel, client } = req
 			const { id } = channel
 			const [ config ] = await getPurgeConfig( id )
 
 			if ( !config )
-				return message.reply( 'Auto purge is not set up for this channel' )
+				return req.reply( 'Auto purge is not set up for this channel' )
 
 			await autoPurge( client, id )
 		},
@@ -87,19 +88,19 @@ export default function ( list: List )
 	command.addCommand( 'logs', {
 		help: 'Provides stats about current channels purging',
 		aliases: [ 'stat', 'stats', 'log', 'info' ],
-		func: async ( message: Message ) =>
+		func: async ( req: Request ) =>
 		{
-			const { channel } = message
+			const { channel } = req
 
 			if ( channel instanceof DMChannel || channel instanceof GroupDMChannel )
-				return message.reply( 'Not supported in this channel' )
+				return req.reply( 'Not supported in this channel' )
 
 			const { deleted, length, config, reports } = await stats( channel )
 			const response = makeResponse( length, deleted, config )
 			const attch = length
 				? repotsToCSV( reports, channel )
 				: undefined
-			await channel.send( response, attch )
+			await req.send( response, attch )
 		}
 	} )
 }

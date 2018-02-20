@@ -1,7 +1,7 @@
 import { disconnect } from '../mainFuncs'
 import { destructingReply, codeWrap } from '../util'
 import { exec } from 'child_process'
-import { Message } from 'discord.js'
+import Request from '../classes/Request';
 import { promisify } from 'util'
 import List from '../classes/List';
 
@@ -22,16 +22,16 @@ export default function ( list: List )
 	} )
 
 	command.addCommand( 'kill', {
-		func: async ( message: Message ) =>
+		func: async ( req: Request ) =>
 		{
 			if ( raceLock )
-				return message.reply( 'Cannot do that at his time' )
+				return req.reply( 'Cannot do that at his time' )
 
 			raceLock = true
 
 			console.log( 'Shutting down by Discord command' )
 
-			await message.reply( 'MURRDERRRR!!!' )
+			await req.reply( 'MURRDERRRR!!!' )
 			await disconnect()
 
 			process.exit()
@@ -42,23 +42,23 @@ export default function ( list: List )
 	} )
 
 	command.addCommand( 'restart', {
-		func: async ( message: Message ) =>
+		func: async ( req: Request ) =>
 		{
 			if ( raceLock )
-				return message.reply( 'Cannot do that at his time' )
+				return req.reply( 'Cannot do that at his time' )
 
 			raceLock = true
 
 			const { env: { restartCommand } } = process
 
 			if ( !restartCommand )
-				return destructingReply( message,
+				return req.destructingReply(
 					'This bot does not support restarting'
 				)
 
 			console.log( 'Restarting by Discord command' )
 
-			await message.reply( 'I\'ll be a new bot!!!' )
+			await req.reply( 'I\'ll be a new bot!!!' )
 			await disconnect()
 
 			exec( restartCommand )
@@ -68,10 +68,10 @@ export default function ( list: List )
 	} )
 
 	command.addCommand( 'update', {
-		func: async ( message: Message ) =>
+		func: async ( req: Request ) =>
 		{
 			if ( raceLock )
-				return message.reply( 'Cannot do that at his time' )
+				return req.reply( 'Cannot do that at his time' )
 
 			raceLock = true
 
@@ -80,7 +80,7 @@ export default function ( list: List )
 			const { env: { restartCommand } } = process
 			const restartable = !!restartCommand
 
-			const msg = await message.channel.send( rsMsg( restartable ) )
+			const msg = await req.send( rsMsg( restartable ) )
 			const notification = Array.isArray( msg ) ? msg[ 0 ] : msg
 
 			const pull = await promisedExec( 'git pull' )
@@ -103,10 +103,10 @@ export default function ( list: List )
 	} )
 
 	command.addCommand( 'invite', {
-		func: async ( message ) =>
+		func: async ( req: Request ) =>
 		{
-			const invite = await message.client.generateInvite()
-			return message.channel.send( invite )
+			const invite = await req.client.generateInvite()
+			return req.send( invite )
 		},
 		help: 'Provides a bot inviter link',
 	} )

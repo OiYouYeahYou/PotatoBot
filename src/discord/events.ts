@@ -2,6 +2,7 @@
 require( 'source-map-support' ).install()
 
 import { Message, GuildMember, Guild } from 'discord.js'
+import Request from '../classes/Request';
 import { prefix } from '../constants'
 import { isPrefixed, somethingWentWrong, removePrefix } from '../util'
 import { everyoneResponse } from './features'
@@ -40,8 +41,12 @@ export async function messageRecived( message: Message )
 		if ( isPrefixed( prefix, text ) )
 		{
 			message.channel.startTyping( 1 )
+
+			const req = new Request( message, prefix, text )
 			const commandString = removePrefix( prefix, text )
-			await list.commandRunner( message, commandString )
+
+			await list.commandRunner( req, commandString )
+
 			message.channel.stopTyping( true )
 		}
 		else if ( message.mentions.everyone )

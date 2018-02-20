@@ -1,4 +1,4 @@
-import { Message } from 'discord.js'
+import Request from '../classes/Request';
 import { richEmbed } from '../discord/embed'
 import { codeWrap } from '../util'
 import Module from '../classes/Module'
@@ -15,27 +15,27 @@ export default function ( list: List )
 	} )
 
 	list.addCommand( 'list', {
-		func: async ( message: Message, args ) =>
+		func: async ( req: Request, args ) =>
 		{
 			const [ err, response ] = treeWalker( args )
 
 			if ( err )
-				await message.channel.send( err )
+				await req.send( err )
 
-			return message.channel.send( response )
+			return req.send( response )
 		},
 		help: 'Provides a list of commands',
 	} )
 }
 
-export async function helpFunction( message: Message, text: string )
+export async function helpFunction( req: Request, text: string )
 {
 	const commands = text.replace( / +(?= )/g, '' ).toLowerCase().split( ' ' )
 
 	if ( !commands.length )
-		return missingArguments( message )
+		return missingArguments( req )
 	else if ( commands.length > 5 )
-		return message.reply( 'You have requested to many arguments' )
+		return req.reply( 'You have requested to many arguments' )
 
 	for ( const command of commands )
 	{
@@ -48,7 +48,7 @@ export async function helpFunction( message: Message, text: string )
 			? helpEmebd( command, wrapper )
 			: missingWrapper( command )
 
-		await message.channel.send( { embed } )
+		await req.send( { embed } )
 	}
 }
 
@@ -89,12 +89,12 @@ function treeWalker( args )
 }
 
 /** Response when no arguments are given */
-async function missingArguments( message: Message )
+async function missingArguments( req: Request )
 {
 	const embed = richEmbed()
 		.setTitle( 'This command requires additional arguments' )
 
-	return message.channel.send( embed )
+	return req.send( embed )
 }
 
 /** Response when a wrapper could not be found */

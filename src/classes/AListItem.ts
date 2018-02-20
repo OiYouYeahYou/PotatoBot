@@ -1,4 +1,4 @@
-import { Message } from 'discord.js'
+import Request from './Request';
 import { prefix } from '../constants'
 
 export interface ListItemInfo
@@ -16,7 +16,7 @@ export interface IAbstractListItem<inject extends AListItem>
 }
 
 type TPermission = 'all' | 'master' | 'owner' | 'admin'
-type FRunner = ( message: Message, command: string, args: string )
+type FRunner = ( req: Request, command: string, args: string )
 	=> Promise<any>
 
 /** Command data handler */
