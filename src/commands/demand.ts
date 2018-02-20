@@ -66,7 +66,8 @@ async function newChannelHandler(
   }
 
   const [ userLimit, name ] = processArgs( args )
-  const parentChannel = guild.afkChannel.parent
+  const afkChannel = guild.afkChannel
+  const parentChannel = afkChannel ? guild.afkChannel.parent : undefined
   const parent = parentChannel ? parentChannel.id : undefined
   const reason = 'Setting up Temporary Channel'
   const config = { name, userLimit, parent, position }
