@@ -1,5 +1,5 @@
 import { disconnect } from '../mainFuncs'
-import { destructingReply, codeWrap } from '../util'
+import { codeWrap } from '../util'
 import { exec } from 'child_process'
 import Request from '../classes/Request';
 import { promisify } from 'util'
@@ -16,12 +16,12 @@ let raceLock = false
 
 export default function ( list: List )
 {
-	const command = list.addModule( 'bot', {
+	const module = list.addModule( 'bot', {
 		help: 'Bot administration tools for Owner',
 		permission: 'owner',
 	} )
 
-	command.addCommand( 'kill', {
+	module.addCommand( 'kill', {
 		func: async ( req: Request ) =>
 		{
 			if ( raceLock )
@@ -41,7 +41,7 @@ export default function ( list: List )
 		permission: 'master',
 	} )
 
-	command.addCommand( 'restart', {
+	module.addCommand( 'restart', {
 		func: async ( req: Request ) =>
 		{
 			if ( raceLock )
@@ -67,7 +67,7 @@ export default function ( list: List )
 		permission: 'master',
 	} )
 
-	command.addCommand( 'update', {
+	module.addCommand( 'update', {
 		func: async ( req: Request ) =>
 		{
 			if ( raceLock )
@@ -102,7 +102,7 @@ export default function ( list: List )
 		permission: 'master',
 	} )
 
-	command.addCommand( 'invite', {
+	module.addCommand( 'invite', {
 		func: async ( req: Request ) =>
 		{
 			const invite = await req.client.generateInvite()

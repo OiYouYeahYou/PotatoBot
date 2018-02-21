@@ -1,6 +1,5 @@
 import { Guild, Snowflake, TextChannel } from 'discord.js'
 import { findGuildConfig, configLists } from './mongoose/guild'
-import { Document } from 'mongoose'
 import { all } from './discord/featureEnum'
 
 export async function isFeatureEnabled(

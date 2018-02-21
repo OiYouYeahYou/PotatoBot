@@ -1,5 +1,5 @@
 import Request from '../classes/Request';
-import { splitByFirstSpace, destructingReply, somethingWentWrong } from '../util'
+import { splitByFirstSpace } from '../util'
 import List from '../classes/List';
 
 export default function ( list: List )

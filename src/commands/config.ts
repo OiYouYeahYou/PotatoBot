@@ -1,5 +1,4 @@
 import { Guild as TGuild } from 'discord.js'
-import { destructingReply } from '../util'
 import { findGuildConfig, GuildConfigModel, configLists } from '../mongoose/guild'
 import { isFeatureEnabled, isCommandEnabled } from '../configManager'
 import { all } from '../discord/featureEnum'
@@ -8,24 +7,24 @@ import Request from '../classes/Request';
 
 export default function ( list: List )
 {
-	const command = list.addModule( 'config', {
+	const module = list.addModule( 'config', {
 		help: 'Sets configuration preferences',
 		permission: 'master',
 		aliases: [ 'cfg' ],
 	} )
 
-	command.addCommand( 'new', {
+	module.addCommand( 'new', {
 		func: createNewConfig,
 		help: 'Creates a new config for a Guild',
 	} )
 
-	command.addCommand( 'features', {
+	module.addCommand( 'features', {
 		func: async ( req: Request, args: string ) =>
 			enabledAggreator( req, args, 'features' ),
 		help: 'Returns enabled features,  or Checks if features are enabled',
 	} )
 
-	command.addCommand( 'commands', {
+	module.addCommand( 'commands', {
 		func: async ( req: Request, args: string ) =>
 			enabledAggreator( req, args, 'commands' ),
 		help: 'Returns enabled commands,  or Checks if commands are enabled',

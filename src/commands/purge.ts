@@ -11,13 +11,13 @@ const defaultAgeLimit = 24
 
 export default function ( list: List )
 {
-	const command = list.addModule( 'autopurge', {
+	const module = list.addModule( 'autopurge', {
 		help: 'Manages a guild\'s purging config',
 		permission: 'owner',
 		aliases: [ 'ap' ],
 	} )
 
-	command.addCommand( 'start', {
+	module.addCommand( 'start', {
 		help: 'Sets the auto purger to run in the current channel',
 		func: async ( req: Request, args: string ) =>
 		{
@@ -35,7 +35,7 @@ export default function ( list: List )
 		}
 	} )
 
-	command.addCommand( 'stop', {
+	module.addCommand( 'stop', {
 		help: 'Stop the auto purger running in the current channel',
 		func: async ( req: Request ) =>
 		{
@@ -48,7 +48,7 @@ export default function ( list: List )
 		}
 	} )
 
-	command.addCommand( 'change', {
+	module.addCommand( 'change', {
 		help: 'Changes the minimum age that will be deleted',
 		func: async ( req: Request, args: string ) =>
 		{
@@ -69,7 +69,7 @@ export default function ( list: List )
 		}
 	} )
 
-	command.addCommand( 'force', {
+	module.addCommand( 'force', {
 		help: 'Forces a Purge',
 		aliases: [ 'now' ],
 		func: async ( req: Request ) =>
@@ -85,7 +85,7 @@ export default function ( list: List )
 		},
 	} )
 
-	command.addCommand( 'logs', {
+	module.addCommand( 'logs', {
 		help: 'Provides stats about current channels purging',
 		aliases: [ 'stat', 'stats', 'log', 'info' ],
 		func: async ( req: Request ) =>

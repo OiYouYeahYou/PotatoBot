@@ -1,11 +1,8 @@
 import { PermissionResolvable, VoiceChannel } from 'discord.js'
 import
 {
-  destructingReply,
   findVoiceChannel,
   randomString,
-  safeDelete,
-  somethingWentWrong,
   splitByFirstSpace,
   TEN
 } from '../util'
@@ -18,7 +15,6 @@ export default function ( list: List )
     func: demandRoom,
     help: 'Creates a \'Room of Requirement\'',
     usage: '[limit] [name]',
-    // disabled: true,
   } )
 }
 

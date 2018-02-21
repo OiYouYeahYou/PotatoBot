@@ -1,5 +1,4 @@
-import Request from './Request';
-import { prefix } from '../constants'
+import Request from './Request'
 import AListItem, { ListItemInfo } from './AListItem'
 
 export interface CommandInfo extends ListItemInfo

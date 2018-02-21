@@ -1,4 +1,4 @@
-import { Message, Guild, Channel, GuildMember, User, Client, GuildChannel, TextBasedChannel, TextChannel, GroupDMChannel, DMChannel } from "discord.js";
+import { Message } from "discord.js";
 import { destructingReply, somethingWentWrong } from "../util";
 
 

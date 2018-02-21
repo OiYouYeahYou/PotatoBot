@@ -1,5 +1,4 @@
 import * as mongoose from 'mongoose'
-import { Model, Document } from 'mongoose'
 
 export default mongoose
 

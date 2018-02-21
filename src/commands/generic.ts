@@ -1,5 +1,4 @@
-import Request from '../classes/Request';
-import { richEmbed } from '../discord/embed'
+import Request from '../classes/Request'
 import List from '../classes/List';
 
 export default function ( list: List )

@@ -1,6 +1,4 @@
 import { Guild, Message, VoiceChannel, Snowflake } from 'discord.js'
-import { join } from 'path'
-import { readdirSync } from 'fs'
 
 export const TEN = 10 * 1000
 
@@ -81,18 +79,6 @@ export function randomString( len: number )
 	return t
 }
 var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-
-interface IDeletable
-{
-	deletable: boolean
-	delete: () => Promise<any>
-}
-
-export async function safeDelete( entity: IDeletable ): Promise<any>
-{
-	if ( entity.deletable )
-		return entity.delete()
-}
 
 /**
  * Finds a Voice Channel in a guild by name
