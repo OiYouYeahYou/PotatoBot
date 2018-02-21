@@ -1,5 +1,4 @@
-import { connect } from './mainFuncs';
-import { setEnv } from './util';
+import { connect, setEnv } from './mainFuncs';
 
 setEnv()
 connect()
