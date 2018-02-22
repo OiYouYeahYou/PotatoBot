@@ -2,18 +2,6 @@ import { Guild, Message, VoiceChannel, Snowflake } from 'discord.js'
 
 export const TEN = 10 * 1000
 
-/**
- * Tests if string is prefixed
- * @param pfx prefix
- * @param str text
- */
-export function isPrefixed( pfx: string, str: string )
-{
-	return str.length !== pfx.length
-		&& pfx.length > 0
-		&& str.startsWith( pfx )
-}
-
 /** String indexOf that returns undefined instead of -1 */
 export function indexOf(
 	str: string, search: string, position?: number
@@ -124,12 +112,6 @@ export async function timer( time: number )
 	return new Promise( ( resolve, reject ) =>
 		setTimeout( () => resolve(), time )
 	)
-}
-
-/** Removes a prefix from the start of a string */
-export function removePrefix( pfx: string, text: string )
-{
-	return text.slice( pfx.length ).trim()
 }
 
 /**

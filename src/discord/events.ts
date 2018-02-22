@@ -2,14 +2,12 @@
 require( 'source-map-support' ).install()
 
 import { Message, GuildMember, Guild } from 'discord.js'
-import Request from '../classes/Request';
-import { prefix } from '../constants'
-import { isPrefixed, somethingWentWrong, removePrefix } from '../util'
-import { everyoneResponse } from './features'
+import { somethingWentWrong, safeCallAsync } from '../util'
 import { getDefaultChannel, isFeatureEnabled } from '../configManager'
 import { announceEntry, announceExit } from './featureEnum'
-import list from '../list'
 import { initAutoPurge } from '../features/channelAutoPurge'
+import { messageHandler, isPrefixed } from './messageEvent';
+import { prefix } from '../constants';
 
 export const ready = ( client ) =>
 {
@@ -31,30 +29,17 @@ export function error( err )
 
 export async function messageRecived( message: Message )
 {
-	var text = message.content.trim()
+	const text = message.content.trim()
 
 	if ( message.author.bot )
 		return
 
-	try
-	{
-		if ( isPrefixed( prefix, text ) )
-		{
-			message.channel.startTyping( 1 )
+	if ( !isPrefixed( prefix, text ) && !message.mentions.everyone )
+		return
 
-			const req = new Request( message, prefix, text )
-			const commandString = removePrefix( prefix, text )
-
-			await list.commandRunner( req, commandString )
-
-			message.channel.stopTyping( true )
-		}
-		else if ( message.mentions.everyone )
-			await everyoneResponse( message )
-	} catch ( error )
-	{
+	const [ error ] = await safeCallAsync( messageHandler, message, text )
+	if ( error )
 		await somethingWentWrong( message, error )
-	}
 }
 
 export function guildMemberAdd( member: GuildMember )
