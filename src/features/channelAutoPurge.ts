@@ -1,9 +1,8 @@
 import { TextChannel, GuildChannel, Message, Client } from 'discord.js'
-import { richEmbed } from '../discord/embed'
 import { getPurgeConfigs, IPurgeConfig, savePurgeReport, getPurgeConfig }
 	from '../mongoose/autoPurgeConfig'
-import { HOURS, DAYS, SECONDS, AutoPurgeInterval } from '../constants'
-import { noop, safeCallAsync } from '../util'
+import { HOURS, DAYS, AutoPurgeInterval } from '../constants'
+import { safeCallAsync } from '../util'
 
 export const baseTime = HOURS
 
@@ -50,12 +49,8 @@ export async function autoPurge( client: Client, channelIDOverride?: string )
 		let rawCount, deletingCount, guildID, deletedCount
 
 		if ( channel )
-		{
-			const report = await purgeChannel( config, channel, now );
-			( { rawCount, deletingCount, error, guildID, deletedCount } = report )
-
-			await purgeMessage( client, channel, report )
-		}
+			( { rawCount, deletingCount, error, guildID, deletedCount }
+				= await purgeChannel( config, channel, now ) )
 
 		if ( deletingCount !== 0 )
 			reports.push( {
@@ -129,29 +124,3 @@ function filterDeletables( messages: Message[], minAge: number, now: number )
 }
 
 const sortByOldestFirst = ( a, b ) => a.createdTimestamp - b.createdTimestamp
-
-async function purgeMessage(
-	client: Client, channel: TextChannel, report: IInitialPurgeReport
-)
-{
-	if ( !report.deletingCount )
-		return
-
-	const channlePermissions = channel.permissionsFor( client.user )
-	const canSendMessages = channlePermissions.has( 'SEND_MESSAGES' )
-
-	if ( !canSendMessages )
-		return
-
-	const embed = richEmbed()
-	embed.setTitle( 'This channel has been auto purged' )
-	embed.addField( 'Messages Found', report.rawCount )
-	embed.addField( 'Messages Deleted', report.deletingCount )
-
-	if ( report.error )
-		embed.addField( 'Errors Encountered', report.error )
-
-	const message = await channel.send( embed )
-	// @ts-ignore --- We are sending one message, so deleteing one message
-	message.delete( 30 * SECONDS ).catch( noop )
-}
