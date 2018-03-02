@@ -37,7 +37,8 @@ export async function messageRecived( message: Message )
 	if ( !isPrefixed( prefix, text ) && !message.mentions.everyone )
 		return
 
-	const [ error ] = await safeCallAsync( messageHandler, message, text )
+	const [ error ]
+		= await safeCallAsync( messageHandler, message, text, prefix )
 	if ( error )
 		await somethingWentWrong( message, error )
 }
