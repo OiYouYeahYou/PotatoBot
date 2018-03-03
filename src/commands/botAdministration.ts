@@ -1,9 +1,9 @@
-import { disconnect } from '../mainFuncs'
+import { app } from '..'
 import { codeWrap } from '../util'
 import { exec } from 'child_process'
-import Request from '../classes/Request';
+import Request from '../classes/Request'
 import { promisify } from 'util'
-import List from '../classes/List';
+import List from '../classes/List'
 
 const promisedExec = promisify( exec )
 interface megh
@@ -32,7 +32,7 @@ export default function ( list: List )
 			console.log( 'Shutting down by Discord command' )
 
 			await req.reply( 'MURRDERRRR!!!' )
-			await disconnect()
+			await app.destroy()
 
 			process.exit()
 		},
@@ -59,7 +59,7 @@ export default function ( list: List )
 			console.log( 'Restarting by Discord command' )
 
 			await req.reply( 'I\'ll be a new bot!!!' )
-			await disconnect()
+			await app.destroy()
 
 			exec( restartCommand )
 		},
@@ -92,7 +92,7 @@ export default function ( list: List )
 			if ( restartable )
 			{
 				await notification.edit( rsMsg( restartable, pull, gulp, true ) )
-				await disconnect()
+				await app.destroy()
 				exec( restartCommand )
 			}
 			else

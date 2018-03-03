@@ -1,4 +1,12 @@
-import { connect, setEnv } from './mainFuncs';
+require( 'source-map-support' ).install()
+
+import { Main } from './classes/Main'
+import { setEnv } from './env'
 
 setEnv()
-connect()
+
+const { discord, mongo } = process.env
+
+export const app = new Main( discord, mongo )
+
+app.start()
