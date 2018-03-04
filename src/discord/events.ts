@@ -5,6 +5,7 @@ import { announceEntry, announceExit } from './featureEnum'
 import { initAutoPurge } from '../features/channelAutoPurge'
 import { messageHandler, isPrefixed } from './messageEvent';
 import { prefix } from '../constants';
+import { Main } from '../classes/Main';
 
 export const ready = ( client ) =>
 {
@@ -24,7 +25,7 @@ export function error( err )
 	console.error( err )
 }
 
-export async function messageRecived( message: Message )
+export async function messageRecived( app: Main, message: Message )
 {
 	const text = message.content.trim()
 
@@ -35,7 +36,7 @@ export async function messageRecived( message: Message )
 		return
 
 	const [ error ]
-		= await safeCallAsync( messageHandler, message, text, prefix )
+		= await safeCallAsync( messageHandler, app, message, text, prefix )
 	if ( error )
 		await somethingWentWrong( message, error )
 }

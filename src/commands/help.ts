@@ -4,7 +4,6 @@ import { codeWrap } from '../util'
 import Module from '../classes/Module'
 import AListItem from '../classes/AListItem'
 import List from '../classes/List';
-import list from '../list';
 
 export default function ( list: List )
 {
@@ -17,7 +16,7 @@ export default function ( list: List )
 	list.addCommand( 'list', {
 		func: async ( req: Request, args ) =>
 		{
-			const [ err, response ] = treeWalker( args )
+			const [ err, response ] = treeWalker( req.list, args )
 
 			if ( err )
 				await req.send( err )
@@ -42,7 +41,7 @@ export async function helpFunction( req: Request, text: string )
 		if ( !command )
 			continue
 
-		const wrapper = list.getCommandWrapper( command )
+		const wrapper = req.list.getCommandWrapper( command )
 
 		const embed = wrapper
 			? helpEmebd( command, wrapper )
@@ -52,7 +51,7 @@ export async function helpFunction( req: Request, text: string )
 	}
 }
 
-function treeWalker( args )
+function treeWalker( list: List, args: string )
 {
 	const argsArray = args.replace( / +(?= )/g, '' ).toLowerCase().split( ' ' )
 	let latest = list

@@ -1,15 +1,30 @@
 import { Message } from "discord.js";
 import { destructingReply, somethingWentWrong } from "../util";
+import { Main } from "./Main";
+import List from "./List";
 
 
 export default class Request
 {
-	constructor( message: Message, prefix: string, text: string )
+	constructor(
+		app: Main,
+		message: Message,
+		prefix: string,
+		text: string
+	)
 	{
+		this.app = app
+		this.list = app.list
 		this.message = message
+		this.prefix = prefix
+		this.text = text
 	}
 
+	readonly app: Main
+	readonly list: List
 	readonly message: Message
+	readonly prefix: string
+	readonly text: string
 
 	get guild()
 	{

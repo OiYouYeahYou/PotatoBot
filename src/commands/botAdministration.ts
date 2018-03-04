@@ -1,4 +1,3 @@
-import { app } from '..'
 import { codeWrap } from '../util'
 import { exec } from 'child_process'
 import Request from '../classes/Request'
@@ -32,7 +31,7 @@ export default function ( list: List )
 			console.log( 'Shutting down by Discord command' )
 
 			await req.reply( 'MURRDERRRR!!!' )
-			await app.destroy()
+			await req.app.destroy()
 
 			process.exit()
 		},
@@ -59,7 +58,7 @@ export default function ( list: List )
 			console.log( 'Restarting by Discord command' )
 
 			await req.reply( 'I\'ll be a new bot!!!' )
-			await app.destroy()
+			await req.app.destroy()
 
 			exec( restartCommand )
 		},
@@ -92,7 +91,7 @@ export default function ( list: List )
 			if ( restartable )
 			{
 				await notification.edit( rsMsg( restartable, pull, gulp, true ) )
-				await app.destroy()
+				await req.app.destroy()
 				exec( restartCommand )
 			}
 			else

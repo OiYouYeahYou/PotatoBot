@@ -1,9 +1,10 @@
 import { Client } from 'discord.js'
 import * as events from '../discord/events'
+import { Main } from './Main';
 
 export class Bot
 {
-	constructor()
+	constructor( app: Main )
 	{
 		const clientOptions = { fetchAllMembers: true }
 
@@ -13,7 +14,7 @@ export class Bot
 		client.on( 'error', events.error )
 		client.on( 'disconnect', events.disconnect )
 		client.on( 'reconnecting', events.reconnecting )
-		client.on( 'message', events.messageRecived )
+		client.on( 'message', message => events.messageRecived( app, message ) )
 		client.on( 'guildMemberAdd', events.guildMemberAdd )
 		client.on( 'guildMemberRemove', events.guildMemberRemove )
 	}
