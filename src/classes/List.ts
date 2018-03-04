@@ -1,7 +1,7 @@
 import Command, { CommandInfo } from './Command'
 import { maxStringLength, padLeft, padRight, processCommandString }
 	from '../util'
-import Request from './Request';
+import Request from './Request'
 import { hasAuthorityForCommand, unauthorised } from '../discord/authority'
 import Module from './Module'
 import AListItem, { IAbstractListItem, ListItemInfo } from './AListItem'

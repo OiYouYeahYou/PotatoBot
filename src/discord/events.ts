@@ -1,6 +1,3 @@
-// tslint:disable-next-line:no-var-requires
-require( 'source-map-support' ).install()
-
 import { Message, GuildMember, Guild } from 'discord.js'
 import { somethingWentWrong, safeCallAsync } from '../util'
 import { getDefaultChannel, isFeatureEnabled } from '../configManager'

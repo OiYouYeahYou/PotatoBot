@@ -30,12 +30,9 @@ export async function findGuildConfig( guild: GuildClass | Snowflake
 	let result
 
 	if ( Array.isArray( results ) )
-	{
 		[ result ] = results
-	} else
-	{
+	else
 		result = results
-	}
 
 	return Promise.resolve( result )
 }
