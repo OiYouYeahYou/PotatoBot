@@ -1,15 +1,20 @@
-import { Message, GuildMember, Guild } from 'discord.js'
+import { Message, GuildMember, Guild, Client } from 'discord.js'
 import { somethingWentWrong, safeCallAsync } from '../util'
 import { getDefaultChannel, isFeatureEnabled } from '../configManager'
 import { announceEntry, announceExit } from './featureEnum'
 import { initAutoPurge } from '../features/channelAutoPurge'
-import { messageHandler, isPrefixed } from './messageEvent';
-import { prefix } from '../constants';
-import { Main } from '../classes/Main';
+import { messageHandler, isPrefixed } from './messageEvent'
+import { prefix } from '../constants'
+import { Main } from '../classes/Main'
 
-export const ready = ( client ) =>
+export async function ready( client: Client )
 {
-	console.log( 'Discord client is ready!' )
+	const invite = await client.generateInvite()
+
+	console.log(
+		'Discord client is ready!\n'
+		+ 'Bot invite: ' + invite
+	)
 	initAutoPurge( client )
 }
 
