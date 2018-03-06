@@ -26,30 +26,16 @@ export default class Request
 	readonly prefix: string
 	readonly text: string
 
-	get guild()
-	{
-		return this.message.guild
-	}
-	get channel()
-	{
-		return this.message.channel
-	}
-	get member()
-	{
-		return this.message.member
-	}
-	get author()
-	{
-		return this.message.author
-	}
-	get client()
-	{
-		return this.message.client
-	}
+	get guild() { return this.message.guild }
+	get channel() { return this.message.channel }
+	get member() { return this.message.member }
+	get author() { return this.message.author }
+	get client() { return this.message.client }
 
 	async send( text, options?: any )
 	{
-		return await this.message.channel.send( text, options )
+		const message = await this.message.channel.send( text, options )
+		return Array.isArray( message ) ? message[ 0 ] : message
 	}
 
 	async sendCode( lang: string, content: any, options?: any )
