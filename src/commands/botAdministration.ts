@@ -5,7 +5,7 @@ import { promisify } from 'util'
 import List from '../classes/List'
 
 const promisedExec = promisify( exec )
-interface megh
+interface IStd
 {
 	stdout: string
 	stderr: string
@@ -76,26 +76,34 @@ export default function ( list: List )
 
 			console.log( 'Updating by Discord command' )
 
-			const { env: { restartCommand } } = process
+			const { restartCommand } = process.env
 			const restartable = !!restartCommand
+			const curry = currier( restartable )
+			const notification = await req.send( curry() )
 
-			const msg = await req.send( rsMsg( restartable ) )
-			const notification = Array.isArray( msg ) ? msg[ 0 ] : msg
-
-			const pull = await promisedExec( 'git pull' )
-			await notification.edit( rsMsg( restartable, pull ) )
-
-			const gulp = await promisedExec( 'gulp' )
-			await notification.edit( rsMsg( restartable, pull, gulp ) )
-
-			if ( restartable )
+			try
 			{
-				await notification.edit( rsMsg( restartable, pull, gulp, true ) )
-				await req.app.destroy()
-				exec( restartCommand )
+				var pull = await promisedExec( 'git pull' )
+				await notification.edit( curry( pull ) )
+
+				var npm = await promisedExec( 'npm i' )
+				await notification.edit( curry( pull, npm ) )
 			}
-			else
-				raceLock = false
+			catch ( err )
+			{
+				req.somethingWentWrong( err )
+			}
+			finally
+			{
+				if ( restartable )
+				{
+					await notification.edit( curry( pull, npm, true ) )
+					await req.app.destroy()
+					exec( restartCommand )
+				}
+				else
+					raceLock = false
+			}
 		},
 		help: 'Pulls, Builds and Restarts bot',
 		permission: 'master',
@@ -111,27 +119,26 @@ export default function ( list: List )
 	} )
 }
 
-function rsMsg(
-	restartable: boolean, git?: megh, gulp?: megh, restarting = false
-)
+function currier( restartable: boolean )
 {
-	const gitSanitised = git
-		? `=== out ===\n${ git.stdout }\n=== err ==\n${ git.stderr }`
-		: ''
-	const gulpSanitised = gulp
-		? `=== out ===\n${ gulp.stdout }\n=== err ==\n${ gulp.stderr }`
-		: ''
+	return ( git?: IStd, npm?: IStd, restarting?: boolean ) => [
+		sanitiseOutput( 'git', git ),
+		sanitiseOutput( 'npm', npm ),
+		restartMessage( restartable, restarting )
+	].join( '\n\n' )
+}
 
-	const gitMessage = `Git output:\n${ codeWrap( gitSanitised ) }`
-	const gulpMessage = `Gulp output:\n${ codeWrap( gulpSanitised ) }`
+const sanitiseOutput = ( name: string, std: IStd ) =>
+	name + ' output:\n' + codeWrap(
+		std ? `=== out ===\n${ std.stdout }\n=== err ==\n${ std.stderr }` : ''
+	)
 
-	let restartMessage
+function restartMessage( restartable: boolean, restarting: boolean )
+{
 	if ( !restartable )
-		restartMessage = 'Restarting: `You will need to restart manually`'
+		return 'You will need to restart manually'
 	else if ( restarting )
-		restartMessage = 'Restarting: `Restarting now`'
-	else
-		restartMessage = 'Restarting: `pending`'
+		return 'Restart: `Restarting now`'
 
-	return [ gitMessage, gulpMessage, restartMessage ].join( '\n\n' )
+	return 'Restart: `pending`'
 }
