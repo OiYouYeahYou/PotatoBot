@@ -1,9 +1,9 @@
-import Request from '../classes/Request';
-import { richEmbed } from '../discord/embed'
+import Request from '../classes/Request'
 import { codeWrap } from '../util'
 import Module from '../classes/Module'
 import AListItem from '../classes/AListItem'
-import List from '../classes/List';
+import List from '../classes/List'
+import { SelfSendingEmbed } from '../classes/Embed';
 
 export default function ( list: List )
 {
@@ -43,11 +43,12 @@ export async function helpFunction( req: Request, text: string )
 
 		const wrapper = req.list.getCommandWrapper( command )
 
-		const embed = wrapper
-			? helpEmebd( command, wrapper )
-			: missingWrapper( command )
+		const embed = req.embed()
 
-		await req.send( { embed } )
+		if ( wrapper )
+			return helpEmebd( embed, command, wrapper )
+		else
+			return missingWrapper( embed, command )
 	}
 }
 
@@ -90,25 +91,26 @@ function treeWalker( list: List, args: string )
 /** Response when no arguments are given */
 async function missingArguments( req: Request )
 {
-	const embed = richEmbed()
+	return req.embed()
 		.setTitle( 'This command requires additional arguments' )
-
-	return req.send( embed )
+		.send()
 }
 
 /** Response when a wrapper could not be found */
-function missingWrapper( command: string )
+function missingWrapper( embed: SelfSendingEmbed, command: string )
 {
-	return richEmbed()
+	return embed
 		.setTitle( `Help : ${ command } is not recognised` )
 		.setDescription( 'Try using list to find your command' )
+		.send()
 }
 
 /** Converts a Command into an Embed response */
-function helpEmebd( command: string, wrapper: AListItem )
+function helpEmebd( embed: SelfSendingEmbed, command: string, wrapper: AListItem )
 {
-	return richEmbed()
+	return embed
 		.setTitle( `Help : ${ command }` )
 		.addField( 'Usage', wrapper.usage )
 		.addField( 'Purpose', wrapper.help )
+		.send()
 }

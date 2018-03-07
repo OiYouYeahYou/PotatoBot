@@ -1,7 +1,8 @@
-import { Message } from "discord.js";
-import { destructingReply, somethingWentWrong } from "../util";
-import { Main } from "./Main";
-import List from "./List";
+import { Message } from "discord.js"
+import { destructingReply, somethingWentWrong } from "../util"
+import { Main } from "./Main"
+import List from "./List"
+import { SelfSendingEmbed } from "./Embed"
 
 
 export default class Request
@@ -62,5 +63,10 @@ export default class Request
 	async somethingWentWrong( err )
 	{
 		return somethingWentWrong( this.message, err )
+	}
+
+	embed()
+	{
+		return new SelfSendingEmbed( this )
 	}
 }
