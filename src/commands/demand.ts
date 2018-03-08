@@ -27,36 +27,20 @@ async function demandRoom( req: Request, args: string )
 	if ( !req.guild.me.hasPermission( REQUIRED_PERMISSONS ) )
 		return req.destructingReply( 'The bot needs more permissons' )
 
-	var tempName = randomString( 15 )
-
-	await req.guild.createChannel( tempName, 'voice' )
-	return newChannelHandler( req, tempName, args )
-}
-
-/**
- *
- * @param req Message event
- * @param tmpName Temporary name used to create and find channel
- * @param userLimit User limit to be set to
- * @param name Name for channel to be set too
- */
-async function newChannelHandler(
-	req: Request,
-	tmpName: string,
-	args: string
-)
-{
 	const { guild, member } = req
-	const channel: VoiceChannel = findVoiceChannel( guild, tmpName )
+	const tempName = randomString( 15 )
+	const channel
+		= await req.guild.createChannel( tempName, 'voice' )
+		|| findVoiceChannel( guild, tempName )
 
 	if ( !channel )
-	{
-		await req.delete()
-
 		return req.destructingReply( 'Channel can not be found, try again' )
-	}
 
 	const [ userLimit, name ] = processArgs( args )
+
+	if ( userLimit > 99 )
+		return req.destructingReply( 'Number is too large' )
+
 	const afkChannel = guild.afkChannel
 	const parentChannel = afkChannel ? guild.afkChannel.parent : undefined
 	const parent = parentChannel ? parentChannel.id : undefined
@@ -67,15 +51,14 @@ async function newChannelHandler(
 	{
 		await channel.edit( config, reason )
 		await member.setVoiceChannel( channel.id )
-		initIntervalChecker( req, channel )
+		setIntervalChecker( req, channel )
 		await req.destructingReply( 'Done' )
-	} catch ( error )
+	}
+	catch ( error )
 	{
 		await channel.delete()
 		await req.somethingWentWrong( error )
 	}
-
-	return Promise.resolve()
 }
 
 /**
@@ -107,7 +90,7 @@ function processArgs( args: string ): [ number, string ]
  * @param req
  * @param channel
  */
-function initIntervalChecker( req: Request, channel: VoiceChannel ): void
+function setIntervalChecker( req: Request, channel: VoiceChannel ): void
 {
 	const interval = req.client.setInterval( async () =>
 	{
@@ -116,13 +99,12 @@ function initIntervalChecker( req: Request, channel: VoiceChannel ): void
 
 		req.client.clearInterval( interval )
 
-		await req.delete()
-
 		try
 		{
 			await channel.delete()
 			await req.destructingReply( 'Channel is deleted' )
-		} catch ( error )
+		}
+		catch ( error )
 		{
 			await req.destructingReply( 'Channel can\'t be deleted' )
 		}
