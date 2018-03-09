@@ -127,9 +127,9 @@ export function processCommandString( text: string ): [ string, string ]
 	return [ command, args ]
 }
 
-export function codeWrap( text: string )
+export function codeWrap( text: string, lang?: string )
 {
-	return `\`\`\`\n${ text ? text : '...' }\n\`\`\``
+	return `\`\`\`${ lang ? lang : '' }\n${ text ? text : '...' }\n\`\`\``
 }
 
 export function padRight( text: string | number, len: number )

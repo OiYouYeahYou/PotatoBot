@@ -33,6 +33,11 @@ export default class Request
 	get author() { return this.message.author }
 	get client() { return this.message.client }
 
+	get screenname()
+	{
+		return this.message.member.nickname || this.message.author.username
+	}
+
 	async send( text, options?: any )
 	{
 		const message = await this.message.channel.send( text, options )

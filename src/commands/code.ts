@@ -1,6 +1,7 @@
 import Request from '../classes/Request';
 import { splitByFirstSpace } from '../util'
 import List from '../classes/List';
+import { codeWrap } from '../util';
 
 export default function ( list: List )
 {
@@ -34,8 +35,5 @@ async function sendCode( req: Request, text: string | undefined, lang )
 {
 	await req.delete()
 
-	if ( !text || !text.trim() )
-		return req.destructingReply( 'No code was recieved' )
-
-	return req.sendCode( lang, text )
+	return req.send( req.screenname + ' Sent:\n' + codeWrap( text, lang ) )
 }
