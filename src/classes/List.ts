@@ -1,10 +1,12 @@
 import Command, { CommandInfo } from './Command'
-import { maxStringLength, padLeft, padRight, processCommandString }
+import { maxStringLength, padLeft, padRight, processCommandString, removePrefix }
 	from '../util'
 import Request from './Request'
 import { hasAuthorityForCommand, unauthorised } from '../discord/authority'
 import Module from './Module'
 import AListItem, { IAbstractListItem, ListItemInfo } from './AListItem'
+import { Main } from './Main';
+import { Message } from 'discord.js';
 
 export default class List
 {
@@ -121,6 +123,19 @@ export default class List
 		}
 
 		return items.sort().join( '\n' )
+	}
+
+	async run( app: Main, message: Message, text: string, prefix: string )
+	{
+		message.channel.startTyping( 1 )
+
+		const { list } = app
+		const req = new Request( app, message, prefix, text )
+		const commandString = removePrefix( prefix, text )
+
+		await list.commandRunner( req, commandString )
+
+		message.channel.stopTyping( true )
 	}
 
 	/**

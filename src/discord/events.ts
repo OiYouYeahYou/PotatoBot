@@ -1,11 +1,11 @@
 import { Message, GuildMember, Guild, Client } from 'discord.js'
-import { somethingWentWrong, safeCallAsync } from '../util'
+import { somethingWentWrong, isPrefixed } from '../util'
 import { getDefaultChannel, isFeatureEnabled } from '../configManager'
 import { announceEntry, announceExit } from './featureEnum'
 import { initAutoPurge } from '../features/channelAutoPurge'
-import { messageHandler, isPrefixed } from './messageEvent'
 import { prefix } from '../constants'
 import { Main } from '../classes/Main'
+import { everyoneResponse } from './features';
 
 export async function ready( client: Client )
 {
@@ -37,13 +37,17 @@ export async function messageRecived( app: Main, message: Message )
 	if ( message.author.bot )
 		return
 
-	if ( !isPrefixed( prefix, text ) && !message.mentions.everyone )
-		return
-
-	const [ error ]
-		= await safeCallAsync( messageHandler, app, message, text, prefix )
-	if ( error )
+	try
+	{
+		if ( isPrefixed( prefix, text ) )
+			await app.list.run( app, message, text, prefix )
+		else if ( message.mentions.everyone )
+			await everyoneResponse( message )
+	}
+	catch ( error )
+	{
 		await somethingWentWrong( message, error )
+	}
 }
 
 export function guildMemberAdd( member: GuildMember )

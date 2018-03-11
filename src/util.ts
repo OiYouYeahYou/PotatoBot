@@ -190,3 +190,15 @@ export function splitFirstWordAsNumber( args: string, def = 0 )
 
 	return [ x, b ]
 }
+
+export function isPrefixed( pfx: string, str: string )
+{
+	return str.length !== pfx.length
+		&& pfx.length > 0
+		&& str.startsWith( pfx )
+}
+
+export function removePrefix( pfx: string, text: string )
+{
+	return text.slice( pfx.length ).trim()
+}
