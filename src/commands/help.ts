@@ -1,9 +1,7 @@
 import Request from '../classes/Request'
 import { codeWrap } from '../util'
 import Module from '../classes/Module'
-import AListItem from '../classes/AListItem'
 import List from '../classes/List'
-import { SelfSendingEmbed } from '../classes/Embed';
 
 export default function ( list: List )
 {
@@ -43,12 +41,17 @@ export async function helpFunction( req: Request, text: string )
 
 		const wrapper = req.list.getCommandWrapper( command )
 
-		const embed = req.embed()
-
 		if ( wrapper )
-			return helpEmebd( embed, command, wrapper )
+			return req.embed()
+				.setTitle( `Help : ${ command }` )
+				.addField( 'Usage', req.prefix + wrapper.usage )
+				.addField( 'Purpose', wrapper.help )
+				.send()
 		else
-			return missingWrapper( embed, command )
+			return req.embed()
+				.setTitle( `Help : ${ command } is not recognised` )
+				.setDescription( 'Try using list to find your command' )
+				.send()
 	}
 }
 
@@ -93,24 +96,5 @@ async function missingArguments( req: Request )
 {
 	return req.embed()
 		.setTitle( 'This command requires additional arguments' )
-		.send()
-}
-
-/** Response when a wrapper could not be found */
-function missingWrapper( embed: SelfSendingEmbed, command: string )
-{
-	return embed
-		.setTitle( `Help : ${ command } is not recognised` )
-		.setDescription( 'Try using list to find your command' )
-		.send()
-}
-
-/** Converts a Command into an Embed response */
-function helpEmebd( embed: SelfSendingEmbed, command: string, wrapper: AListItem )
-{
-	return embed
-		.setTitle( `Help : ${ command }` )
-		.addField( 'Usage', wrapper.usage )
-		.addField( 'Purpose', wrapper.help )
 		.send()
 }

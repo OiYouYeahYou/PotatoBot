@@ -1,5 +1,4 @@
-import Request from './Request';
-import { prefix } from '../constants'
+import Request from './Request'
 
 export interface ListItemInfo
 {
@@ -30,7 +29,7 @@ export default abstract class AListItem
 		this.key = key
 		this.help = help
 		this.permission = permission ? permission : 'all'
-		this.usage = `${ prefix }${ key } ${ usage || '' }`.trim()
+		this.usage = `${ key } ${ usage || '' }`.trim()
 
 		if ( aliases && aliases.length )
 			this.aliases = `${ key }, ${ aliases.join( ', ' ) }`
