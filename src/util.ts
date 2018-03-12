@@ -3,9 +3,7 @@ import { Guild, Message, VoiceChannel, Snowflake } from 'discord.js'
 export const TEN = 10 * 1000
 
 /** String indexOf that returns undefined instead of -1 */
-export function indexOf(
-	str: string, search: string, position?: number
-): number | undefined
+export function indexOf( str: string, search: string, position?: number )
 {
 	var index: number = str.indexOf( search, position )
 	return index > 0 ? index : undefined

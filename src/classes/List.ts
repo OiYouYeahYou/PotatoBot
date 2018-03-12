@@ -129,11 +129,10 @@ export default class List
 	{
 		message.channel.startTyping( 1 )
 
-		const { list } = app
 		const req = new Request( app, message, prefix, text )
 		const commandString = removePrefix( prefix, text )
 
-		await list.commandRunner( req, commandString )
+		await app.list.commandRunner( req, commandString )
 
 		message.channel.stopTyping( true )
 	}

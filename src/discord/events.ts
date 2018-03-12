@@ -37,10 +37,14 @@ export async function messageRecived( app: Main, message: Message )
 	if ( message.author.bot )
 		return
 
+	const mentionPrefix = `<@!${ app.bot.client.user.id }> `
+
 	try
 	{
 		if ( isPrefixed( prefix, text ) )
 			await app.list.run( app, message, text, prefix )
+		else if ( isPrefixed( mentionPrefix, text ) )
+			await app.list.run( app, message, text, mentionPrefix )
 		else if ( message.mentions.everyone )
 			await everyoneResponse( message )
 	}
