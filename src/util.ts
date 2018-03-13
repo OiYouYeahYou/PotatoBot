@@ -200,3 +200,18 @@ export function removePrefix( pfx: string, text: string )
 {
 	return text.slice( pfx.length ).trim()
 }
+
+export function sorter<T>( ...fns: ( ( a: T, b: T ) => number )[] )
+{
+	return function ( a: T, b: T ): number
+	{
+		let result
+		for ( const fn of fns )
+		{
+			result = fn( a, b )
+			if ( result != 0 )
+				return result
+		}
+		return result
+	}
+}
