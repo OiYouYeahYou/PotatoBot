@@ -10,7 +10,7 @@
     "postinstall": "gulp"
   },
   "dependencies": {
-    "discord.js": "^11.3.0",
+    "discord.js": "^11.3.2",
     "dotenv": "^4.0.0",
     "mongoose": "^5.0.0",
     "source-map-support": "^0.5.0"
