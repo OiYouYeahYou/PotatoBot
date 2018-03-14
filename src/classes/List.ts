@@ -127,14 +127,10 @@ export default class List
 
 	async run( app: Main, message: Message, text: string, prefix: string )
 	{
-		message.channel.startTyping( 1 )
-
 		const req = new Request( app, message, prefix, text )
 		const commandString = removePrefix( prefix, text )
 
 		await app.list.commandRunner( req, commandString )
-
-		message.channel.stopTyping( true )
 	}
 
 	/**
@@ -152,11 +148,13 @@ export default class List
 		const wrapper = this.getCommandWrapper( command )
 
 		if ( !wrapper )
-			await req.reply( `Cannot find \`${ command }\`` )
+			return // Ignore
 		else if ( !hasAuthorityForCommand( req, wrapper ) )
-			await unauthorised( req, wrapper )
-		else
-			await wrapper.runner( req, command, args )
+			return unauthorised( req, wrapper )
+
+		req.channel.startTyping( 1 )
+		await wrapper.runner( req, command, args )
+		req.channel.stopTyping( true )
 	}
 }
 
