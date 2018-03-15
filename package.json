@@ -12,8 +12,11 @@
   "dependencies": {
     "discord.js": "^11.3.2",
     "dotenv": "^4.0.0",
+    "ffmpeg-binaries": "^3.2.2-3",
     "mongoose": "^5.0.0",
-    "source-map-support": "^0.5.0"
+    "opusscript": "0.0.6",
+    "source-map-support": "^0.5.0",
+    "ytdl-core": "^0.20.2"
   },
   "devDependencies": {
     "@types/dotenv": "^4.0.1",

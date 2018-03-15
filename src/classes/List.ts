@@ -130,7 +130,7 @@ export default class List
 		const req = new Request( app, message, prefix, text )
 		const commandString = removePrefix( prefix, text )
 
-		await app.list.commandRunner( req, commandString )
+		await this.commandRunner( req, commandString )
 	}
 
 	/**

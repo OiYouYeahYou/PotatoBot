@@ -6,6 +6,7 @@ import { initAutoPurge } from '../features/channelAutoPurge'
 import { prefix } from '../constants'
 import { Main } from '../classes/Main'
 import { everyoneResponse } from './features';
+import { music } from './music';
 
 export async function ready( client: Client )
 {
@@ -45,6 +46,8 @@ export async function messageRecived( app: Main, message: Message )
 			await app.list.run( app, message, text, prefix )
 		else if ( isPrefixed( mentionPrefix, text ) )
 			await app.list.run( app, message, text, mentionPrefix )
+		else if ( isPrefixed( ':', text ) )
+			await music.run( app, message, text, ':' )
 		else if ( message.mentions.everyone )
 			await everyoneResponse( message )
 	}
