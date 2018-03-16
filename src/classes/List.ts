@@ -127,7 +127,7 @@ export default class List
 
 	async run( app: Main, message: Message, text: string, prefix: string )
 	{
-		const req = new Request( app, message, prefix, text )
+		const req = new Request( app, this, message, prefix, text )
 		const commandString = removePrefix( prefix, text )
 
 		await this.commandRunner( req, commandString )

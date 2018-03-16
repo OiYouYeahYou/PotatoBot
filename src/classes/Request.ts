@@ -9,13 +9,14 @@ export default class Request
 {
 	constructor(
 		app: Main,
+		list: List,
 		message: Message,
 		prefix: string,
 		text: string
 	)
 	{
 		this.app = app
-		this.list = app.list
+		this.list = list
 		this.message = message
 		this.prefix = prefix
 		this.text = text
