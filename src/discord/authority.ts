@@ -5,7 +5,7 @@ export function hasAuthorityForCommand( req: Request, wrapper: AListItem )
 {
 	var { permission } = wrapper
 
-	if ( permission === 'all' )
+	if ( permission === 'all' || permission === 'custom' )
 		return true
 	else if ( permission === 'master' )
 		return isMaster( req )
