@@ -34,7 +34,7 @@ export default function ( list: List )
 					'I need to have the manage message permission'
 				)
 
-			const messages = await channel.fetchMessages( { limit } )
+			const messages = await channel.fetchMessages( { limit: limit + 1 } )
 			const fortnightAgo = Date.now() - ( ( 13 * DAYS ) + ( 23 * HOURS ) )
 			const filtered = messages.filter( message =>
 				!message.pinned && ( message.createdTimestamp > fortnightAgo )
