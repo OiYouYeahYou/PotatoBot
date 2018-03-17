@@ -14,7 +14,7 @@ export interface IAbstractListItem<inject extends AListItem>
 	new( key, input ): inject
 }
 
-type TPermission = 'all' | 'master' | 'owner' | 'admin'
+type TPermission = 'all' | 'master' | 'owner' | 'admin' | 'custom'
 type FRunner = ( req: Request, command: string, args: string )
 	=> Promise<any>
 

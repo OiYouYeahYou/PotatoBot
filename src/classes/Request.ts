@@ -33,6 +33,7 @@ export default class Request
 	get member() { return this.message.member }
 	get author() { return this.message.author }
 	get client() { return this.message.client }
+	get bot() { return this.client.user }
 
 	get screenname()
 	{
