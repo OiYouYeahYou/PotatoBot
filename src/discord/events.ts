@@ -39,6 +39,7 @@ export async function messageRecived( app: Main, message: Message )
 		return
 
 	const mentionPrefix = `<@!${ app.bot.client.user.id }> `
+	const musicPrefix = '\\'
 
 	try
 	{
@@ -46,8 +47,8 @@ export async function messageRecived( app: Main, message: Message )
 			await app.list.run( app, message, text, prefix )
 		else if ( isPrefixed( mentionPrefix, text ) )
 			await app.list.run( app, message, text, mentionPrefix )
-		else if ( isPrefixed( ':', text ) )
-			await music.run( app, message, text, ':' )
+		else if ( isPrefixed( musicPrefix, text ) )
+			await music.run( app, message, text, musicPrefix )
 		else if ( message.mentions.everyone )
 			await everyoneResponse( message )
 	}
