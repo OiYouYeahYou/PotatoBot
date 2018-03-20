@@ -306,13 +306,47 @@ const store = new Store()
 
 export const music = new List
 help( music )
-music.addCommand( 'play', { func: Func_play, help: '', } )
-music.addCommand( 'join', { func: Func_join, help: '', } )
-music.addCommand( 'add', { func: Func_add, help: '', } )
-music.addCommand( 'queue', { func: Func_queue, help: '', } )
-
-music.addCommand( 'pause', { func: Func_pause, help: '', } )
-music.addCommand( 'resume', { func: Func_resume, help: '', } )
-music.addCommand( 'skip', { func: Func_skip, help: '', } )
-music.addCommand( 'volume', { func: Func_volume, help: '', } )
-music.addCommand( 'now', { func: Func_now, help: '', } )
+music.addCommand( 'play', {
+	func: Func_play,
+	help: 'Plays, adds, joins or resumes the player',
+	usage: '[youtube link]',
+} )
+music.addCommand( 'join', {
+	func: Func_join,
+	help: 'Brings the bot to the voice channel',
+	aliases: [ 'summon' ],
+} )
+music.addCommand( 'add', {
+	func: Func_add,
+	help: 'Adds tracks to the playlist',
+	usage: '[youtube link]',
+} )
+music.addCommand( 'queue', {
+	func: Func_queue,
+	help: 'Displays the playlist',
+	aliases: [ 'q' ],
+} )
+music.addCommand( 'pause', {
+	func: Func_pause,
+	help: 'Pauses the player',
+} )
+music.addCommand( 'resume', {
+	func: Func_resume,
+	help: 'Resumes the player',
+} )
+music.addCommand( 'skip', {
+	func: Func_skip,
+	help: 'Goes to the next song',
+	aliases: [ 'next' ],
+} )
+music.addCommand( 'volume', {
+	func: Func_volume,
+	help: 'Manages bot volume',
+	aliases: [ 'vol' ],
+	usage: '[new volume]',
+} )
+music.addCommand( 'now', {
+	func: Func_now,
+	help: 'What is the current song',
+	aliases: [ 'np' ],
+} )
