@@ -3,7 +3,7 @@ import Request from '../classes/Request'
 import { StreamDispatcher, Guild } from 'discord.js'
 import { codeWrap } from '../util'
 import yt = require( 'ytdl-core' )
-import { splitByFirstSpace } from '../../lib/util'
+import { splitByFirstSpace } from '../util'
 import help from '../commands/help'
 
 const ytdOptions: yt.downloadOptions = { filter: 'audioonly' }
