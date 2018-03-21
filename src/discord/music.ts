@@ -102,29 +102,17 @@ async function Func_volume( req, args )
 
 	const [ x ] = splitByFirstSpace( args )
 	const vol = Number( x )
-	const oldVol = state.getVol()
 
 	if ( vol && !Number.isNaN( vol ) )
-	{
-		const newVol = Math.round( vol )
+		return setVolume( req, vol )
 
-		if ( newVol < 0 || newVol > 100 )
-			return req.reply( 'Please use a number from 0 - 100' )
-
-		state.setVolume( newVol )
-
-		return req.send( `Volume: ${ newVol }% from ${ oldVol }%` )
-	}
-
-	return req.send( `Volume: ${ oldVol }%` )
+	return displayVolume( req )
 }
 
 async function Func_now( req: Request )
 {
 	const state = store._get( req )
-	const { current } = state
-
-	return nowPlaying( req, current )
+	return nowPlaying( req, state )
 }
 
 ////////////
@@ -200,6 +188,18 @@ function resolveToGuildID( resolvable: ResolvableGuildID )
 		return resolvable.guild.id
 }
 
+function setVolume( req: Request, vol: number )
+{
+	const [ old, neu ] = store.setVolume( req, vol )
+	return req.send( `Volume: ${ neu }% from ${ old }%` )
+}
+
+function displayVolume( req: Request )
+{
+	const current = store.getVol( req )
+	return req.send( `Volume: ${ current }%` )
+}
+
 //////////
 
 class Store
@@ -229,6 +229,15 @@ class Store
 	shift( resolvable: ResolvableGuildID )
 	{
 		return this._get( resolvable ).shift()
+	}
+	setVolume( resolvable: ResolvableGuildID, vol: number )
+	{
+		return this._get( resolvable ).setVolume( vol )
+	}
+
+	getVol( resolvable: ResolvableGuildID )
+	{
+		return this._get( resolvable ).getVol()
 	}
 }
 
@@ -277,12 +286,21 @@ class GuildPlayerState
 
 	getVol()
 	{
-		return Math.round( this.dispatcher.volume * 50 )
+		return this.dispatcher.volume * 100
 	}
 
 	setVolume( vol: number )
 	{
+		vol = Math.round( vol )
+		vol = Math.min( vol, 200 )
+		vol = Math.max( vol, 0 )
+		vol = vol / 100
+
+		const old = this.getVol()
+
 		this.dispatcher.setVolume( vol )
+
+		return [ old, vol ]
 	}
 }
 
