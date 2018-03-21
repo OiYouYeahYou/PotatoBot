@@ -137,11 +137,15 @@ function createDispatcher( { url }: Song, req: Request )
 	return dispatcher
 }
 
-async function nowPlaying( req: Request, song: Song )
+async function nowPlaying( req: Request, state: GuildPlayerState )
 {
-	return req.send(
-		`Playing: **${ song.title }** requester: **${ song.requester }**`
-	)
+	const { next, current } = state
+
+	const responses = [ 'Playing: ' + current.toString() ]
+	if ( next )
+		responses.push( 'Next: ' + next.toString() )
+
+	return req.send( responses.join( '\n' ) )
 }
 
 async function play( song: Song, req: Request )
@@ -149,8 +153,9 @@ async function play( song: Song, req: Request )
 	if ( !song )
 		return leave( req, 'Queue is empty' )
 
-	await nowPlaying( req, song )
-	store._get( req ).updateDispatcher( song, req )
+	const state = store._get( req )
+	await nowPlaying( req, state )
+	state.updateDispatcher( song, req )
 }
 
 async function leave( req: Request, msg?: string )
@@ -284,6 +289,11 @@ class GuildPlayerState
 		return this.dispatcher = createDispatcher( song, req )
 	}
 
+	get next()
+	{
+		return this.songs[ 0 ]
+	}
+
 	getVol()
 	{
 		return this.dispatcher.volume * 100
@@ -316,6 +326,11 @@ class Song
 	url: string
 	title: string
 	requester: string
+
+	toString()
+	{
+		return `**${ this.title }** requester: **${ this.requester }**`
+	}
 }
 
 ////////////
