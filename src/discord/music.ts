@@ -11,15 +11,15 @@ const streamOptions = { passes: 1 }
 
 async function Func_play( req: Request, args?: string )
 {
-	if ( args )
-		await Func_add( req, args )
-
 	if ( !req.voiceConnection )
 	{
 		await Func_join( req )
-		await Func_play( req )
+		await Func_play( req, args )
 		return
 	}
+
+	if ( args )
+		await Func_add( req, args )
 
 	const state = store._get( req )
 
