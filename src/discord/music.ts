@@ -26,9 +26,7 @@ async function Func_play( req: Request, args?: string )
 	if ( state.playing )
 		return req.send( 'Already Playing' )
 
-	state.playing = true
-
-	await play( state.shift(), req )
+	await store.playNext( req )
 }
 
 async function Func_join( req: Request )
@@ -125,12 +123,12 @@ function createDispatcher( { url }: Song, req: Request )
 		streamOptions
 	)
 
-	dispatcher.on( 'end', async () => play( store.shift( req ), req ) )
+	dispatcher.on( 'end', async () => store.playNext( req ) )
 	dispatcher.on( 'error',
 		async ( err ) =>
 		{
 			await req.send( 'error: ' + err )
-			await play( store.shift( req ), req )
+			await store.playNext( req )
 		}
 	)
 
@@ -146,16 +144,6 @@ async function nowPlaying( req: Request, state: GuildPlayerState )
 		responses.push( 'Next: ' + next.toString() )
 
 	return req.send( responses.join( '\n' ) )
-}
-
-async function play( song: Song, req: Request )
-{
-	if ( !song )
-		return leave( req, 'Queue is empty' )
-
-	const state = store._get( req )
-	await nowPlaying( req, state )
-	state.updateDispatcher( song, req )
 }
 
 async function leave( req: Request, msg?: string )
@@ -235,6 +223,12 @@ class Store
 	{
 		return this._get( resolvable ).shift()
 	}
+
+	playNext( req: Request )
+	{
+		return this._get( req ).playNext( req )
+	}
+
 	setVolume( resolvable: ResolvableGuildID, vol: number )
 	{
 		return this._get( resolvable ).setVolume( vol )
@@ -269,6 +263,18 @@ class GuildPlayerState
 	shift()
 	{
 		return this.current = this.songs.shift()
+	}
+
+	async playNext( req: Request )
+	{
+		const song = this.shift()
+		if ( !song )
+			return leave( req, 'Queue is empty' )
+
+		this.playing = true
+
+		await nowPlaying( req, this )
+		this.updateDispatcher( song, req )
 	}
 
 	pause()
