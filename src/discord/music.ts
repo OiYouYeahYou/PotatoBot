@@ -148,7 +148,7 @@ async function nowPlaying( req: Request, state: GuildPlayerState )
 
 async function leave( req: Request, msg?: string )
 {
-	store._get( req ).playing = false
+	store.destroy( req )
 	req.member.voiceChannel.leave()
 
 	if ( msg )
@@ -227,6 +227,13 @@ class Store
 	playNext( req: Request )
 	{
 		return this._get( req ).playNext( req )
+	}
+
+	destroy( resolvable: ResolvableGuildID )
+	{
+		const id = resolveToGuildID( resolvable )
+		this.states[ id ].destroy()
+		this.states[ id ] = null
 	}
 
 	setVolume( resolvable: ResolvableGuildID, vol: number )
@@ -317,6 +324,14 @@ class GuildPlayerState
 		this.dispatcher.setVolume( vol )
 
 		return [ old, vol ]
+	}
+
+	destroy()
+	{
+		while ( this.songs.shift() );
+		this.playing = false
+		this.current = null
+		this.dispatcher = null
 	}
 }
 
