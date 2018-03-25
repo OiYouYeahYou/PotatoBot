@@ -197,7 +197,7 @@ function displayVolume( req: Request )
 
 class Store
 {
-	states: { [ key: string ]: GuildPlayerState } = {}
+	private states: { [ key: string ]: GuildPlayerState } = {}
 
 	get( resolvable: ResolvableGuildID ): GuildPlayerState | false
 	{
@@ -249,11 +249,6 @@ class Store
 
 class GuildPlayerState
 {
-	constructor()
-	{
-
-	}
-
 	songs: Song[] = []
 	current: Song
 	playing: boolean = false
@@ -281,7 +276,7 @@ class GuildPlayerState
 		this.playing = true
 
 		await nowPlaying( req, this )
-		this.updateDispatcher( song, req )
+		this.dispatcher = createDispatcher( song, req )
 	}
 
 	pause()
@@ -295,11 +290,6 @@ class GuildPlayerState
 	end()
 	{
 		this.dispatcher.end()
-	}
-
-	updateDispatcher( song, req )
-	{
-		return this.dispatcher = createDispatcher( song, req )
 	}
 
 	get next()
