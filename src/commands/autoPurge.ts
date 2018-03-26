@@ -4,8 +4,8 @@ import { padLeft, safeCallAsync, splitFirstWordAsNumber } from '../util'
 import { createPurgeConfig, getPurgeConfig, getReports, IPurgeReport }
 	from '../mongoose/autoPurgeConfig'
 import { autoPurge } from '../features/channelAutoPurge'
-import List from '../classes/List';
-import Request from '../classes/Request';
+import List from '../classes/List'
+import Request from '../classes/Request'
 
 const defaultAgeLimit = 24
 
@@ -125,8 +125,8 @@ function makeResponse( length, deleted, config )
 		? `In this channel, I have deleted ${ deleted } messages and have run ${ length } times`
 		: 'I have never purged in this channel, unless I have memory loss'
 	const currentConfig = config
-		? `And purges messages older than ${ config.purgeOlderThan } hours`
-		: 'I am not curretnly auto purgeing this channel'
+		? `And purging messages older than ${ config.purgeOlderThan } hours`
+		: 'I am not currently auto purging this channel'
 
 	return purgedStats + '. ' + currentConfig
 }
