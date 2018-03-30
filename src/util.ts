@@ -73,11 +73,8 @@ export async function destructingReply( message: Message, text: string )
 
 	try
 	{
-		if ( msg instanceof Message )
-			await msg.delete()
-		else
-			for ( const msgItem of msg )
-				await msgItem.delete()
+		// @ts-ignores
+		await msg.delete()
 	} catch ( error )
 	{
 		console.error( error )
@@ -97,7 +94,7 @@ export async function somethingWentWrong( message: Message, err: any )
 		err.message += ` (Event: ${ id })`
 
 	console.log( err )
-	return message.reply( `Something went wrong (Event: ${ id })` )
+	return destructingReply( message, `Something went wrong (Event: ${ id })` )
 }
 
 export function guildIDNormaliser( guild: Guild | Snowflake ): number
