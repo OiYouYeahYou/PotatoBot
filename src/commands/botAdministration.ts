@@ -1,57 +1,144 @@
-import { IApplicationWrapper } from "../commands";
-import { disconnect } from "../index";
-import { destructingReply } from "../util";
-import { exec } from "child_process";
+import { codeWrap } from '../util'
+import { exec } from 'child_process'
+import Request from '../classes/Request'
+import { promisify } from 'util'
+import List from '../classes/List'
 
-export const WrapperKill: IApplicationWrapper = {
-	func: async ( message ) => {
-		console.log( 'destroying' );
-		await message.reply( 'MURRDERRRR!!!' )
-		await disconnect();
-		process.exit();
-	},
-	help: 'Destroys the message.',
-	aliases: [ 'kys', ],
-	permisson: 'master',
-};
+const promisedExec = promisify( exec )
+interface IStd
+{
+	stdout: string
+	stderr: string
+}
 
-export const WrapperRestart: IApplicationWrapper = {
-	func: async ( message ) => {
-		const { env: { restartCommand } } = process
+let raceLock = false
 
-		if ( !restartCommand )
-			return destructingReply( message,
-				'This bot does not support restarting'
-			)
+export default function ( list: List )
+{
+	const module = list.addModule( 'bot', {
+		help: 'Bot administration tools for Owner',
+		permission: 'owner',
+	} )
 
-		console.log( 'destroying' );
-		await message.reply( 'MURRDERRRR!!!' )
-		await disconnect();
+	module.addCommand( 'kill', {
+		func: async ( req: Request ) =>
+		{
+			if ( raceLock )
+				return req.reply( 'Cannot do that at his time' )
 
-		exec( restartCommand, ( err, stdout, stderr ) => {
-			if ( err )
-				return destructingReply( message, 'Execution failed' );
+			raceLock = true
 
-			console.log( `stdout: ${ stdout }` );
-			console.log( `stderr: ${ stderr }` );
-		} );
-	},
-	help: 'Destroys the message.',
-	permisson: 'master',
-};
+			console.log( 'Shutting down by Discord command' )
 
-export const WrapperInvite = {
-	func: ( message ) => {
-		message.client.generateInvite().then(
-			link => message.channel.send( link )
-		);
-	},
-	help: 'Provides a bot inviter link',
-};
+			await req.reply( 'MURRDERRRR!!!' )
+			await req.app.destroy()
 
+			process.exit()
+		},
+		help: 'Destroys the bot.',
+		aliases: [ 'kys', ],
+		permission: 'master',
+	} )
 
-export const WrapperPing = {
-	func: ( message ) => { message.reply( 'pong' ); },
-	help: 'Tests latency of the server',
-	aliases: [ 'pong' ],
-};
+	module.addCommand( 'restart', {
+		func: async ( req: Request ) =>
+		{
+			if ( raceLock )
+				return req.reply( 'Cannot do that at his time' )
+
+			raceLock = true
+
+			const { env: { restartCommand } } = process
+
+			if ( !restartCommand )
+				return req.destructingReply(
+					'This bot does not support restarting'
+				)
+
+			console.log( 'Restarting by Discord command' )
+
+			await req.reply( 'I\'ll be a new bot!!!' )
+			await req.app.destroy()
+
+			exec( restartCommand )
+		},
+		help: 'Restarts bot',
+		permission: 'master',
+	} )
+
+	module.addCommand( 'update', {
+		func: async ( req: Request ) =>
+		{
+			if ( raceLock )
+				return req.reply( 'Cannot do that at his time' )
+
+			raceLock = true
+
+			console.log( 'Updating by Discord command' )
+
+			const { restartCommand } = process.env
+			const restartable = !!restartCommand
+			const curry = currier( restartable )
+			const notification = await req.send( curry() )
+
+			try
+			{
+				var pull = await promisedExec( 'git pull' )
+				await notification.edit( curry( pull ) )
+
+				var npm = await promisedExec( 'npm i' )
+				await notification.edit( curry( pull, npm ) )
+			}
+			catch ( err )
+			{
+				req.somethingWentWrong( err )
+			}
+			finally
+			{
+				if ( restartable )
+				{
+					await notification.edit( curry( pull, npm, true ) )
+					await req.app.destroy()
+					exec( restartCommand )
+				}
+				else
+					raceLock = false
+			}
+		},
+		help: 'Pulls, Builds and Restarts bot',
+		permission: 'master',
+	} )
+
+	module.addCommand( 'invite', {
+		func: async ( req: Request ) =>
+		{
+			const invite = await req.client.generateInvite()
+			return req.send( invite )
+		},
+		help: 'Provides a bot inviter link',
+	} )
+}
+
+function currier( restartable: boolean )
+{
+	return ( git?: IStd, npm?: IStd, restarting?: boolean ) => [
+		sanitiseOutput( 'git', git ),
+		sanitiseOutput( 'npm', npm ),
+		restartMessage( restartable, restarting )
+	].join( '\n\n' )
+}
+
+const sanitiseOutput = ( name: string, std: IStd ) =>
+	name + ' output:\n' + codeWrap(
+		std ? `=== out ===\n${ std.stdout }\n=== err ==\n${ std.stderr }` : ''
+	)
+
+function restartMessage( restartable: boolean, restarting: boolean )
+{
+	if ( !restartable )
+		return 'You will need to restart manually'
+	else if ( restarting )
+		return 'Restart: `Restarting now`'
+
+	return 'Restart: `pending`'
+}

@@ -1,114 +1,112 @@
-import { Message, PermissionResolvable, VoiceChannel } from "discord.js";
-import { IApplicationWrapper } from "../commands";
-import {
-  destructingReply,
-  findVoiceChannel,
-  randomString,
-  safeDelete,
-  somethingWentWrong,
-  splitByFirstSpace,
-  TEN
-} from "../util";
+import { PermissionResolvable, VoiceChannel } from 'discord.js'
+import { findVoiceChannel, randomString, splitByFirstSpace, TEN } from '../util'
+import List from '../classes/List';
+import Request from '../classes/Request';
 
-export const WrapperDemand: IApplicationWrapper = {
-  func: demandRoom,
-  help: 'Creates a \'Room of Requirement\'',
-  usage: '[limit] [name]',
-  // disabled: true,
-};
-
-const REQUIRED_PERMISSONS: PermissionResolvable[] = [
-  'MANAGE_CHANNELS', 'MOVE_MEMBERS'
-];
-const DEFAULT_NAME = 'Room of requirement';
-const DEFAULT_ARGS: [ number, string ] = [ undefined, 'Room of requirement' ];
-const position = 200;
-
-function demandRoom( message: Message, args: string ): void {
-  if ( !message.member.voiceChannel )
-    return destructingReply( message, 'You need to be in a Voice Channel' );
-
-  if ( !message.guild.me.hasPermission( REQUIRED_PERMISSONS ) )
-    return destructingReply( message, 'The bot needs more permissons' );
-
-  var tempName = randomString( 15 );
-
-  message.guild.createChannel( tempName, 'voice' )
-    .then( () => newChannelHandler( message, tempName, args ) )
-    .catch( err => somethingWentWrong( message, err ) );
+export default function ( list: List )
+{
+	list.addCommand( 'demand', {
+		func: demandRoom,
+		help: 'Creates a \'Room of Requirement\'',
+		usage: '[limit] [name]',
+	} )
 }
 
-/**
- *
- * @param message Message event
- * @param tmpName Temporary name used to create and find channel
- * @param userLimit User limit to be set to
- * @param name Name for channel to be set too
- */
-function newChannelHandler( message: Message, tmpName: string, args: string ): void {
-  var channel: VoiceChannel = findVoiceChannel( message.guild, tmpName );
+const REQUIRED_PERMISSONS: PermissionResolvable[] = [
+	'MANAGE_CHANNELS', 'MOVE_MEMBERS'
+]
+const DEFAULT_NAME = 'Room of requirement'
+const DEFAULT_ARGS: [ number, string ] = [ undefined, 'Room of requirement' ]
+const position = 200
 
-  if ( !channel ) {
-    safeDelete( message );
+async function demandRoom( req: Request, args: string )
+{
+	if ( !req.member.voiceChannel )
+		return req.destructingReply( 'You need to be in a Voice Channel' )
 
-    return destructingReply( message, 'Channel can not be found, try again' );
-  }
+	if ( !req.guild.me.hasPermission( REQUIRED_PERMISSONS ) )
+		return req.destructingReply( 'The bot needs more permissons' )
 
-  var [ userLimit, name ] = processArgs( args );
-  var parentChannel = message.guild.afkChannel.parent;
-  var parent = parentChannel ? parentChannel.id : undefined;
-  var reason = 'Setting up Temporary Channel';
-  var config = { name, userLimit, parent, position };
+	const { guild, member } = req
+	const tempName = randomString( 15 )
+	const channel
+		= await req.guild.createChannel( tempName, 'voice' )
+		|| findVoiceChannel( guild, tempName )
 
-  channel.edit( config, reason )
-    .then( () => message.member.setVoiceChannel( channel.id ) )
-    .then( () => initIntervalChecker( message, channel ) )
-    .then( () => destructingReply( message, 'Done' ) )
-    .catch( err => {
-      channel.delete()
-        .then( () => somethingWentWrong( message, err ) )
-        .catch( () => destructingReply( message, 'Something went really wrong after trying to tidy up after an error' ) );
-    } );
+	if ( !channel )
+		return req.destructingReply( 'Channel can not be found, try again' )
+
+	const [ userLimit, name ] = processArgs( args )
+
+	if ( userLimit > 99 )
+		return req.destructingReply( 'Number is too large' )
+
+	const afkChannel = guild.afkChannel
+	const parentChannel = afkChannel ? guild.afkChannel.parent : undefined
+	const parent = parentChannel ? parentChannel.id : undefined
+	const reason = 'Setting up Temporary Channel'
+	const config = { name, userLimit, parent, position }
+
+	try
+	{
+		await channel.edit( config, reason )
+		await member.setVoiceChannel( channel.id )
+		setIntervalChecker( req, channel )
+		await req.destructingReply( 'Done' )
+	}
+	catch ( error )
+	{
+		await channel.delete()
+		await req.somethingWentWrong( error )
+	}
 }
 
 /**
  * Processes arguments into an array of required variables
  * @param args
  */
-function processArgs( args: string ): [ number, string ] {
-  if ( !args )
-    return DEFAULT_ARGS;
+function processArgs( args: string ): [ number, string ]
+{
+	if ( !args )
+		return DEFAULT_ARGS
 
-  var [ limitString, name ] = splitByFirstSpace( args );
-  var limit = Number( limitString );
+	var [ limitString, name ] = splitByFirstSpace( args )
+	var limit = Number( limitString )
 
-  if ( Number.isNaN( limit ) ) {
-    limit = undefined;
-    name = args;
-  }
+	if ( Number.isNaN( limit ) )
+	{
+		limit = undefined
+		name = args
+	}
 
-  if ( !name || name.length < 4 )
-    name = DEFAULT_NAME;
+	if ( !name || name.length < 4 )
+		name = DEFAULT_NAME
 
-  return [ limit, name ];
+	return [ limit, name ]
 }
 
 /**
  * Cretaes an interval that deletes the channel if the owner is not present
- * @param message
+ * @param req
  * @param channel
  */
-function initIntervalChecker( message: Message, channel: VoiceChannel ): void {
-  var interval = message.client.setInterval( () => {
-    if ( message.member.voiceChannelID === channel.id )
-      return;
+function setIntervalChecker( req: Request, channel: VoiceChannel ): void
+{
+	const interval = req.client.setInterval( async () =>
+	{
+		if ( req.member.voiceChannelID === channel.id )
+			return
 
-    message.client.clearInterval( interval );
+		req.client.clearInterval( interval )
 
-    safeDelete( message );
-
-    channel.delete()
-      .then( () => destructingReply( message, 'Channel is deleted' ) )
-      .catch( () => destructingReply( message, 'Channel can\'t be deleted' ) );
-  }, TEN );
+		try
+		{
+			await channel.delete()
+			await req.destructingReply( 'Channel is deleted' )
+		}
+		catch ( error )
+		{
+			await req.destructingReply( 'Channel can\'t be deleted' )
+		}
+	}, TEN )
 }

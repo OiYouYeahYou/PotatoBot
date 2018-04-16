@@ -1,36 +1,41 @@
-import { Message } from "discord.js";
-import { ICommandWrapper } from "../commands";
+import Request from '../classes/Request';
+import AListItem from '../classes/AListItem'
 
-export function hasAuthorityForCommand( message: Message, wrapper: ICommandWrapper ) {
-	var { permisson } = wrapper;
+export function hasAuthorityForCommand( req: Request, wrapper: AListItem )
+{
+	var { permission } = wrapper
 
-	if ( permisson === 'all' )
-		return true;
-	else if ( permisson === 'master' )
-		return isMaster( message );
-	else if ( permisson === 'owner' )
-		return isOwner( message ) || isMaster( message );
-	else if ( permisson === 'admin' )
-		return isAdmin( message );
+	if ( permission === 'all' || permission === 'custom' )
+		return true
+	else if ( permission === 'master' )
+		return isMaster( req )
+	else if ( permission === 'owner' )
+		return isOwner( req ) || isMaster( req )
+	else if ( permission === 'admin' )
+		return isAdmin( req )
 
-	return false;
+	return false
 }
 
-function isOwner( message: Message ) {
-	return message.member.id === message.guild.ownerID;
+function isOwner( req: Request )
+{
+	return req.member && req.member.id === req.guild.ownerID
 }
 
-function isMaster( message: Message ) {
-	return message.member.id === process.env.master;
+function isMaster( req: Request )
+{
+	return req.author.id === process.env.master
 }
 
-function isAdmin( message: Message ) {
-	return message.member.hasPermission( 'ADMINISTRATOR' );
+function isAdmin( req: Request )
+{
+	return req.member && req.member.hasPermission( 'ADMINISTRATOR' )
 }
 
-export function unauthorised( message: Message, wrapper: ICommandWrapper ) {
-	message.reply(
+export async function unauthorised( req: Request, wrap: AListItem )
+{
+	return req.reply(
 		`You are not autorised to use that command, `
-		+ `you must be a ${ wrapper.permisson }`
-	).then( () => message.channel.stopTyping( true ) );
+		+ `you must be a ${ wrap.permission }`
+	)
 }

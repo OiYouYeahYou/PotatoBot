@@ -1,10 +1,13 @@
-import { client } from "./discord/client";
-import mongoose from "./mongoose/client";
+require( 'source-map-support' ).install()
 
-client.login( process.env.discord );
-mongoose.connect( process.env.mongo );
+import { Main } from './classes/Main'
+import { setEnv } from './env'
+import list from './list';
 
-export async function disconnect() {
-	await client.destroy();
-	await mongoose.disconnect();
-}
+setEnv()
+
+const { discord, mongo } = process.env
+
+export const app = new Main( discord, mongo, list )
+
+app.start()

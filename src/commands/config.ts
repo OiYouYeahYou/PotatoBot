@@ -1,124 +1,112 @@
-import { Message, Guild as TGuild } from "discord.js";
-import { destructingReply } from "../util";
-import { IApplicationWrapper, subCommandHandler } from "../commands";
-import { findGuildConfig, GuildConfigModel, configLists } from "../mongoose/guild";
-import { isFeatureEnabled } from "../configManager";
+import { Guild as TGuild } from 'discord.js'
+import { findGuildConfig, GuildConfigModel, configLists } from '../mongoose/guild'
+import { isFeatureEnabled, isCommandEnabled } from '../configManager'
+import { all } from '../discord/featureEnum'
+import List from '../classes/List';
+import Request from '../classes/Request';
 
-const subModules = {
-	new: subNew,
-	features: subEnabledFeatures,
-	commands: subEnabledcommands,
-};
+export default function ( list: List )
+{
+	const module = list.addModule( 'config', {
+		help: 'Sets configuration preferences',
+		permission: 'master',
+		aliases: [ 'cfg' ],
+	} )
 
-const defaultConfig = {
-	commands: [ 'all' ],
-	features: [ 'all', ],
-};
+	module.addCommand( 'new', {
+		func: createNewConfig,
+		help: 'Creates a new config for a Guild',
+	} )
 
-export const WrapperConfig: IApplicationWrapper = {
-	func: ( message: Message, args: string ) => {
-		subCommandHandler( message, subModules, args )
-	},
-	help: 'Sets configuration preferences',
-	permisson: 'master',
-	aliases: [ 'cfg' ],
-};
+	module.addCommand( 'features', {
+		func: async ( req: Request, args: string ) =>
+			enabledAggreator( req, args, 'features' ),
+		help: 'Returns enabled features,  or Checks if features are enabled',
+	} )
 
-async function subEnabledFeatures( message: Message, args: string ) {
-	enabledAggreator( message, args, 'features' )
+	module.addCommand( 'commands', {
+		func: async ( req: Request, args: string ) =>
+			enabledAggreator( req, args, 'commands' ),
+		help: 'Returns enabled commands,  or Checks if commands are enabled',
+	} )
 }
 
-async function subEnabledcommands( message: Message, args: string ) {
-	enabledAggreator( message, args, 'commands' )
+async function enabledAggreator( req: Request, args: string, type: configLists )
+{
+	const response = args
+		? await listEnabled( req.guild, type, args )
+		: await getEnabledList( req.guild, type )
+
+	return req.send( response )
 }
 
-async function enabledAggreator(
-	message: Message,
-	args: string,
-	key: configLists
-) {
-	const { guild } = message;
-
-	await message.reply(
-		args
-			? await checkEnabledList( guild, key, args )
-			: await getEnabledList( guild, key )
-	);
-}
-
-async function getEnabledList(
-	guild: TGuild,
-	key: configLists
-): Promise<string> {
-	const config = await findGuildConfig( guild );
+async function getEnabledList( guild: TGuild, type: configLists )
+{
+	const config = await findGuildConfig( guild )
 
 	if ( !config )
-		return Promise.resolve( 'No config available' );
+		return 'No config available'
 
-	const list = config[ key ];
-	const all = list.includes( 'all' );
-
-	return Promise.resolve(
-		all
-			? `All ${ key } are enabled`
-			: `Enabled: ${ list.join( ', ' ) }`
-	);
+	const list = config[ type ]
+	const isAll = list.includes( all )
+	return isAll
+		? `All ${ type } are enabled`
+		: `Enabled: ${ list.join( ', ' ) }`
 }
 
-async function checkEnabledList(
-	guild: TGuild,
-	key: configLists,
-	args: string
-): Promise<string> {
+async function listEnabled( guild: TGuild, type: configLists, args: string )
+{
 	const items = args.split( ' ' )
-	const enabled = [];
-	const disabled = [];
-	let reply
+	const enabled = []
+	const disabled = []
+	const enabledChecker = type === 'features'
+		? isFeatureEnabled : isCommandEnabled
 
-	for ( const item of items ) {
-		const hmmm = await isFeatureEnabled( guild, item );
-		( hmmm ? enabled : disabled ).push( item );
-	}
+	for ( const item of items )
+		( await enabledChecker( guild, item )
+			? enabled : disabled
+		).push( item )
 
-	const stringEnabled = `Enabled: ${ enabled.join( ', ' ) }`;
-	const stringDisabled = `Disabled: ${ disabled.join( ', ' ) }`;
+	if ( !enabled.length || !disabled.length )
+		return 'Huh, nothing showed up?'
 
-	if ( enabled.length && disabled.length )
-		reply = `${ stringEnabled }\n${ stringDisabled }`;
-	else if ( enabled.length )
-		reply = stringEnabled;
-	else if ( disabled.length )
-		reply = stringDisabled;
-	else
-		reply = 'Huh, nothing showed up?';
+	const reply: string[] = []
 
-	return Promise.resolve( reply );
+	if ( enabled.length )
+		reply.push( 'Enabled: ' + enabled.join( ', ' ) )
+	if ( disabled.length )
+		reply.push( 'Disabled: ' + disabled.join( ', ' ) )
+
+	return reply.join( '\n' )
 }
 
-async function subNew( message: Message, args: string ) {
+async function createNewConfig( req: Request, args: string )
+{
 	const {
 		channel: { id: defaultChannel },
 		guild: { id: guildID },
-	} = message
+	} = req
 
-	const existingGuilds = await findGuildConfig( guildID );
+	const existingGuilds = await findGuildConfig( guildID )
 
 	if ( existingGuilds )
-		return destructingReply( message, 'This guild already has a config' );
+		return req.destructingReply( 'This guild already has a config' )
 
 	const settings = new GuildConfigModel( {
 		guildID,
 		defaultChannel,
-		commands: [ 'all' ],
-		features: [ 'all' ],
-	} );
+		commands: [ all ],
+		features: [ all ],
+	} )
 
-	try {
-		await settings.save();
-	} catch (error) {
-		return message.reply( 'Failed to save' );
+	try
+	{
+		await settings.save()
+	}
+	catch ( error )
+	{
+		return req.reply( 'Failed to save' )
 	}
 
-	return message.reply( 'Saved' );
+	return req.reply( 'Saved' )
 }
-

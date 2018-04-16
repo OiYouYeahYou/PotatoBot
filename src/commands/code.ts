@@ -1,37 +1,39 @@
-import { Message } from "discord.js";
-import { splitByFirstSpace, destructingReply, somethingWentWrong } from "../util";
+import Request from '../classes/Request';
+import { splitByFirstSpace } from '../util'
+import List from '../classes/List';
+import { codeWrap } from '../util';
 
-export const WrapperCode = {
-	func: ( message: Message, args: string ) => {
-		var [ lang, text ] = splitByFirstSpace( args );
+export default function ( list: List )
+{
+	list.addCommand( 'code', {
+		func: async ( req: Request, args: string ) =>
+		{
+			const [ lang, text ] = splitByFirstSpace( args )
 
-		sendCode( message, text, lang );
-	},
-	help: 'Sends an text formatted in specified language',
-	usage: '<code snippet>',
-};
+			return sendCode( req, text, lang )
+		},
+		help: 'Sends text formatted in specified language',
+		usage: '<code snippet>',
+	} )
 
-export const WrapperJS = {
-	func: ( message: Message, args: string ) =>
-		sendCode( message, args, 'javascript' ),
-	help: 'Sends an text formatted as javascript',
-	usage: '<code snippet>',
-};
+	list.addCommand( 'js', {
+		func: async ( req: Request, args: string ) =>
+			sendCode( req, args, 'javascript' ),
+		help: 'Sends text formatted as javascript',
+		usage: '<code snippet>',
+	} )
 
-export const WrapperRuby = {
-	func: ( message: Message, args: string ) =>
-		sendCode( message, args, 'ruby' ),
-	help: 'Sends an text formatted as ruby',
-	usage: '<code snippet>',
-};
+	list.addCommand( 'ruby', {
+		func: async ( req: Request, args: string ) =>
+			sendCode( req, args, 'ruby' ),
+		help: 'Sends text formatted as ruby',
+		usage: '<code snippet>',
+	} )
+}
 
-function sendCode( message: Message, text: string | undefined, lang ) {
-	if ( message.delete )
-		message.delete();
+async function sendCode( req: Request, text: string | undefined, lang )
+{
+	await req.delete()
 
-	if ( !text || !text.trim() )
-		return destructingReply( message, 'No code was recieved' )
-
-	message.channel.sendCode( lang, text )
-		.catch( err => somethingWentWrong( message, err ) );
+	return req.send( req.screenname + ' Sent:\n' + codeWrap( text, lang ) )
 }

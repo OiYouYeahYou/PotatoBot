@@ -6,18 +6,22 @@
   "scripts": {
     "start": "gulp && node lib/",
     "devstart": "nodemon -w src -e ts --exec ts-node --inspect src/",
+    "map": "gulp && madge lib/index.js lib/commands/*.js --image graph.svg",
     "postinstall": "gulp"
   },
   "dependencies": {
-    "discord.js": "^11.3.0",
+    "discord.js": "^11.3.2",
     "dotenv": "^5.0.0",
+    "ffmpeg-binaries": "^3.2.2-3",
     "mongoose": "^5.0.0",
-    "source-map-support": "^0.5.0"
+    "opusscript": "0.0.6",
+    "source-map-support": "^0.5.0",
+    "ytdl-core": "^0.20.2"
   },
   "devDependencies": {
     "@types/dotenv": "^4.0.1",
     "@types/mongodb": "^3.0.3",
-    "@types/mongoose": "^4.7.33",
+    "@types/mongoose": "^5.0.0",
     "@types/node": "^9.3.0",
     "del": "^3.0.0",
     "gulp": "^3.9.1",
@@ -25,6 +29,7 @@
     "gulp-tslint": "^8.1.2",
     "gulp-typescript": "^3.2.3",
     "load-grunt-tasks": "^3.5.2",
+    "madge": "^3.0.1",
     "nodemon": "^1.14.11",
     "run-sequence": "^2.2.0",
     "ts-node": "^4.1.0",
