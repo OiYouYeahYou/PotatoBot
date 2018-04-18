@@ -41,7 +41,7 @@ export default class Request
 		return this.message.member.nickname || this.message.author.username
 	}
 
-	async send( text, options?: any )
+	async send( text: any, options?: any )
 	{
 		const message = await this.message.channel.send( text, options )
 		return Array.isArray( message ) ? message[ 0 ] : message
@@ -52,7 +52,7 @@ export default class Request
 		return await this.message.channel.sendCode( lang, content )
 	}
 
-	async reply( text, options?: any )
+	async reply( text: any, options?: any )
 	{
 		return await this.message.reply( text, options )
 	}
@@ -68,7 +68,7 @@ export default class Request
 			return await this.message.delete()
 	}
 
-	async somethingWentWrong( err )
+	async somethingWentWrong( err: any )
 	{
 		return somethingWentWrong( this.message, err )
 	}

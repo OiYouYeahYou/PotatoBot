@@ -22,7 +22,8 @@ export type configLists = 'features' | 'commands'
 
 export const GuildConfigModel = mongoose.model( 'Guild', guildSchema )
 
-export async function findGuildConfig( guild: GuildClass | Snowflake
+export async function findGuildConfig(
+	guild: GuildClass | Snowflake
 ): Promise<IGuildConfig>
 {
 	const guildID = guildIDNormaliser( guild )
@@ -34,5 +35,6 @@ export async function findGuildConfig( guild: GuildClass | Snowflake
 	else
 		result = results
 
+	// @ts-ignore
 	return Promise.resolve( result )
 }

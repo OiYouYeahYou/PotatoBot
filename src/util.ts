@@ -156,7 +156,7 @@ export function maxStringLength( arr: string[] )
 
 export const noop = () => { }
 
-export async function safeCallAsync<T>( fn: ( ...args ) => Promise<T>, ...args )
+export async function safeCallAsync<T>( fn: ( ...args: any[] ) => Promise<T>, ...args: any[] )
 	: Promise<[ any, T ]>
 {
 	let val, err

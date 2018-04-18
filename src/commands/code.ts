@@ -31,7 +31,7 @@ export default function ( list: List )
 	} )
 }
 
-async function sendCode( req: Request, text: string | undefined, lang )
+async function sendCode( req: Request, text: string | undefined, lang: string )
 {
 	await req.delete()
 

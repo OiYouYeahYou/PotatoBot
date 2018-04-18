@@ -123,4 +123,6 @@ function filterDeletables( messages: Message[], minAge: number, now: number )
 	return deletables.sort( sortByOldestFirst )
 }
 
-const sortByOldestFirst = ( a, b ) => a.createdTimestamp - b.createdTimestamp
+interface HasCreatedTimestamp { createdTimestamp: number }
+const sortByOldestFirst = ( a: HasCreatedTimestamp, b: HasCreatedTimestamp ) =>
+	a.createdTimestamp - b.createdTimestamp

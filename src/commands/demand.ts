@@ -51,6 +51,7 @@ async function demandRoom( req: Request, args: string )
 	{
 		await channel.edit( config, reason )
 		await member.setVoiceChannel( channel.id )
+		// @ts-ignore
 		setIntervalChecker( req, channel )
 		await req.destructingReply( 'Done' )
 	}

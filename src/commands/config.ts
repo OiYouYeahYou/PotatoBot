@@ -57,8 +57,8 @@ async function getEnabledList( guild: TGuild, type: configLists )
 async function listEnabled( guild: TGuild, type: configLists, args: string )
 {
 	const items = args.split( ' ' )
-	const enabled = []
-	const disabled = []
+	const enabled: string[] = []
+	const disabled: string[] = []
 	const enabledChecker = type === 'features'
 		? isFeatureEnabled : isCommandEnabled
 

@@ -54,7 +54,7 @@ export class Bot
 	reconnecting = () =>
 		console.log( 'Discord client is reconnecting' )
 
-	error( err )
+	error( err: any )
 	{
 		console.error( 'A Discord error occured' )
 		console.error( err )

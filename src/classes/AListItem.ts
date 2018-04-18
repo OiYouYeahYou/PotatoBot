@@ -9,9 +9,12 @@ export interface ListItemInfo
 	permission?: TPermission
 }
 
-export interface IAbstractListItem<inject extends AListItem>
+export interface IAbstractListItem<
+	injectClass extends AListItem,
+	injectInterface extends ListItemInfo
+	>
 {
-	new( key, input ): inject
+	new( key: string, input: injectInterface ): injectClass
 }
 
 type TPermission = 'all' | 'master' | 'owner' | 'admin' | 'custom'

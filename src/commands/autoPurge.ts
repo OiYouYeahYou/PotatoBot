@@ -1,7 +1,7 @@
 import { Attachment, DMChannel, GroupDMChannel, TextChannel }
 	from 'discord.js'
 import { padLeft, safeCallAsync, splitFirstWordAsNumber } from '../util'
-import { createPurgeConfig, getPurgeConfig, getReports, IPurgeReport }
+import { createPurgeConfig, getPurgeConfig, getReports, IPurgeReport, IPurgeConfig }
 	from '../mongoose/autoPurgeConfig'
 import { autoPurge } from '../features/channelAutoPurge'
 import List from '../classes/List'
@@ -119,7 +119,7 @@ async function stats( channel: TextChannel )
 	return { deleted, length, config, reports }
 }
 
-function makeResponse( length, deleted, config )
+function makeResponse( length: number, deleted: number, config: IPurgeConfig )
 {
 	const purgedStats = length
 		? `In this channel, I have deleted ${ deleted } messages and have run ${ length } times`

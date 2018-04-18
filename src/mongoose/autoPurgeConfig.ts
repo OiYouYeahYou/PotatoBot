@@ -24,7 +24,8 @@ export async function getPurgeConfigs(): Promise<IPurgeConfig[]>
 	return Array.isArray( configs ) ? configs : [ configs ]
 }
 
-export async function getPurgeConfig( channelID ): Promise<IPurgeConfig[]>
+export async function getPurgeConfig( channelID: string )
+	: Promise<IPurgeConfig[]>
 {
 	const config = await ConfigModel.find( { channelID } )
 	return Array.isArray( config ) ? config : [ config ]

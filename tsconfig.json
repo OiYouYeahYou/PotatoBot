@@ -10,6 +10,7 @@
 		"checkJs": true,
 		"noUnusedLocals": true,
 		"moduleResolution": "node",
+		"noImplicitAny": true,
 		"inlineSourceMap": true
 	},
 	"exclude": [

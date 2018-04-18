@@ -28,12 +28,18 @@ export default class List
 	}
 
 	/** Add a new item to the list, including as an alias */
-	private addToList<inject extends AListItem>(
-		Inject: IAbstractListItem<inject>, key: string, input: ListItemInfo
-	): inject
+	private addToList
+		<
+		injectClass extends AListItem,
+		injectInterface extends ListItemInfo
+		>(
+			Inject: IAbstractListItem<injectClass, injectInterface>,
+			key: string,
+			input: injectInterface
+		): injectClass | undefined
 	{
 		if ( input.disabled )
-			return
+			return undefined
 
 		key = key.toLowerCase()
 

@@ -31,7 +31,7 @@ async function Func_play( req: Request, args?: string )
 
 async function Func_join( req: Request )
 {
-	const { voiceChannel } = req.member
+	const { voiceChannel, id: memberID } = req.member
 
 	if ( !voiceChannel )
 		return req.reply( 'You need to be connected to a voice channel' )
@@ -88,11 +88,14 @@ async function Func_queue( req: Request )
 	await req.send( respone )
 }
 
-const Func_pause = ( req ) => standardDispaterCall( req, 'paused', 'pause' )
-const Func_resume = ( req ) => standardDispaterCall( req, 'resumed', 'resume' )
-const Func_skip = ( req ) => standardDispaterCall( req, 'skipped', 'end' )
+const Func_pause = ( req: Request ) =>
+	standardDispaterCall( req, 'paused', 'pause' )
+const Func_resume = ( req: Request ) =>
+	standardDispaterCall( req, 'resumed', 'resume' )
+const Func_skip = ( req: Request ) =>
+	standardDispaterCall( req, 'skipped', 'end' )
 
-async function Func_volume( req, args )
+async function Func_volume( req: Request, args: string )
 {
 	const state = store.get( req )
 	if ( !state )
