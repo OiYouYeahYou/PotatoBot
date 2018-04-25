@@ -24,8 +24,18 @@ type FRunner = ( req: Request, command: string, args: string )
 /** Command data handler */
 export default abstract class AListItem
 {
+	public readonly permission: TPermission
+
+	public readonly help: string
+	public readonly usage: string
+	public readonly aliases: string
+
 	/** Wraps the information about a command */
-	constructor( key: string, input: ListItemInfo, runner: FRunner )
+	constructor(
+		readonly key: string,
+		input: ListItemInfo,
+		readonly runner: FRunner
+	)
 	{
 		const { help, permission, usage, aliases } = input
 
@@ -39,13 +49,4 @@ export default abstract class AListItem
 
 		this.runner = runner
 	}
-
-	public readonly permission: TPermission
-
-	public readonly key: string
-	public readonly help: string
-	public readonly usage: string
-	public readonly aliases: string
-
-	readonly runner: FRunner
 }

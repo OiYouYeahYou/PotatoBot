@@ -8,25 +8,12 @@ import { SelfSendingEmbed } from "./Embed"
 export default class Request
 {
 	constructor(
-		app: Main,
-		list: List,
-		message: Message,
-		prefix: string,
-		text: string
-	)
-	{
-		this.app = app
-		this.list = list
-		this.message = message
-		this.prefix = prefix
-		this.text = text
-	}
-
-	readonly app: Main
-	readonly list: List
-	readonly message: Message
-	readonly prefix: string
-	readonly text: string
+		readonly app: Main,
+		readonly list: List,
+		readonly message: Message,
+		readonly prefix: string,
+		readonly text: string
+	) { }
 
 	get guild() { return this.message.guild }
 	get channel() { return this.message.channel }
