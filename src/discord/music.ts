@@ -13,8 +13,9 @@ async function Func_play( req: Request, args?: string )
 {
 	if ( !req.voiceConnection )
 	{
-		await Func_join( req )
-		await Func_play( req, args )
+		const joined = await Func_join( req )
+		if ( joined )
+			await Func_play( req, args )
 		return
 	}
 
@@ -34,7 +35,19 @@ async function Func_join( req: Request )
 	const { voiceChannel, id: memberID } = req.member
 
 	if ( !voiceChannel )
-		return req.reply( 'You need to be connected to a voice channel' )
+		return !req.reply( 'You need to be connected to a voice channel' )
+
+	const { members } = req.voiceConnection.channel
+	const memberPresent = members.has( memberID )
+	if ( memberPresent )
+		return !req.reply( 'Already in same channel' )
+
+	const { size } = members
+	const isPlaying = store.isPlaying( req )
+	const isPlayingForOthers = !memberPresent && size > 1 && isPlaying
+
+	if ( isPlayingForOthers )
+		return !req.reply( 'Already connected to another channel' )
 
 	try
 	{
@@ -42,7 +55,7 @@ async function Func_join( req: Request )
 	}
 	catch ( error )
 	{
-		req.reply( 'Cannot connect to that channel' )
+		return !req.reply( 'Cannot connect to that channel' )
 	}
 }
 
@@ -248,6 +261,11 @@ class Store
 	{
 		return this._get( resolvable ).getVol()
 	}
+
+	isPlaying( resolvable: ResolvableGuildID )
+	{
+		return this._get( resolvable ).isPlaying()
+	}
 }
 
 class GuildPlayerState
@@ -317,6 +335,11 @@ class GuildPlayerState
 		this.dispatcher.setVolume( vol )
 
 		return [ old, vol ]
+	}
+
+	isPlaying()
+	{
+		return this.playing
 	}
 
 	destroy()
