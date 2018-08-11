@@ -7,7 +7,8 @@
     "start": "gulp && node lib/",
     "devstart": "nodemon -w src -e ts --exec ts-node --inspect src/",
     "map": "gulp && madge lib/index.js lib/commands/*.js --image graph.svg",
-    "postinstall": "gulp"
+    "postinstall": "gulp",
+    "test": "ava"
   },
   "dependencies": {
     "discord.js": "^11.3.2",
@@ -23,6 +24,8 @@
     "@types/mongodb": "^3.0.3",
     "@types/mongoose": "^5.0.0",
     "@types/node": "^10.0.3",
+    "@types/sinon": "^5.0.1",
+    "ava": "^0.25.0",
     "del": "^3.0.0",
     "gulp": "^3.9.1",
     "gulp-sourcemaps": "^2.6.1",
@@ -32,6 +35,7 @@
     "madge": "^3.0.1",
     "nodemon": "^1.14.11",
     "run-sequence": "^2.2.0",
+    "sinon": "^6.1.5",
     "ts-node": "^7.0.0",
     "tslint": "^5.9.0",
     "typescript": "^2.6.1"
