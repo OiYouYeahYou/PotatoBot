@@ -1,8 +1,8 @@
-import { TextChannel, GuildChannel, Message, Client } from 'discord.js'
-import { getPurgeConfigs, IPurgeConfig, savePurgeReport, getPurgeConfig }
-	from '../mongoose/autoPurgeConfig'
+import { TextChannel, GuildChannel, Message } from 'discord.js'
+import { IPurgeConfig } from '../mongoose/database'
 import { HOURS, DAYS, AutoPurgeInterval } from '../constants'
 import { safeCallAsync } from '../util'
+import { Main } from '../classes/Main';
 
 export const baseTime = HOURS
 
@@ -17,21 +17,23 @@ export interface IInitialPurgeReport
 	guildID: string
 }
 
-export async function initAutoPurge( client: Client )
+export async function initAutoPurge( app: Main )
 {
 	const interval = AutoPurgeInterval * baseTime
-	await safeCallAsync( autoPurge, client )
-	client.setInterval( () => safeCallAsync( autoPurge, client ), interval )
+	await safeCallAsync( autoPurge, app )
+	app.bot.client.setInterval(
+		() => safeCallAsync( autoPurge, app ), interval
+	)
 }
 
-export async function autoPurge( client: Client, channelIDOverride?: string )
+export async function autoPurge( app: Main, channelIDOverride?: string )
 {
 	const now = Date.now()
 	const reports: IInitialPurgeReport[] = []
 	const purged: string[] = []
 	const configs = channelIDOverride
-		? await getPurgeConfig( channelIDOverride )
-		: await getPurgeConfigs()
+		? await app._database.getPurgeConfig( channelIDOverride )
+		: await app._database.getPurgeConfigs()
 
 	for ( const config of configs )
 	{
@@ -45,7 +47,7 @@ export async function autoPurge( client: Client, channelIDOverride?: string )
 		else
 			purged.push( channelID )
 
-		let [ error, channel ] = getAndValidateChannel( client, channelID )
+		let [ error, channel ] = getAndValidateChannel( app, channelID )
 		let rawCount, deletingCount, guildID, deletedCount
 
 		if ( channel )
@@ -58,14 +60,15 @@ export async function autoPurge( client: Client, channelIDOverride?: string )
 			} )
 	}
 
-	reports.forEach( savePurgeReport )
+	reports.forEach( app._database.savePurgeReport )
 }
 
 function getAndValidateChannel(
-	client: Client, id: string
+	app: Main,
+	id: string
 ): [ string, TextChannel ]
 {
-	const { user: self, channels } = client
+	const { user: self, channels } = app.bot.client
 	const channel = channels.find( 'id', id )
 
 	if ( !channel )

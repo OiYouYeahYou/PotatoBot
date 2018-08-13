@@ -1,12 +1,10 @@
-import { Client, Message, Guild, GuildMember, TextChannel } from 'discord.js'
+import { Client, Message, Guild, GuildMember, TextChannel, Snowflake } from 'discord.js'
 import { Main } from './Main'
 import { initAutoPurge } from '../features/channelAutoPurge'
 import { isPrefixed, somethingWentWrong } from '../util'
 import { prefix } from '../constants'
-import { isFeatureEnabled } from '../configManager'
 import { announceExit, announceEntry, deleteEM, scoldEM, dareEM } from '../discord/featureEnum'
 import { injectHandler } from '../injectHandler';
-import { findGuildConfig } from '../mongoose/guild';
 
 const defaultInjection = { Client, }
 
@@ -59,7 +57,7 @@ export class DiscordClient
 			'Discord client is ready!\n'
 			+ 'Bot invite: ' + invite
 		)
-		initAutoPurge( this.client )
+		initAutoPurge( this.app )
 	}
 
 	disconnect = () =>
@@ -103,6 +101,7 @@ export class DiscordClient
 
 	guildMemberAdd( member: GuildMember )
 	{
+		console.log( member );
 		this.defaultChannelMessage(
 			member.guild,
 			`Welcome to the server, ${ member }!`,
@@ -125,7 +124,7 @@ export class DiscordClient
 		feature: string
 	)
 	{
-		const isEnabled = await isFeatureEnabled( guild, feature )
+		const isEnabled = await this.isFeatureEnabled( guild, feature )
 
 		if ( !isEnabled )
 			return
@@ -140,7 +139,7 @@ export class DiscordClient
 
 	private async getDefaultChannel( guild: Guild ): Promise<TextChannel>
 	{
-		const config = await findGuildConfig( guild )
+		const config = await this.app._database.findGuildConfig( guild )
 
 		if ( !config )
 			return
@@ -157,19 +156,24 @@ export class DiscordClient
 	private async everyoneResponse( message: Message )
 	{
 		const { guild, deletable } = message
-		const isDeleting = await isFeatureEnabled( guild, deleteEM )
-		const isScolding = await isFeatureEnabled( guild, scoldEM )
+		const isDeleting = await this.isFeatureEnabled( guild, deleteEM )
+		const isScolding = await this.isFeatureEnabled( guild, scoldEM )
 
 		if ( deletable && isDeleting )
 			await message.delete()
 
 		if ( isScolding )
 		{
-			const file = await isFeatureEnabled( guild, dareEM )
+			const file = await this.isFeatureEnabled( guild, dareEM )
 				? { file: 'https://cdn.weeb.sh/images/ryKLMPEj-.png', }
 				: undefined
 
 			await message.reply( 'Don\'t mention everyone!!', file )
 		}
+	}
+
+	isFeatureEnabled( guild: Guild | Snowflake, feature: string )
+	{
+		return this.app._database.isFeatureEnabled( guild, feature )
 	}
 }

@@ -1,6 +1,4 @@
-import { Guild as TGuild } from 'discord.js'
-import { findGuildConfig, GuildConfigModel, configLists } from '../mongoose/guild'
-import { isFeatureEnabled, isCommandEnabled } from '../configManager'
+import { configLists } from '../mongoose/database';
 import { all } from '../discord/featureEnum'
 import List from '../classes/List';
 import Request from '../classes/Request';
@@ -34,15 +32,15 @@ export default function ( list: List )
 async function enabledAggreator( req: Request, args: string, type: configLists )
 {
 	const response = args
-		? await listEnabled( req.guild, type, args )
-		: await getEnabledList( req.guild, type )
+		? await listEnabled( req, type, args )
+		: await getEnabledList( req, type )
 
 	return req.send( response )
 }
 
-async function getEnabledList( guild: TGuild, type: configLists )
+async function getEnabledList( req: Request, type: configLists )
 {
-	const config = await findGuildConfig( guild )
+	const config = await req.app._database.findGuildConfig( req.guild )
 
 	if ( !config )
 		return 'No config available'
@@ -54,16 +52,17 @@ async function getEnabledList( guild: TGuild, type: configLists )
 		: `Enabled: ${ list.join( ', ' ) }`
 }
 
-async function listEnabled( guild: TGuild, type: configLists, args: string )
+async function listEnabled( req: Request, type: configLists, args: string )
 {
 	const items = args.split( ' ' )
 	const enabled: string[] = []
 	const disabled: string[] = []
 	const enabledChecker = type === 'features'
-		? isFeatureEnabled : isCommandEnabled
+		? req.app._database.isFeatureEnabled
+		: req.app._database.isCommandEnabled
 
 	for ( const item of items )
-		( await enabledChecker( guild, item )
+		( await enabledChecker( req.guild, item )
 			? enabled : disabled
 		).push( item )
 
@@ -87,12 +86,12 @@ async function createNewConfig( req: Request, args: string )
 		guild: { id: guildID },
 	} = req
 
-	const existingGuilds = await findGuildConfig( guildID )
+	const existingGuilds = await req.app._database.findGuildConfig( guildID )
 
 	if ( existingGuilds )
 		return req.destructingReply( 'This guild already has a config' )
 
-	const settings = new GuildConfigModel( {
+	const settings = new req.app._database.GuildConfigModel( {
 		guildID,
 		defaultChannel,
 		commands: [ all ],
