@@ -1,4 +1,4 @@
-import { Guild, Snowflake, TextChannel } from 'discord.js'
+import { Guild, Snowflake } from 'discord.js'
 import { findGuildConfig, configLists } from './mongoose/guild'
 import { all } from './discord/featureEnum'
 
@@ -31,20 +31,4 @@ async function dbChcker(
 	const containsItem = list.includes( all ) || list.includes( item )
 
 	return Promise.resolve( containsItem )
-}
-
-export async function getDefaultChannel( guild: Guild ): Promise<TextChannel>
-{
-	const config = await findGuildConfig( guild )
-
-	if ( !config )
-		return
-
-	const { defaultChannel } = config
-	const channel = guild.channels.find(
-		ch => ch.id === String( defaultChannel )
-	)
-
-	if ( channel && channel instanceof TextChannel )
-		return channel
 }

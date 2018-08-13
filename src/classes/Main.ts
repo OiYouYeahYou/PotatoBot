@@ -1,22 +1,23 @@
-import { Bot } from "./Client"
+import { DiscordClient } from "./Client"
 import mongoose from "../mongoose/client"
 import { Connection, Mongoose } from "mongoose"
 import List from "./List";
 
 export class Main
 {
-	readonly bot: Bot
+	readonly bot: DiscordClient
 	readonly db: Connection
 	readonly mongoose: Mongoose
 
 	constructor(
 		readonly DISCORD_TOKEN: string,
 		readonly MONGO_TOKEN: string,
-		readonly list: List
+		readonly list: List,
+		readonly music: List
 	)
 	{
 		this.list = list
-		this.bot = new Bot( this )
+		this.bot = new DiscordClient( this )
 		this.mongoose = mongoose
 		this.db = this.mongoose.connection
 	}
