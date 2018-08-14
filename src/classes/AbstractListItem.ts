@@ -9,20 +9,10 @@ export interface ListItemInfo
 	permission?: TPermission
 }
 
-export interface IAbstractListItem<
-	injectClass extends AListItem,
-	injectInterface extends ListItemInfo
-	>
-{
-	new( key: string, input: injectInterface ): injectClass
-}
-
 type TPermission = 'all' | 'master' | 'owner' | 'admin' | 'custom'
-type FRunner = ( req: Request, command: string, args: string )
-	=> Promise<any>
 
 /** Command data handler */
-export default abstract class AListItem
+export default abstract class AbstractListItem
 {
 	public readonly permission: TPermission
 
@@ -31,11 +21,7 @@ export default abstract class AListItem
 	public readonly aliases: string
 
 	/** Wraps the information about a command */
-	constructor(
-		readonly key: string,
-		input: ListItemInfo,
-		readonly runner: FRunner
-	)
+	constructor( readonly key: string, input: Readonly<ListItemInfo> )
 	{
 		const { help, permission, usage, aliases } = input
 
@@ -46,7 +32,11 @@ export default abstract class AListItem
 
 		if ( aliases && aliases.length )
 			this.aliases = `${ key }, ${ aliases.join( ', ' ) }`
-
-		this.runner = runner
 	}
+
+	abstract async runner(
+		req: Request,
+		cmd: string,
+		args: string
+	): Promise<any>
 }

@@ -1,7 +1,7 @@
 import Request from '../classes/Request';
-import AListItem from '../classes/AListItem'
+import AbstractListItem from '../classes/AbstractListItem'
 
-export function hasAuthorityForCommand( req: Request, wrapper: AListItem )
+export function hasAuthorityForCommand( req: Request, wrapper: AbstractListItem )
 {
 	var { permission } = wrapper
 
@@ -33,7 +33,7 @@ function isAdmin( req: Request )
 	return req.member && req.member.hasPermission( 'ADMINISTRATOR' )
 }
 
-export async function unauthorised( req: Request, wrap: AListItem )
+export async function unauthorised( req: Request, wrap: AbstractListItem )
 {
 	return req.reply(
 		`You are not autorised to use that command, `

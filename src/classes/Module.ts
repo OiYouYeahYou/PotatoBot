@@ -1,15 +1,15 @@
 import List from './List'
 import Request from './Request';
-import AListItem, { ListItemInfo } from './AListItem'
+import AbstractListItem, { ListItemInfo } from './AbstractListItem'
 import { CommandInfo } from './Command'
 
 interface ModuleInfo extends ListItemInfo { }
 
-export default class Module extends AListItem
+export default class Module extends AbstractListItem
 {
 	constructor( key: string, input: ModuleInfo )
 	{
-		super( key, input, runner )
+		super( key, input )
 	}
 
 	public readonly subCommands = new List
@@ -23,9 +23,10 @@ export default class Module extends AListItem
 	{
 		return this.subCommands.addModule( key, input )
 	}
-}
-/** Used for Command with sub commands and no main function */
-async function runner( this: Module, req: Request, cmd: string, args: string )
-{
-	return this.subCommands.commandRunner( req, args )
+
+	/** Used for Command with sub commands and no main function */
+	runner( this: Module, req: Request, cmd: string, args: string )
+	{
+		return this.subCommands.commandRunner( req, args )
+	}
 }
