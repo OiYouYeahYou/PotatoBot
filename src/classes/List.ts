@@ -1,6 +1,6 @@
 import Command, { CommandInfo } from './Command'
 import { maxStringLength, padLeft, padRight, processCommandString, removePrefix }
-	from '../util'
+	from '../util/string'
 import Request from './Request'
 import { hasAuthorityForCommand, unauthorised } from '../discord/authority'
 import Module from './Module'

@@ -1,6 +1,7 @@
 import { Attachment, DMChannel, GroupDMChannel, TextChannel }
 	from 'discord.js'
-import { padLeft, safeCallAsync, splitFirstWordAsNumber } from '../util'
+import { safeCallAsync, } from '../util/tools'
+import { padLeft, splitFirstWordAsNumber } from '../util/string'
 import { IPurgeReport, IPurgeConfig } from '../mongoose/database'
 import { autoPurge } from '../features/channelAutoPurge'
 import List from '../classes/List'

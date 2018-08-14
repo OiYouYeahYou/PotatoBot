@@ -1,5 +1,5 @@
 import List from "../classes/List"
-import { splitByFirstSpace } from "../util"
+import { splitByFirstSpace } from "../util/string"
 import { GuildChannel } from "discord.js"
 import { DAYS, HOURS } from "../constants"
 

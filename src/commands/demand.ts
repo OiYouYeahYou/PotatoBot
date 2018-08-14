@@ -1,7 +1,9 @@
 import { PermissionResolvable, VoiceChannel } from 'discord.js'
-import { findVoiceChannel, randomString, splitByFirstSpace, TEN } from '../util'
+import { findVoiceChannel } from '../discord/discordHelpers'
+import { randomString, splitByFirstSpace, } from '../util/string'
 import List from '../classes/List';
 import Request from '../classes/Request';
+import { TEN_SECONDS } from '../constants';
 
 export default function ( list: List )
 {
@@ -109,5 +111,5 @@ function setIntervalChecker( req: Request, channel: VoiceChannel ): void
 		{
 			await req.destructingReply( 'Channel can\'t be deleted' )
 		}
-	}, TEN )
+	}, TEN_SECONDS )
 }

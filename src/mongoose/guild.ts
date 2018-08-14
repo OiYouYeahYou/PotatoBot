@@ -1,7 +1,7 @@
 import mongoose from './client'
 import { Document } from 'mongoose'
 import { Guild as GuildClass, Snowflake } from 'discord.js'
-import { guildIDNormaliser } from '../util'
+import { guildIDNormaliser } from '../discord/discordHelpers'
 
 export const guildSchema = new mongoose.Schema( {
 	guildID: Number,

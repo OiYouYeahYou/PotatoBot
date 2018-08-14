@@ -1,9 +1,8 @@
 import List from '../classes/List'
 import Request from '../classes/Request'
 import { StreamDispatcher, Guild } from 'discord.js'
-import { codeWrap } from '../util'
+import { codeWrap, splitByFirstSpace } from '../util/string'
 import yt = require( 'ytdl-core' )
-import { splitByFirstSpace } from '../util'
 import help from '../commands/help'
 
 const ytdOptions: yt.downloadOptions = { filter: 'audioonly' }

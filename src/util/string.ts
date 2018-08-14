@@ -1,6 +1,3 @@
-import { Guild, Message, VoiceChannel, Snowflake } from 'discord.js'
-
-export const TEN = 10 * 1000
 
 /** String indexOf that returns undefined instead of -1 */
 export function indexOf( str: string, search: string, position?: number )
@@ -48,68 +45,6 @@ export function randomString( len: number )
 var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
 
 /**
- * Finds a Voice Channel in a guild by name
- * @param guild
- * @param name
- */
-export function findVoiceChannel( guild: Guild, name: string ): VoiceChannel
-{
-	var channel = guild.channels.find( 'name', name )
-
-	if ( channel && channel instanceof VoiceChannel )
-		return channel
-}
-
-/**
- * Sends a reply that self destructs
- * @param message
- * @param text
- */
-export async function destructingReply( message: Message, text: string )
-{
-	const msg = await message.reply( text )
-
-	await timer( TEN )
-
-	try
-	{
-		// @ts-ignores
-		await msg.delete()
-	} catch ( error )
-	{
-		console.error( error )
-	}
-}
-
-/**
- * Replies to a user that something went wrong, with a reference that can be referenced to server logs
- * @param message
- * @param err
- */
-export async function somethingWentWrong( message: Message, err: any )
-{
-	const id = randomString( 6 )
-
-	if ( err instanceof Error )
-		err.message += ` (Event: ${ id })`
-
-	console.log( err )
-	return destructingReply( message, `Something went wrong (Event: ${ id })` )
-}
-
-export function guildIDNormaliser( guild: Guild | Snowflake ): number
-{
-	return Number( guild instanceof Guild ? guild.id : guild )
-}
-
-export async function timer( time: number )
-{
-	return new Promise( ( resolve, reject ) =>
-		setTimeout( () => resolve(), time )
-	)
-}
-
-/**
  * Splits command string form rest  of text and lowercases the command
  * @param text
  */
@@ -154,23 +89,6 @@ export function maxStringLength( arr: string[] )
 	return arr.reduce( ( acc, str ) => str.length > acc ? str.length : acc, 0 )
 }
 
-export const noop = () => { }
-
-export async function safeCallAsync<T>( fn: ( ...args: any[] ) => Promise<T>, ...args: any[] )
-	: Promise<[ any, T ]>
-{
-	let val, err
-	try
-	{
-		val = await fn( ...args )
-	}
-	catch ( error )
-	{
-		err = error
-	}
-	return [ err, val ]
-}
-
 export function splitFirstWordAsNumber( args: string, def = 0 )
 	: [ number, string ]
 {
@@ -198,17 +116,3 @@ export function removePrefix( pfx: string, text: string )
 	return text.slice( pfx.length ).trim()
 }
 
-export function sorter<T>( ...fns: ( ( a: T, b: T ) => number )[] )
-{
-	return function ( a: T, b: T ): number
-	{
-		let result
-		for ( const fn of fns )
-		{
-			result = fn( a, b )
-			if ( result != 0 )
-				return result
-		}
-		return result
-	}
-}

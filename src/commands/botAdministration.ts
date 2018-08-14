@@ -1,4 +1,4 @@
-import { codeWrap } from '../util'
+import { codeWrap } from '../util/string'
 import { exec } from 'child_process'
 import Request from '../classes/Request'
 import { promisify } from 'util'

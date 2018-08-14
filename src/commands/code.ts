@@ -1,7 +1,6 @@
 import Request from '../classes/Request';
-import { splitByFirstSpace } from '../util'
+import { splitByFirstSpace, codeWrap } from '../util/string';
 import List from '../classes/List';
-import { codeWrap } from '../util';
 
 export default function ( list: List )
 {

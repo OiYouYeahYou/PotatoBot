@@ -1,5 +1,5 @@
 import Request from '../classes/Request'
-import { codeWrap } from '../util'
+import { codeWrap } from '../util/string'
 import Module from '../classes/Module'
 import List from '../classes/List'
 

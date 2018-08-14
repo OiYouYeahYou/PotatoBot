@@ -1,5 +1,5 @@
 import { Message } from "discord.js"
-import { destructingReply, somethingWentWrong } from "../util"
+import { destructingReply, somethingWentWrong } from "../discord/discordHelpers"
 import { Main } from "./Main"
 import List from "./List"
 import { SelfSendingEmbed } from "./Embed"

@@ -1,10 +1,11 @@
 import { Client, Message, Guild, GuildMember, TextChannel, Snowflake } from 'discord.js'
 import { Main } from './Main'
 import { initAutoPurge } from '../features/channelAutoPurge'
-import { isPrefixed, somethingWentWrong } from '../util'
+import { somethingWentWrong } from '../discord/discordHelpers'
+import { isPrefixed } from '../util/string'
 import { prefix } from '../constants'
 import { announceExit, announceEntry, deleteEM, scoldEM, dareEM } from '../discord/featureEnum'
-import { injectHandler } from '../injectHandler';
+import { injectHandler } from '../util/tools';
 
 const defaultInjection = { Client, }
 
