@@ -1,32 +1,36 @@
-import { DiscordClient } from "./Client"
-import { database } from "../mongoose/database"
-import List from "./List";
+import { Database } from '../mongoose/database'
+import { injectHandler } from '../util/tools'
+import { DiscordClient } from './Client'
+import List from './List'
 
-export class Main
-{
+const MainInject = { Database }
+
+export class Main {
 	readonly bot: DiscordClient
+	readonly database: Database
 
 	constructor(
 		readonly DISCORD_TOKEN: string,
 		readonly MONGO_TOKEN: string,
 		readonly list: List,
 		readonly music: List,
-		readonly _database = database
-	)
-	{
+		inject = MainInject
+	) {
+		const { Database } = injectHandler(inject, MainInject)
+
+		this.database = new Database()
+
 		this.list = list
-		this.bot = new DiscordClient( this )
+		this.bot = new DiscordClient(this)
 	}
 
-	async start()
-	{
-		await this.bot.login( this.DISCORD_TOKEN )
-		await this._database.connect( this.MONGO_TOKEN )
+	async start() {
+		await this.bot.login(this.DISCORD_TOKEN)
+		await this.database.connect(this.MONGO_TOKEN)
 	}
 
-	async destroy()
-	{
+	async destroy() {
 		await this.bot.destroy()
-		await this._database.disconnect()
+		await this.database.disconnect()
 	}
 }

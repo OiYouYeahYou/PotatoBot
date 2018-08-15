@@ -1,30 +1,32 @@
-
-import { findGuildConfig, GuildConfigModel } from './guild';
-export { configLists } from './guild';
-import { createPurgeConfig, getPurgeConfig, getPurgeConfigs, getReports, savePurgeReport } from './autoPurgeConfig';
-import { isFeatureEnabled, isCommandEnabled } from '../configManager';
-import mongoose from './client';
-export { IPurgeReport, IPurgeConfig } from './autoPurgeConfig';
-
-export const database = {
-	findGuildConfig,
+import { findGuildConfig, GuildConfigModel } from './guild'
+export { configLists } from './guild'
+import { isCommandEnabled, isFeatureEnabled } from '../configManager'
+import {
 	createPurgeConfig,
 	getPurgeConfig,
 	getPurgeConfigs,
-	savePurgeReport,
 	getReports,
-	GuildConfigModel,
-	isFeatureEnabled,
-	isCommandEnabled,
+	savePurgeReport,
+} from './autoPurgeConfig'
+import mongoose from './client'
+export { IPurgeReport, IPurgeConfig } from './autoPurgeConfig'
 
-	async connect( token: string )
-	{
-		if ( mongoose.connection.readyState === 0 )
-			await mongoose.connect( token )
-	},
+export class Database {
+	createPurgeConfig = createPurgeConfig
+	findGuildConfig = findGuildConfig
+	getPurgeConfig = getPurgeConfig
+	getPurgeConfigs = getPurgeConfigs
+	getReports = getReports
+	GuildConfigModel = GuildConfigModel
+	savePurgeReport = savePurgeReport
+	isFeatureEnabled = isFeatureEnabled
+	isCommandEnabled = isCommandEnabled
 
-	async disconnect()
-	{
+	async connect(token: string) {
+		if (mongoose.connection.readyState === 0) await mongoose.connect(token)
+	}
+
+	async disconnect() {
 		await mongoose.disconnect()
 	}
 }

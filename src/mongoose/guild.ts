@@ -1,40 +1,36 @@
-import mongoose from './client'
-import { Document } from 'mongoose'
 import { Guild as GuildClass, Snowflake } from 'discord.js'
+import { Document } from 'mongoose'
 import { guildIDNormaliser } from '../discord/discordHelpers'
+import mongoose from './client'
 
-export const guildSchema = new mongoose.Schema( {
-	guildID: Number,
+export const guildSchema = new mongoose.Schema({
+	commands: [String],
 	defaultChannel: Number,
-	commands: [ String ],
-	features: [ String ],
-} )
+	features: [String],
+	guildID: Number,
+})
 
-interface IGuildConfig extends Document
-{
+interface IGuildConfig extends Document {
 	guildAdd: number
-	defaultChannel: number,
-	commands: string[],
-	features: string[],
+	defaultChannel: number
+	commands: string[]
+	features: string[]
 }
 
 export type configLists = 'features' | 'commands'
 
-export const GuildConfigModel = mongoose.model( 'Guild', guildSchema )
+export const GuildConfigModel = mongoose.model('Guild', guildSchema)
 
 export async function findGuildConfig(
 	guild: GuildClass | Snowflake
-): Promise<IGuildConfig>
-{
-	const guildID = guildIDNormaliser( guild )
-	const results = await GuildConfigModel.find( { guildID } )
+): Promise<IGuildConfig> {
+	const guildID = guildIDNormaliser(guild)
+	const results = await GuildConfigModel.find({ guildID })
 	let result
 
-	if ( Array.isArray( results ) )
-		[ result ] = results
-	else
-		result = results
+	if (Array.isArray(results)) [result] = results
+	else result = results
 
 	// @ts-ignore
-	return Promise.resolve( result )
+	return Promise.resolve(result)
 }

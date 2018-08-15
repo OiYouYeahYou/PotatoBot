@@ -1,19 +1,17 @@
-import { Guild, Message, VoiceChannel, Snowflake } from 'discord.js'
-import { randomString } from '../util/string';
-import { timer } from '../util/tools';
-import { TEN_SECONDS } from '../constants';
+import { Guild, Message, Snowflake, VoiceChannel } from 'discord.js'
+import { TEN_SECONDS } from '../constants'
+import { randomString } from '../util/string'
+import { timer } from '../util/tools'
 
 /**
  * Finds a Voice Channel in a guild by name
  * @param guild
  * @param name
  */
-export function findVoiceChannel( guild: Guild, name: string ): VoiceChannel
-{
-	var channel = guild.channels.find( 'name', name )
+export function findVoiceChannel(guild: Guild, name: string): VoiceChannel {
+	const channel = guild.channels.find('name', name)
 
-	if ( channel && channel instanceof VoiceChannel )
-		return channel
+	if (channel && channel instanceof VoiceChannel) return channel
 }
 
 /**
@@ -21,19 +19,16 @@ export function findVoiceChannel( guild: Guild, name: string ): VoiceChannel
  * @param message
  * @param text
  */
-export async function destructingReply( message: Message, text: string )
-{
-	const msg = await message.reply( text )
+export async function destructingReply(message: Message, text: string) {
+	const msg = await message.reply(text)
 
-	await timer( TEN_SECONDS )
+	await timer(TEN_SECONDS)
 
-	try
-	{
+	try {
 		// @ts-ignore
 		await msg.delete()
-	} catch ( error )
-	{
-		console.error( error )
+	} catch (error) {
+		console.error(error)
 	}
 }
 
@@ -42,18 +37,15 @@ export async function destructingReply( message: Message, text: string )
  * @param message
  * @param err
  */
-export async function somethingWentWrong( message: Message, err: any )
-{
-	const id = randomString( 6 )
+export async function somethingWentWrong(message: Message, err: any) {
+	const id = randomString(6)
 
-	if ( err instanceof Error )
-		err.message += ` (Event: ${ id })`
+	if (err instanceof Error) err.message += ` (Event: ${id})`
 
-	console.log( err )
-	return destructingReply( message, `Something went wrong (Event: ${ id })` )
+	console.log(err)
+	return destructingReply(message, `Something went wrong (Event: ${id})`)
 }
 
-export function guildIDNormaliser( guild: Guild | Snowflake ): number
-{
-	return Number( guild instanceof Guild ? guild.id : guild )
+export function guildIDNormaliser(guild: Guild | Snowflake): number {
+	return Number(guild instanceof Guild ? guild.id : guild)
 }

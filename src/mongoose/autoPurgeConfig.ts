@@ -1,48 +1,47 @@
-import mongoose from './client'
 import { Document, Model } from 'mongoose'
 import { IInitialPurgeReport } from '../features/channelAutoPurge'
+import mongoose from './client'
 
 // // // // // Configs
 
-const purgeConfigSchema = new mongoose.Schema( {
+const purgeConfigSchema = new mongoose.Schema({
 	channelID: String,
 	purgeOlderThan: Number,
-} )
+})
 
-export interface IPurgeConfig extends Document
-{
+export interface IPurgeConfig extends Document {
 	channelID?: string
 	purgeOlderThan?: number
 }
 
-const ConfigModel: Model<IPurgeConfig>
-	= mongoose.model( 'AutoPurgeConfig', purgeConfigSchema )
+const ConfigModel: Model<IPurgeConfig> = mongoose.model(
+	'AutoPurgeConfig',
+	purgeConfigSchema
+)
 
-export async function getPurgeConfigs(): Promise<IPurgeConfig[]>
-{
-	const configs = await ConfigModel.find( {} )
-	return Array.isArray( configs ) ? configs : [ configs ]
+export async function getPurgeConfigs(): Promise<IPurgeConfig[]> {
+	const configs = await ConfigModel.find({})
+	return Array.isArray(configs) ? configs : [configs]
 }
 
-export async function getPurgeConfig( channelID: string )
-	: Promise<IPurgeConfig[]>
-{
-	const config = await ConfigModel.find( { channelID } )
-	return Array.isArray( config ) ? config : [ config ]
+export async function getPurgeConfig(
+	channelID: string
+): Promise<IPurgeConfig[]> {
+	const config = await ConfigModel.find({ channelID })
+	return Array.isArray(config) ? config : [config]
 }
 
 export async function createPurgeConfig(
-	channelID: string, purgeOlderThan: number
-)
-{
-	const doc = new ConfigModel( { channelID, purgeOlderThan } )
-	return await doc.save()
+	channelID: string,
+	purgeOlderThan: number
+) {
+	const doc = new ConfigModel({ channelID, purgeOlderThan })
+	return doc.save()
 }
 
 // // // // // Reporting
 
-export interface IPurgeReport extends Document
-{
+export interface IPurgeReport extends Document {
 	channelID: string
 	rawCount: number
 	deletingCount: number
@@ -52,27 +51,27 @@ export interface IPurgeReport extends Document
 	guildID: string
 }
 
-const purgeReportSchema = new mongoose.Schema( {
+const purgeReportSchema = new mongoose.Schema({
 	channelID: String,
+	deletedCount: Number,
+	deletingCount: Number,
 	error: String,
+	guildID: String,
 	now: Number,
 	rawCount: Number,
-	deletingCount: Number,
-	deletedCount: Number,
-	guildID: String
-} )
+})
 
-const ReportModel: Model<IPurgeReport>
-	= mongoose.model( 'PurgeReport', purgeReportSchema )
+const ReportModel: Model<IPurgeReport> = mongoose.model(
+	'PurgeReport',
+	purgeReportSchema
+)
 
-export async function savePurgeReport( report: IInitialPurgeReport )
-{
-	const doc = new ReportModel( report )
-	return await doc.save()
+export async function savePurgeReport(report: IInitialPurgeReport) {
+	const doc = new ReportModel(report)
+	return doc.save()
 }
 
-export async function getReports( channelID: string ): Promise<IPurgeReport[]>
-{
-	const report = await ReportModel.find( { channelID } )
-	return Array.isArray( report ) ? report : [ report ]
+export async function getReports(channelID: string): Promise<IPurgeReport[]> {
+	const report = await ReportModel.find({ channelID })
+	return Array.isArray(report) ? report : [report]
 }

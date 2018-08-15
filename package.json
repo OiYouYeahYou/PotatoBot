@@ -1,43 +1,47 @@
 {
-  "name": "potatobot",
-  "version": "0.0.1",
-  "private": true,
-  "main": "app.js",
-  "scripts": {
-    "start": "gulp && node lib/",
-    "devstart": "nodemon -w src -e ts --exec ts-node --inspect src/",
-    "map": "gulp && madge lib/index.js lib/commands/*.js --image graph.svg",
-    "postinstall": "gulp",
-    "test": "ava"
-  },
-  "dependencies": {
-    "discord.js": "^11.3.2",
-    "dotenv": "^5.0.0",
-    "ffmpeg-binaries": "^3.2.2-3",
-    "mongoose": "^5.0.0",
-    "opusscript": "0.0.6",
-    "source-map-support": "^0.5.0",
-    "ytdl-core": "^0.21.0"
-  },
-  "devDependencies": {
-    "@types/dotenv": "^4.0.1",
-    "@types/mongodb": "^3.0.3",
-    "@types/mongoose": "^5.0.0",
-    "@types/node": "^10.0.3",
-    "@types/sinon": "^5.0.1",
-    "ava": "^0.25.0",
-    "del": "^3.0.0",
-    "gulp": "^3.9.1",
-    "gulp-sourcemaps": "^2.6.1",
-    "gulp-tslint": "^8.1.2",
-    "gulp-typescript": "^4.0.0",
-    "load-grunt-tasks": "^4.0.0",
-    "madge": "^3.0.1",
-    "nodemon": "^1.14.11",
-    "run-sequence": "^2.2.0",
-    "sinon": "^6.1.5",
-    "ts-node": "^7.0.0",
-    "tslint": "^5.9.0",
-    "typescript": "^2.6.1"
-  }
+	"name": "potatobot",
+	"version": "0.0.1",
+	"private": true,
+	"main": "app.js",
+	"scripts": {
+		"start": "gulp && node lib/",
+		"devstart": "nodemon -w src -e ts --exec ts-node --inspect src/",
+		"map": "gulp && madge lib/index.js lib/commands/*.js --image graph.svg",
+		"postinstall": "gulp",
+		"lint": "npm run lint:prettier && npm run lint:tslint",
+		"lint:prettier": "prettier --write gulpfile.js test/**/*.js src/**/*.ts",
+		"lint:tslint": "tslint src/**/*.ts",
+		"test": "ava"
+	},
+	"dependencies": {
+		"discord.js": "^11.3.2",
+		"dotenv": "^5.0.0",
+		"ffmpeg-binaries": "^3.2.2-3",
+		"mongoose": "^5.0.0",
+		"opusscript": "0.0.6",
+		"source-map-support": "^0.5.0",
+		"ytdl-core": "^0.21.0"
+	},
+	"devDependencies": {
+		"@types/dotenv": "^4.0.1",
+		"@types/mongodb": "^3.0.3",
+		"@types/mongoose": "^5.0.0",
+		"@types/node": "^10.0.3",
+		"@types/sinon": "^5.0.1",
+		"ava": "^0.25.0",
+		"del": "^3.0.0",
+		"gulp": "^3.9.1",
+		"gulp-sourcemaps": "^2.6.1",
+		"gulp-tslint": "^8.1.2",
+		"gulp-typescript": "^4.0.0",
+		"load-grunt-tasks": "^4.0.0",
+		"madge": "^3.0.1",
+		"nodemon": "^1.14.11",
+		"prettier": "^1.14.2",
+		"run-sequence": "^2.2.0",
+		"sinon": "^6.1.5",
+		"ts-node": "^7.0.0",
+		"tslint": "^5.11.0",
+		"typescript": "^2.6.1"
+	}
 }
