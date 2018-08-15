@@ -10,7 +10,7 @@ export default class Request
 	constructor(
 		readonly app: Main,
 		readonly list: List,
-		readonly message: Message,
+		private readonly message: Message,
 		readonly prefix: string,
 		readonly text: string
 	) { }
@@ -32,11 +32,6 @@ export default class Request
 	{
 		const message = await this.message.channel.send( text, options )
 		return Array.isArray( message ) ? message[ 0 ] : message
-	}
-
-	async sendCode( lang: string, content: any, options?: any )
-	{
-		return await this.message.channel.sendCode( lang, content )
 	}
 
 	async reply( text: any, options?: any )

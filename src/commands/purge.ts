@@ -13,7 +13,7 @@ export default function ( list: List )
 		permission: 'custom',
 		func: async ( req, args ) =>
 		{
-			const channel = req.message.channel
+			const channel = req.channel
 
 			if ( !( channel instanceof GuildChannel ) )
 				return
