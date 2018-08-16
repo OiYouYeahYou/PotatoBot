@@ -1,5 +1,5 @@
 import { Message } from 'discord.js'
-import { hasAuthorityForCommand, unauthorised } from '../discord/authority'
+import { unauthorised } from '../discord/discordHelpers'
 import {
 	maxStringLength,
 	padLeft,
@@ -7,17 +7,45 @@ import {
 	processCommandString,
 	removePrefix,
 } from '../util/string'
+import { injectHandler } from '../util/tools'
 import AbstractListItem, { IListItemInfo } from './AbstractListItem'
+import { AuthorityChecker, IAutheticatorThings } from './AuthorityChecker'
 import Command, { ICommandInfo } from './Command'
 import { Main } from './Main'
 import Module from './Module'
 import Request from './Request'
+
+interface IAuthenticatorModule {
+	autheticate: (req: Request, wrapper: AbstractListItem) => boolean
+}
+
+interface IListInjection<T = IAutheticatorThings[]> {
+	readonly AuthorityChecker?: {
+		new (authenticators: T): IAuthenticatorModule
+	}
+	readonly authenticators?: T
+}
+
+const ListInjects: IListInjection = Object.freeze({
+	AuthorityChecker,
+})
 
 export default class List {
 	/** Contains Command instances */
 	readonly list: { [key: string]: AbstractListItem } = {}
 	/** Contains Command instances */
 	readonly listCondesed: { [key: string]: string[] } = {}
+
+	private readonly authenticator: IAuthenticatorModule
+
+	constructor(injects: IListInjection = ListInjects) {
+		const { AuthorityChecker, authenticators } = injectHandler(
+			injects,
+			ListInjects
+		)
+
+		this.authenticator = new AuthorityChecker(authenticators)
+	}
 
 	/** Creates a new class that is registered with list */
 	addCommand(key: string, input: ICommandInfo) {
@@ -84,7 +112,7 @@ export default class List {
 
 		if (!wrapper) return
 		// Ignore
-		else if (!hasAuthorityForCommand(req, wrapper))
+		else if (!this.authenticator.autheticate(req, wrapper))
 			return unauthorised(req, wrapper)
 
 		req.channel.startTyping(1)

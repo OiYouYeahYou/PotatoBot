@@ -8,11 +8,11 @@ export interface IListItemInfo {
 	permission?: TPermission
 }
 
-type TPermission = 'all' | 'master' | 'owner' | 'admin' | 'custom'
+type TPermission = 'master' | 'owner' | 'admin' | 'custom'
 
 /** Command data handler */
 export default abstract class AbstractListItem {
-	readonly permission: TPermission
+	readonly permission: 'all' | TPermission[]
 
 	readonly help: string
 	readonly usage: string
@@ -24,7 +24,7 @@ export default abstract class AbstractListItem {
 
 		this.key = key
 		this.help = help
-		this.permission = permission ? permission : 'all'
+		this.permission = this.permissionMutator(permission)
 		this.usage = `${key} ${usage || ''}`.trim()
 
 		if (aliases && aliases.length)
@@ -32,4 +32,14 @@ export default abstract class AbstractListItem {
 	}
 
 	abstract async runner(req: Request, cmd: string, args: string): Promise<any>
+
+	private permissionMutator(permission: TPermission | TPermission[]) {
+		if (!permission || permission === 'all') {
+			return 'all'
+		} else if (typeof permission === 'string') {
+			return [permission]
+		} else {
+			return permission
+		}
+	}
 }
