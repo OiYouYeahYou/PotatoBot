@@ -1,6 +1,5 @@
 import { findGuildConfig, GuildConfigModel } from './guild'
 export { configLists } from './guild'
-import { isCommandEnabled, isFeatureEnabled } from '../configManager'
 import {
 	createPurgeConfig,
 	getPurgeConfig,
@@ -9,6 +8,7 @@ import {
 	savePurgeReport,
 } from './autoPurgeConfig'
 import mongoose from './client'
+import { isCommandEnabled, isFeatureEnabled } from './configManager'
 export { IPurgeReport, IPurgeConfig } from './autoPurgeConfig'
 
 export class Database {
