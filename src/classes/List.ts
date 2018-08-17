@@ -59,7 +59,9 @@ export default class List {
 
 	/** Returns a command based on the key */
 	getCommandWrapper(cmd: string): AbstractListItem | false {
-		if (cmd in this.list) return this.list[cmd]
+		if (cmd in this.list) {
+			return this.list[cmd]
+		}
 
 		return false
 	}
@@ -74,16 +76,21 @@ export default class List {
 		for (const key of commandList) {
 			const wrapper = this.getCommandWrapper(key)
 
-			if (!wrapper) continue
+			if (!wrapper) {
+				continue
+			}
 
 			const keyText = padRight(key, maxLen)
 			const aliases = this.listCondesed[key]
 			let commandInfo = `${leftPadding}${keyText} - ${wrapper.help}`
 
-			if (aliases.length) commandInfo += ` - [ ${aliases.join(', ')} ]`
+			if (aliases.length) {
+				commandInfo += ` - [ ${aliases.join(', ')} ]`
+			}
 
-			if (wrapper instanceof Module)
+			if (wrapper instanceof Module) {
 				commandInfo += '\n' + wrapper.subCommands.toSummary(pad + 2)
+			}
 
 			items.push(commandInfo)
 		}
@@ -106,14 +113,19 @@ export default class List {
 		const [command, args] = processCommandString(text)
 
 		// Jason: Do not remove this!!! It is correct
-		if (!command) return // Ignore prefix only string
+		if (!command) {
+			return
+		} // Ignore prefix only string
 
 		const wrapper = this.getCommandWrapper(command)
 
-		if (!wrapper) return
+		if (!wrapper) {
+			return
+		}
 		// Ignore
-		else if (!this.authenticator.autheticate(req, wrapper))
+		else if (!this.authenticator.autheticate(req, wrapper)) {
 			return unauthorised(req, wrapper)
+		}
 
 		req.channel.startTyping(1)
 		await wrapper.runner(req, command, args)
@@ -126,7 +138,9 @@ export default class List {
 		key: string,
 		input: any
 	): ItemClass {
-		if (input.disabled) return undefined
+		if (input.disabled) {
+			return undefined
+		}
 
 		key = key.toLowerCase()
 
@@ -134,9 +148,11 @@ export default class List {
 
 		this.registerMain(key, instance)
 
-		if (input.aliases)
-			for (const alias of input.aliases)
+		if (input.aliases) {
+			for (const alias of input.aliases) {
 				this.registerAlias(key, alias, instance)
+			}
+		}
 
 		return instance
 	}
@@ -166,13 +182,16 @@ export default class List {
 
 	/** Validates new keys to prevent invalid chars and overwrites */
 	private keyValidator(key: string) {
-		if (key.indexOf(' ') !== -1)
+		if (key.indexOf(' ') !== -1) {
 			throw new Error(`Key contains space \'${key}\'`)
+		}
 
-		if (key in this.list)
+		if (key in this.list) {
 			throw new Error(`Key already exists in commands \'${key}\'`)
+		}
 
-		if (key !== key.toLowerCase())
+		if (key !== key.toLowerCase()) {
 			throw new Error(`Keys must be lowercase \'${key}\'`)
+		}
 	}
 }

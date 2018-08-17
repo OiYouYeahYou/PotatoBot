@@ -21,7 +21,9 @@ export default function(list: List) {
 	module.addCommand('kill', {
 		aliases: ['kys'],
 		func: async (req: Request) => {
-			if (raceLock) return req.reply('Cannot do that at his time')
+			if (raceLock) {
+				return req.reply('Cannot do that at his time')
+			}
 
 			raceLock = true
 
@@ -38,7 +40,9 @@ export default function(list: List) {
 
 	module.addCommand('restart', {
 		func: async (req: Request) => {
-			if (raceLock) return req.reply('Cannot do that at his time')
+			if (raceLock) {
+				return req.reply('Cannot do that at his time')
+			}
 
 			raceLock = true
 
@@ -46,10 +50,11 @@ export default function(list: List) {
 				env: { restartCommand },
 			} = process
 
-			if (!restartCommand)
+			if (!restartCommand) {
 				return req.destructingReply(
 					'This bot does not support restarting'
 				)
+			}
 
 			console.log('Restarting by Discord command')
 
@@ -64,7 +69,9 @@ export default function(list: List) {
 
 	module.addCommand('update', {
 		func: async (req: Request) => {
-			if (raceLock) return req.reply('Cannot do that at his time')
+			if (raceLock) {
+				return req.reply('Cannot do that at his time')
+			}
 
 			raceLock = true
 
@@ -90,7 +97,9 @@ export default function(list: List) {
 					await notification.edit(curry(pull, npm, true))
 					await req.app.destroy()
 					exec(restartCommand)
-				} else raceLock = false
+				} else {
+					raceLock = false
+				}
 			}
 		},
 		help: 'Pulls, Builds and Restarts bot',
@@ -121,8 +130,11 @@ const sanitiseOutput = (name: string, std: IStd) =>
 	codeWrap(std ? `=== out ===\n${std.stdout}\n=== err ==\n${std.stderr}` : '')
 
 function restartMessage(restartable: boolean, restarting: boolean) {
-	if (!restartable) return 'You will need to restart manually'
-	else if (restarting) return 'Restart: `Restarting now`'
+	if (!restartable) {
+		return 'You will need to restart manually'
+	} else if (restarting) {
+		return 'Restart: `Restarting now`'
+	}
 
 	return 'Restart: `pending`'
 }

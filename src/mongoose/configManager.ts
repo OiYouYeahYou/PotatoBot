@@ -23,7 +23,9 @@ async function dbChcker(
 ): Promise<boolean> {
 	const config = await findGuildConfig(guild)
 
-	if (!config) return Promise.resolve(false)
+	if (!config) {
+		return Promise.resolve(false)
+	}
 
 	const list: string[] = config[thing]
 	const containsItem = list.includes(all) || list.includes(item)

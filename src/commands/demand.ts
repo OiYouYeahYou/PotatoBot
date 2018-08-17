@@ -22,11 +22,13 @@ const DEFAULT_ARGS: [number, string] = [undefined, 'Room of requirement']
 const position = 200
 
 async function demandRoom(req: Request, args: string) {
-	if (!req.member.voiceChannel)
+	if (!req.member.voiceChannel) {
 		return req.destructingReply('You need to be in a Voice Channel')
+	}
 
-	if (!req.guild.me.hasPermission(REQUIRED_PERMISSONS))
+	if (!req.guild.me.hasPermission(REQUIRED_PERMISSONS)) {
 		return req.destructingReply('The bot needs more permissons')
+	}
 
 	const { guild, member } = req
 	const tempName = randomString(15)
@@ -34,12 +36,15 @@ async function demandRoom(req: Request, args: string) {
 		(await req.guild.createChannel(tempName, 'voice')) ||
 		findVoiceChannel(guild, tempName)
 
-	if (!channel)
+	if (!channel) {
 		return req.destructingReply('Channel can not be found, try again')
+	}
 
 	const [userLimit, name] = processArgs(args)
 
-	if (userLimit > 99) return req.destructingReply('Number is too large')
+	if (userLimit > 99) {
+		return req.destructingReply('Number is too large')
+	}
 
 	const afkChannel = guild.afkChannel
 	const parentChannel = afkChannel ? guild.afkChannel.parent : undefined
@@ -64,7 +69,9 @@ async function demandRoom(req: Request, args: string) {
  * @param args
  */
 function processArgs(args: string): [number, string] {
-	if (!args) return DEFAULT_ARGS
+	if (!args) {
+		return DEFAULT_ARGS
+	}
 
 	let [limitString, name] = splitByFirstSpace(args)
 	let limit = Number(limitString)
@@ -74,7 +81,9 @@ function processArgs(args: string): [number, string] {
 		name = args
 	}
 
-	if (!name || name.length < 4) name = DEFAULT_NAME
+	if (!name || name.length < 4) {
+		name = DEFAULT_NAME
+	}
 
 	return [limit, name]
 }
@@ -86,7 +95,9 @@ function processArgs(args: string): [number, string] {
  */
 function setIntervalChecker(req: Request, channel: VoiceChannel): void {
 	const interval = req.client.setInterval(async () => {
-		if (req.member.voiceChannelID === channel.id) return
+		if (req.member.voiceChannelID === channel.id) {
+			return
+		}
 
 		req.client.clearInterval(interval)
 

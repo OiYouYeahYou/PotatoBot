@@ -14,15 +14,21 @@ const streamOptions = { passes: 1 }
 async function Func_play(req: Request, args?: string) {
 	if (!req.voiceConnection) {
 		const joined = await Func_join(req)
-		if (joined) await Func_play(req, args)
+		if (joined) {
+			await Func_play(req, args)
+		}
 		return
 	}
 
-	if (args) await Func_add(req, args)
+	if (args) {
+		await Func_add(req, args)
+	}
 
 	const state = store._get(req)
 
-	if (state.playing) return req.send('Already Playing')
+	if (state.playing) {
+		return req.send('Already Playing')
+	}
 
 	await store.playNext(req)
 }
@@ -30,19 +36,23 @@ async function Func_play(req: Request, args?: string) {
 async function Func_join(req: Request) {
 	const { voiceChannel, id: memberID } = req.member
 
-	if (!voiceChannel)
+	if (!voiceChannel) {
 		return !req.reply('You need to be connected to a voice channel')
+	}
 
 	const { members } = req.voiceConnection.channel
 	const memberPresent = members.has(memberID)
-	if (memberPresent) return !req.reply('Already in same channel')
+	if (memberPresent) {
+		return !req.reply('Already in same channel')
+	}
 
 	const { size } = members
 	const isPlaying = store.isPlaying(req)
 	const isPlayingForOthers = !memberPresent && size > 1 && isPlaying
 
-	if (isPlayingForOthers)
+	if (isPlayingForOthers) {
 		return !req.reply('Already connected to another channel')
+	}
 
 	try {
 		await voiceChannel.join()
@@ -52,7 +62,9 @@ async function Func_join(req: Request) {
 }
 
 async function Func_add(req: Request, url: string) {
-	if (!url) return req.send(`Usage is: \`${req.prefix}add <video url>\``)
+	if (!url) {
+		return req.send(`Usage is: \`${req.prefix}add <video url>\``)
+	}
 
 	let info: yt.videoInfo
 
@@ -96,12 +108,16 @@ const Func_skip = (req: Request) => standardDispaterCall(req, 'skipped', 'end')
 
 async function Func_volume(req: Request, args: string) {
 	const state = store.get(req)
-	if (!state) return req.send('Player has not been started')
+	if (!state) {
+		return req.send('Player has not been started')
+	}
 
 	const [x] = splitByFirstSpace(args)
 	const vol = Number(x)
 
-	if (vol && !Number.isNaN(vol)) return setVolume(req, vol)
+	if (vol && !Number.isNaN(vol)) {
+		return setVolume(req, vol)
+	}
 
 	return displayVolume(req)
 }
@@ -133,7 +149,9 @@ async function nowPlaying(req: Request, state: GuildPlayerState) {
 	const { next, current } = state
 
 	const responses = ['Playing: ' + current.toString()]
-	if (next) responses.push('Next: ' + next.toString())
+	if (next) {
+		responses.push('Next: ' + next.toString())
+	}
 
 	return req.send(responses.join('\n'))
 }
@@ -142,7 +160,9 @@ async function leave(req: Request, msg?: string) {
 	store.destroy(req)
 	req.member.voiceChannel.leave()
 
-	if (msg) return req.send(msg)
+	if (msg) {
+		return req.send(msg)
+	}
 }
 
 type dispatcherMethods = 'pause' | 'resume' | 'end'
@@ -152,7 +172,9 @@ async function standardDispaterCall(
 	prop: dispatcherMethods
 ) {
 	const state = store.get(req)
-	if (!state) return req.send('Player has not been started')
+	if (!state) {
+		return req.send('Player has not been started')
+	}
 
 	state[prop]()
 	return req.send(success)
@@ -160,9 +182,13 @@ async function standardDispaterCall(
 
 type ResolvableGuildID = string | Guild | Request
 function resolveToGuildID(resolvable: ResolvableGuildID) {
-	if (typeof resolvable === 'string') return resolvable
-	else if (resolvable instanceof Guild) return resolvable.id
-	else if (resolvable instanceof Request) return resolvable.guild.id
+	if (typeof resolvable === 'string') {
+		return resolvable
+	} else if (resolvable instanceof Guild) {
+		return resolvable.id
+	} else if (resolvable instanceof Request) {
+		return resolvable.guild.id
+	}
 }
 
 function setVolume(req: Request, vol: number) {
@@ -187,7 +213,9 @@ class Store {
 
 	_get(resolvable: ResolvableGuildID) {
 		const id = resolveToGuildID(resolvable)
-		if (!this.states[id]) this.states[id] = new GuildPlayerState()
+		if (!this.states[id]) {
+			this.states[id] = new GuildPlayerState()
+		}
 
 		return this.states[id]
 	}
@@ -242,7 +270,9 @@ class GuildPlayerState {
 
 	async playNext(req: Request) {
 		const song = this.shift()
-		if (!song) return leave(req, 'Queue is empty')
+		if (!song) {
+			return leave(req, 'Queue is empty')
+		}
 
 		this.playing = true
 
@@ -286,7 +316,7 @@ class GuildPlayerState {
 	}
 
 	destroy() {
-		while (this.songs.shift());
+		this.songs.length = 0
 		this.playing = false
 		this.current = null
 		this.dispatcher = null

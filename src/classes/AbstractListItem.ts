@@ -27,8 +27,9 @@ export default abstract class AbstractListItem {
 		this.permission = this.permissionMutator(permission)
 		this.usage = `${key} ${usage || ''}`.trim()
 
-		if (aliases && aliases.length)
+		if (aliases && aliases.length) {
 			this.aliases = `${key}, ${aliases.join(', ')}`
+		}
 	}
 
 	abstract async runner(req: Request, cmd: string, args: string): Promise<any>

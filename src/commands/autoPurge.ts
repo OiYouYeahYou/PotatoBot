@@ -21,7 +21,9 @@ export default function(list: List) {
 			const [config] = await req.app.database.getPurgeConfig(id)
 			const [ageLimit] = splitFirstWordAsNumber(args, defaultAgeLimit)
 
-			if (config) return req.reply('This channel is already being purged')
+			if (config) {
+				return req.reply('This channel is already being purged')
+			}
 
 			await safeCallAsync(
 				req.app.database.createPurgeConfig,
@@ -39,7 +41,9 @@ export default function(list: List) {
 		func: async (req: Request) => {
 			const cfgs = await req.app.database.getPurgeConfig(req.channel.id)
 
-			for (const cfg of cfgs) await cfg.remove()
+			for (const cfg of cfgs) {
+				await cfg.remove()
+			}
 
 			await req.reply('Job done')
 		},
@@ -54,8 +58,9 @@ export default function(list: List) {
 			const { purgeOlderThan: oldMinAge } = config
 			const [newMinAge] = splitFirstWordAsNumber(args, defaultAgeLimit)
 
-			if (newMinAge === oldMinAge)
+			if (newMinAge === oldMinAge) {
 				return req.reply('That is already the interval')
+			}
 
 			config.purgeOlderThan = newMinAge
 			await config.save()
@@ -75,8 +80,9 @@ export default function(list: List) {
 			const { id } = channel
 			const [config] = await req.app.database.getPurgeConfig(id)
 
-			if (!config)
+			if (!config) {
 				return req.reply('Auto purge is not set up for this channel')
+			}
 
 			await autoPurge(app, id)
 		},
@@ -91,8 +97,9 @@ export default function(list: List) {
 			if (
 				channel instanceof DMChannel ||
 				channel instanceof GroupDMChannel
-			)
+			) {
 				return req.reply('Not supported in this channel')
+			}
 
 			const { deleted, length, config, reports } = await stats(
 				req,

@@ -11,21 +11,26 @@ export default function(list: List) {
 		func: async (req, args) => {
 			const channel = req.channel
 
-			if (!(channel instanceof GuildChannel)) return
+			if (!(channel instanceof GuildChannel)) {
+				return
+			}
 
 			const [x] = splitByFirstSpace(args)
 			const limit = Number(x)
 
-			if (!limit || Number.isNaN(limit))
+			if (!limit || Number.isNaN(limit)) {
 				return req.reply('You need to specify a number')
+			}
 
-			if (!channel.permissionsFor(req.member).has(MANAGE_MESSAGES))
+			if (!channel.permissionsFor(req.member).has(MANAGE_MESSAGES)) {
 				return req.reply(
 					'You need to have the manage message permission'
 				)
+			}
 
-			if (!channel.permissionsFor(req.bot).has(MANAGE_MESSAGES))
+			if (!channel.permissionsFor(req.bot).has(MANAGE_MESSAGES)) {
 				return req.reply('I need to have the manage message permission')
+			}
 
 			const messages = await channel.fetchMessages({ limit: limit + 1 })
 			const fortnightAgo = Date.now() - (13 * DAYS + 23 * HOURS)

@@ -75,20 +75,23 @@ export class DiscordClient {
 	async messageRecived(message: Message) {
 		const text = message.content.trim()
 
-		if (message.author.bot) return
+		if (message.author.bot) {
+			return
+		}
 
 		const mentionPrefix = `<@!${this.client.user.id}> `
 		const musicPrefix = '\\'
 
 		try {
-			if (isPrefixed(prefix, text))
+			if (isPrefixed(prefix, text)) {
 				await this.list.run(this.app, message, text, prefix)
-			else if (isPrefixed(mentionPrefix, text))
+			} else if (isPrefixed(mentionPrefix, text)) {
 				await this.list.run(this.app, message, text, mentionPrefix)
-			else if (isPrefixed(musicPrefix, text))
+			} else if (isPrefixed(musicPrefix, text)) {
 				await this.music.run(this.app, message, text, musicPrefix)
-			else if (message.mentions.everyone)
+			} else if (message.mentions.everyone) {
 				await this.everyoneResponse(message)
+			}
 		} catch (error) {
 			await somethingWentWrong(message, error)
 		}
@@ -122,11 +125,15 @@ export class DiscordClient {
 	) {
 		const isEnabled = await this.isFeatureEnabled(guild, feature)
 
-		if (!isEnabled) return
+		if (!isEnabled) {
+			return
+		}
 
 		const channel = await this.getDefaultChannel(guild)
 
-		if (!channel) return
+		if (!channel) {
+			return
+		}
 
 		channel.send(message)
 	}
@@ -134,14 +141,18 @@ export class DiscordClient {
 	private async getDefaultChannel(guild: Guild): Promise<TextChannel> {
 		const config = await this.app.database.findGuildConfig(guild)
 
-		if (!config) return
+		if (!config) {
+			return
+		}
 
 		const { defaultChannel } = config
 		const channel = guild.channels.find(
 			ch => ch.id === String(defaultChannel)
 		)
 
-		if (channel && channel instanceof TextChannel) return channel
+		if (channel && channel instanceof TextChannel) {
+			return channel
+		}
 	}
 
 	private async everyoneResponse(message: Message) {
@@ -149,7 +160,9 @@ export class DiscordClient {
 		const isDeleting = await this.isFeatureEnabled(guild, deleteEM)
 		const isScolding = await this.isFeatureEnabled(guild, scoldEM)
 
-		if (deletable && isDeleting) await message.delete()
+		if (deletable && isDeleting) {
+			await message.delete()
+		}
 
 		if (isScolding) {
 			const file = (await this.isFeatureEnabled(guild, dareEM))

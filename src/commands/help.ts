@@ -14,7 +14,9 @@ export default function(list: List) {
 		func: async (req: Request, args) => {
 			const [err, response] = treeWalker(req.list, args)
 
-			if (err) await req.send(err)
+			if (err) {
+				await req.send(err)
+			}
 
 			return req.send(response)
 		},
@@ -28,28 +30,33 @@ export async function helpFunction(req: Request, text: string) {
 		.toLowerCase()
 		.split(' ')
 
-	if (!commands.length) return missingArguments(req)
-	else if (commands.length > 5)
+	if (!commands.length) {
+		return missingArguments(req)
+	} else if (commands.length > 5) {
 		return req.reply('You have requested to many arguments')
+	}
 
 	for (const command of commands) {
-		if (!command) continue
+		if (!command) {
+			continue
+		}
 
 		const wrapper = req.list.getCommandWrapper(command)
 
-		if (wrapper)
+		if (wrapper) {
 			return req
 				.embed()
 				.setTitle(`Help : ${command}`)
 				.addField('Usage', req.prefix + wrapper.usage)
 				.addField('Purpose', wrapper.help)
 				.send()
-		else
+		} else {
 			return req
 				.embed()
 				.setTitle(`Help : ${command} is not recognised`)
 				.setDescription('Try using list to find your command')
 				.send()
+		}
 	}
 }
 

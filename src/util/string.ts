@@ -11,7 +11,9 @@ export function indexOf(str: string, search: string, position?: number) {
 export function splitByFirstSpace(text: string): [string, string] {
 	text = text.trim()
 
-	if (!text) return ['', '']
+	if (!text) {
+		return ['', '']
+	}
 
 	const indexOfFirstSpace = indexOf(text, ' ')
 
@@ -31,8 +33,9 @@ export function randomString(len: number) {
 	let t = ''
 	const pl = possible.length
 
-	for (let i = 0; i < len; i++)
+	for (let i = 0; i < len; i++) {
 		t += possible.charAt(Math.floor(Math.random() * pl))
+	}
 
 	return t
 }
@@ -57,14 +60,18 @@ export function codeWrap(text: string, lang?: string) {
 
 export function padRight(text: string | number, len: number) {
 	let res = text ? text.toString() : ''
-	while (res.length < len) res += ' '
+	while (res.length < len) {
+		res += ' '
+	}
 
 	return res
 }
 
 export function padLeft(text: string | number, len: number) {
 	let res = text ? text.toString() : ''
-	while (res.length < len) res = ' ' + res
+	while (res.length < len) {
+		res = ' ' + res
+	}
 
 	return res
 }
@@ -77,12 +84,16 @@ export function splitFirstWordAsNumber(
 	args: string,
 	def = 0
 ): [number, string] {
-	if (!args) return [def, '']
+	if (!args) {
+		return [def, '']
+	}
 
 	const [a, b] = splitByFirstSpace(args)
 	const x = Number(a)
 
-	if (Number.isNaN(x)) return [def, b]
+	if (Number.isNaN(x)) {
+		return [def, b]
+	}
 
 	return [x, b]
 }

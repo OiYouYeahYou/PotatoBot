@@ -23,7 +23,9 @@ export class Database {
 	isCommandEnabled = isCommandEnabled
 
 	async connect(token: string) {
-		if (mongoose.connection.readyState === 0) await mongoose.connect(token)
+		if (mongoose.connection.readyState === 0) {
+			await mongoose.connect(token)
+		}
 	}
 
 	async disconnect() {

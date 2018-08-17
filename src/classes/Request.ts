@@ -53,7 +53,9 @@ export default class Request {
 	}
 
 	async delete() {
-		if (this.message.deletable) return this.message.delete()
+		if (this.message.deletable) {
+			return this.message.delete()
+		}
 	}
 
 	async somethingWentWrong(err: any) {

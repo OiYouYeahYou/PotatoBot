@@ -10,7 +10,7 @@
 		"postinstall": "gulp",
 		"lint": "npm run lint:prettier && npm run lint:tslint",
 		"lint:prettier": "prettier --write gulpfile.js test/**/*.js src/**/*.ts",
-		"lint:tslint": "tslint src/**/*.ts",
+		"lint:tslint": "tslint --force --fix src/**/*.ts",
 		"test": "ava"
 	},
 	"dependencies": {

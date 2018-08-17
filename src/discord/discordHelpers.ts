@@ -13,7 +13,9 @@ import { timer } from '../util/tools'
 export function findVoiceChannel(guild: Guild, name: string): VoiceChannel {
 	const channel = guild.channels.find('name', name)
 
-	if (channel && channel instanceof VoiceChannel) return channel
+	if (channel && channel instanceof VoiceChannel) {
+		return channel
+	}
 }
 
 /**
@@ -42,7 +44,9 @@ export async function destructingReply(message: Message, text: string) {
 export async function somethingWentWrong(message: Message, err: any) {
 	const id = randomString(6)
 
-	if (err instanceof Error) err.message += ` (Event: ${id})`
+	if (err instanceof Error) {
+		err.message += ` (Event: ${id})`
+	}
 
 	console.log(err)
 	return destructingReply(message, `Something went wrong (Event: ${id})`)

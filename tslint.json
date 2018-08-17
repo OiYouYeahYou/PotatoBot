@@ -1,40 +1,31 @@
 {
-    "defaultSeverity": "error",
-    "extends": [
-        "tslint:recommended"
-    ],
-    "jsRules": {},
-    "rules": {
-        "no-return-await": true,
-        "arrow-return-shorthand": true,
-        "semicolon": false,
-        "indent": true,
-        "one-line": true,
-        "quotemark": false,
-        "curly": false,
-        "no-console": false,
-        "member-access": [
-            true,
-            "no-public"
-        ],
-        "no-shadowed-variable": false,
-        "arrow-parens": [
-            true,
-            "ban-single-arg-parens"
-        ],
-        "prefer-const": [
-            true,
-            {
-                "destructuring": "all"
-            }
-        ],
-        "trailing-comma": [
-            true,
-            {
-                "esSpecCompliant": true
-            }
-        ],
-        "max-classes-per-file": false
-    },
-    "rulesDirectory": []
+	"defaultSeverity": "error",
+	"extends": ["tslint:recommended"],
+	"jsRules": {},
+	"rules": {
+		"no-return-await": true,
+		"arrow-return-shorthand": true,
+		"semicolon": false,
+		"indent": true,
+		"one-line": true,
+		"quotemark": [true, "single", "avoid-escape"],
+		"no-console": false,
+		"member-access": [true, "no-public"],
+		"no-shadowed-variable": false,
+		"arrow-parens": [true, "ban-single-arg-parens"],
+		"prefer-const": [
+			true,
+			{
+				"destructuring": "all"
+			}
+		],
+		"trailing-comma": [
+			true,
+			{
+				"esSpecCompliant": true
+			}
+		],
+		"max-classes-per-file": false
+	},
+	"rulesDirectory": []
 }

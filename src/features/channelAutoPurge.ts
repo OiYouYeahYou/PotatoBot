@@ -36,22 +36,26 @@ export async function autoPurge(app: Main, channelIDOverride?: string) {
 		if (purged.includes(channelID)) {
 			config.remove()
 			continue
-		} else purged.push(channelID)
+		} else {
+			purged.push(channelID)
+		}
 
 		let [error, channel] = getAndValidateChannel(app, channelID)
 		// tslint:disable-next-line:one-variable-per-declaration
 		let rawCount, deletingCount, guildID, deletedCount
 
-		if (channel)
-			({
+		if (channel) {
+			// tslint:disable-next-line:whitespace
+			;({
 				deletedCount,
 				deletingCount,
 				error,
 				guildID,
 				rawCount,
 			} = await purgeChannel(config, channel, now))
+		}
 
-		if (deletingCount !== 0)
+		if (deletingCount !== 0) {
 			reports.push({
 				channelID,
 				deletedCount,
@@ -61,6 +65,7 @@ export async function autoPurge(app: Main, channelIDOverride?: string) {
 				now,
 				rawCount,
 			})
+		}
 	}
 
 	reports.forEach(app.database.savePurgeReport)
@@ -70,18 +75,24 @@ function getAndValidateChannel(app: Main, id: string): [string, TextChannel] {
 	const { user: self, channels } = app.bot.client
 	const channel = channels.find('id', id)
 
-	if (!channel) return ['Missing Channel', undefined]
+	if (!channel) {
+		return ['Missing Channel', undefined]
+	}
 
-	if (!(channel instanceof TextChannel))
+	if (!(channel instanceof TextChannel)) {
 		return ["Channel isn't a TextChannel", undefined]
+	}
 
-	if (!(channel instanceof GuildChannel))
+	if (!(channel instanceof GuildChannel)) {
 		return ["Channel isn't a GuildChannel", undefined]
+	}
 
 	const permissions = channel.permissionsFor(self)
 	const canManageMessages = permissions.has('MANAGE_MESSAGES')
 
-	if (!canManageMessages) return ['Inagequated permission', undefined]
+	if (!canManageMessages) {
+		return ['Inagequated permission', undefined]
+	}
 
 	return [undefined, channel]
 }

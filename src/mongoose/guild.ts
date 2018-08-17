@@ -28,8 +28,12 @@ export async function findGuildConfig(
 	const results = await GuildConfigModel.find({ guildID })
 	let result
 
-	if (Array.isArray(results)) [result] = results
-	else result = results
+	if (Array.isArray(results)) {
+		// tslint:disable-next-line:whitespace
+		;[result] = results
+	} else {
+		result = results
+	}
 
 	// @ts-ignore
 	return Promise.resolve(result)

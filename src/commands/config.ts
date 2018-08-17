@@ -39,7 +39,9 @@ async function enabledAggreator(req: Request, args: string, type: configLists) {
 async function getEnabledList(req: Request, type: configLists) {
 	const config = await req.app.database.findGuildConfig(req.guild)
 
-	if (!config) return 'No config available'
+	if (!config) {
+		return 'No config available'
+	}
 
 	const list = config[type]
 	const isAll = list.includes(all)
@@ -55,17 +57,26 @@ async function listEnabled(req: Request, type: configLists, args: string) {
 			? req.app.database.isFeatureEnabled
 			: req.app.database.isCommandEnabled
 
-	for (const item of items)
-		((await enabledChecker(req.guild, item)) ? enabled : disabled).push(
-			item
-		)
+	for (const item of items) {
+		const targetArray = (await enabledChecker(req.guild, item))
+			? enabled
+			: disabled
 
-	if (!enabled.length || !disabled.length) return 'Huh, nothing showed up?'
+		targetArray.push(item)
+	}
+
+	if (!enabled.length || !disabled.length) {
+		return 'Huh, nothing showed up?'
+	}
 
 	const reply: string[] = []
 
-	if (enabled.length) reply.push('Enabled: ' + enabled.join(', '))
-	if (disabled.length) reply.push('Disabled: ' + disabled.join(', '))
+	if (enabled.length) {
+		reply.push('Enabled: ' + enabled.join(', '))
+	}
+	if (disabled.length) {
+		reply.push('Disabled: ' + disabled.join(', '))
+	}
 
 	return reply.join('\n')
 }
@@ -78,8 +89,9 @@ async function createNewConfig(req: Request, args: string) {
 
 	const existingGuilds = await req.app.database.findGuildConfig(guildID)
 
-	if (existingGuilds)
+	if (existingGuilds) {
 		return req.destructingReply('This guild already has a config')
+	}
 
 	const settings = new req.app.database.GuildConfigModel({
 		commands: [all],
