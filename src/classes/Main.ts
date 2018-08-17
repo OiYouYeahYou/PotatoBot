@@ -1,6 +1,6 @@
-import { Database } from '../mongoose/database'
+import { Database } from '../mongoose/Database'
 import { injectHandler } from '../util/tools'
-import { DiscordClient } from './Client'
+import { DiscordClient } from './DiscordClient'
 import List from './List'
 
 const MainInject = { Database }

@@ -1,7 +1,7 @@
 import { GuildChannel, Message, TextChannel } from 'discord.js'
 import { Main } from '../classes/Main'
 import { AutoPurgeInterval, DAYS, HOURS } from '../constants'
-import { IPurgeConfig } from '../mongoose/database'
+import { IPurgeConfig } from '../mongoose/Database'
 import { safeCallAsync } from '../util/tools'
 
 export const baseTime = HOURS

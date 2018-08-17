@@ -4,7 +4,9 @@ export function setEnv() {
 
 	const actionNeeded = !keys.every(key => key in process.env)
 
-	if (actionNeeded) require('dotenv').config()
+	if (actionNeeded) {
+		require('dotenv').config()
+	}
 
 	const missingEnv = keys.filter(key => !(key in process.env))
 

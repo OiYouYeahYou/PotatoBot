@@ -2,6 +2,8 @@ import * as mongoose from 'mongoose'
 
 export default mongoose
 
-const db = mongoose.connection
-db.on('error', console.error.bind(console, 'connection error:'))
-db.once('open', () => console.log('Connected to MongoDB'))
+mongoose.connection.on(
+	'error',
+	console.error.bind(console, 'connection error:')
+)
+mongoose.connection.once('open', () => console.log('Connected to MongoDB'))

@@ -1,7 +1,7 @@
 import List from '../classes/List'
 import Request from '../classes/Request'
 import { all } from '../discord/featureEnum'
-import { configLists } from '../mongoose/database'
+import { configLists } from '../mongoose/Database'
 
 export default function(list: List) {
 	const module = list.addModule('config', {

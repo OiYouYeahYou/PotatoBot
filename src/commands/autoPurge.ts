@@ -2,7 +2,7 @@ import { Attachment, DMChannel, GroupDMChannel, TextChannel } from 'discord.js'
 import List from '../classes/List'
 import Request from '../classes/Request'
 import { autoPurge } from '../features/channelAutoPurge'
-import { IPurgeConfig, IPurgeReport } from '../mongoose/database'
+import { IPurgeConfig, IPurgeReport } from '../mongoose/Database'
 import { padLeft, splitFirstWordAsNumber } from '../util/string'
 import { safeCallAsync } from '../util/tools'
 
