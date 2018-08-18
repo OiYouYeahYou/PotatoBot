@@ -2,6 +2,7 @@ import { Database } from '../mongoose/Database'
 import { injectHandler } from '../util/tools'
 import { DiscordClient } from './DiscordClient'
 import List from './List'
+// import { store } from '../discord/music/music'
 
 const MainInject = { Database }
 
@@ -32,5 +33,6 @@ export class Main {
 	async destroy() {
 		await this.bot.destroy()
 		await this.database.disconnect()
+		// store.destroy()
 	}
 }

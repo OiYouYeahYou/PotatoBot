@@ -80,7 +80,7 @@ export class DiscordClient {
 		}
 
 		const mentionPrefix = `<@!${this.client.user.id}> `
-		const musicPrefix = '\\'
+		const musicPrefix = "'"
 
 		try {
 			if (isPrefixed(prefix, text)) {

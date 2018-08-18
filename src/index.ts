@@ -2,7 +2,7 @@
 require('source-map-support').install()
 
 import { Main } from './classes/Main'
-import { music } from './discord/music'
+import { music } from './discord/music/music'
 import { setEnv } from './env'
 import list from './list'
 

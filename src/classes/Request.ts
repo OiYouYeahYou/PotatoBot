@@ -31,9 +31,6 @@ export default class Request {
 	get bot() {
 		return this.client.user
 	}
-	get voiceConnection() {
-		return this.guild.voiceConnection
-	}
 
 	get screenname() {
 		return this.message.member.nickname || this.message.author.username
