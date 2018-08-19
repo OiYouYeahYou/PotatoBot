@@ -1,5 +1,4 @@
 import { Message } from 'discord.js'
-import { unauthorised } from '../discord/discordHelpers'
 import {
 	maxStringLength,
 	padLeft,
@@ -120,11 +119,9 @@ export default class List {
 		const wrapper = this.getCommandWrapper(command)
 
 		if (!wrapper) {
-			return
-		}
-		// Ignore
-		else if (!this.authenticator.autheticate(req, wrapper)) {
-			return unauthorised(req, wrapper)
+			return // Ignore
+		} else if (!this.authenticator.autheticate(req, wrapper)) {
+			return this.unauthorised(req, wrapper)
 		}
 
 		req.channel.startTyping(1)
@@ -193,5 +190,12 @@ export default class List {
 		if (key !== key.toLowerCase()) {
 			throw new Error(`Keys must be lowercase \'${key}\'`)
 		}
+	}
+
+	private unauthorised(req: Request, wrap: AbstractListItem) {
+		return req.reply(
+			`You are not autorised to use that command, ` +
+				`you must be a ${wrap.permission}`
+		)
 	}
 }

@@ -1,6 +1,4 @@
 import { Guild, Message, Snowflake, VoiceChannel } from 'discord.js'
-import AbstractListItem from '../classes/AbstractListItem'
-import Request from '../classes/Request'
 import { TEN_SECONDS } from '../constants'
 import { randomString } from '../util/string'
 import { timer } from '../util/tools'
@@ -54,11 +52,4 @@ export async function somethingWentWrong(message: Message, err: any) {
 
 export function guildIDNormaliser(guild: Guild | Snowflake): number {
 	return Number(guild instanceof Guild ? guild.id : guild)
-}
-
-export async function unauthorised(req: Request, wrap: AbstractListItem) {
-	return req.reply(
-		`You are not autorised to use that command, ` +
-			`you must be a ${wrap.permission}`
-	)
 }
