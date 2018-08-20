@@ -49,13 +49,13 @@ music.addCommand('join', {
 music.addCommand('add', {
 	async func(req: Request, url: string) {
 		if (!url) {
-			return req.send(`Usage is: \`${req.prefix}add <video url>\``)
+			return req.usage('Missing url')
 		}
 
 		return req.send(await store.add(req, url))
 	},
 	help: 'Adds tracks to the playlist',
-	usage: '[youtube link]',
+	usage: '<youtube link>',
 })
 
 music.addCommand('queue', {

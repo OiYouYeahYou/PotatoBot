@@ -124,6 +124,7 @@ export default class List {
 			return this.unauthorised(req, wrapper)
 		}
 
+		req.addTrace(command, wrapper)
 		req.channel.startTyping(1)
 		await wrapper.runner(req, command, args)
 		req.channel.stopTyping(true)

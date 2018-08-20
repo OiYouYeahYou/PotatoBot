@@ -81,7 +81,7 @@ async function listEnabled(req: Request, type: configLists, args: string) {
 	return reply.join('\n')
 }
 
-async function createNewConfig(req: Request, args: string) {
+async function createNewConfig(req: Request) {
 	const {
 		channel: { id: defaultChannel },
 		guild: { id: guildID },

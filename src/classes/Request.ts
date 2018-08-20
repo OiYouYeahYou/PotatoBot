@@ -1,10 +1,18 @@
 import { Message } from 'discord.js'
 import { destructingReply, somethingWentWrong } from '../discord/discordHelpers'
+import AbstractListItem from './AbstractListItem'
 import { SelfSendingEmbed } from './Embed'
 import List from './List'
 import { Main } from './Main'
 
+interface ITrace {
+	wrapper: AbstractListItem
+	command: string
+}
+
 export default class Request {
+	private stackTrace: ITrace[] = []
+
 	constructor(
 		readonly app: Main,
 		readonly list: List,
@@ -36,6 +44,18 @@ export default class Request {
 		return this.message.member.nickname || this.message.author.username
 	}
 
+	get topTrace() {
+		return this.stackTrace[0]
+	}
+
+	get wrapper() {
+		return this.topTrace && this.topTrace.wrapper
+	}
+
+	addTrace(command: string, wrapper: AbstractListItem) {
+		this.stackTrace.push({ wrapper, command })
+	}
+
 	async send(text: any, options?: any) {
 		const message = await this.message.channel.send(text, options)
 		return Array.isArray(message) ? message[0] : message
@@ -61,5 +81,13 @@ export default class Request {
 
 	embed() {
 		return new SelfSendingEmbed(this)
+	}
+
+	usage(message?: string) {
+		const commands = this.stackTrace.map(({ command }) => command)
+		const usage = this.wrapper.getUsage(this.prefix, commands)
+		const response = `${message ? message : 'Usage'}: ${usage}`
+
+		this.send(response)
 	}
 }

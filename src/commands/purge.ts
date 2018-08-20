@@ -19,7 +19,7 @@ export default function(list: List) {
 			const limit = Number(x)
 
 			if (!limit || Number.isNaN(limit)) {
-				return req.reply('You need to specify a number')
+				return req.usage('You need to specify a number')
 			}
 
 			if (!channel.permissionsFor(req.member).has(MANAGE_MESSAGES)) {

@@ -7,11 +7,11 @@ export default function(list: List) {
 	list.addCommand('help', {
 		func: helpFunction,
 		help: 'Provides information about a command',
-		usage: '<command>',
+		usage: '<... commands>',
 	})
 
 	list.addCommand('list', {
-		func: async (req: Request, args) => {
+		func: async (req, args) => {
 			const [err, response] = treeWalker(req.list, args)
 
 			if (err) {
@@ -24,14 +24,14 @@ export default function(list: List) {
 	})
 }
 
-export async function helpFunction(req: Request, text: string) {
+async function helpFunction(req: Request, text: string) {
 	const commands = text
 		.replace(/ +(?= )/g, '')
 		.toLowerCase()
 		.split(' ')
 
 	if (!commands.length) {
-		return missingArguments(req)
+		return req.usage('Missing args:')
 	} else if (commands.length > 5) {
 		return req.reply('You have requested to many arguments')
 	}
@@ -42,18 +42,21 @@ export async function helpFunction(req: Request, text: string) {
 		}
 
 		const wrapper = req.list.getCommandWrapper(command)
+		const path = commands.join(' ')
 
 		if (wrapper) {
+			const usageString = wrapper.getUsage(req.prefix, commands)
+
 			return req
 				.embed()
 				.setTitle(`Help : ${command}`)
-				.addField('Usage', req.prefix + wrapper.usage)
+				.addField('Usage', usageString)
 				.addField('Purpose', wrapper.help)
 				.send()
 		} else {
 			return req
 				.embed()
-				.setTitle(`Help : ${command} is not recognised`)
+				.setTitle(`Help : ${path} is not recognised`)
 				.setDescription('Try using list to find your command')
 				.send()
 		}
@@ -89,12 +92,4 @@ function treeWalker(list: List, args: string) {
 
 	const summaryString = codeWrap(latest.toSummary())
 	return [err, `Supported commands in \`${pathString}\`:\n\n${summaryString}`]
-}
-
-/** Response when no arguments are given */
-async function missingArguments(req: Request) {
-	return req
-		.embed()
-		.setTitle('This command requires additional arguments')
-		.send()
 }

@@ -7,10 +7,14 @@ export default function(list: List) {
 		func: async (req: Request, args: string) => {
 			const [lang, text] = splitByFirstSpace(args)
 
+			if (!args || !text) {
+				return req.usage('Missing args')
+			}
+
 			return sendCode(req, text, lang)
 		},
 		help: 'Sends text formatted in specified language',
-		usage: '<code snippet>',
+		usage: '<language> <code snippet>',
 	})
 
 	list.addCommand('js', {
@@ -28,6 +32,10 @@ export default function(list: List) {
 }
 
 async function sendCode(req: Request, text: string | undefined, lang: string) {
+	if (!text) {
+		return req.usage('Missing args')
+	}
+
 	await req.delete()
 
 	return req.send(req.screenname + ' Sent:\n' + codeWrap(text, lang))

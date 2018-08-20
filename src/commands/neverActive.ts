@@ -8,7 +8,7 @@ export default function(list: List) {
 	})
 }
 
-export async function never(req: Request, args: string) {
+export async function never(req: Request) {
 	const { guild } = req
 	const { members } = guild
 
