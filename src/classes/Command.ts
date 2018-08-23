@@ -23,8 +23,8 @@ export default class Command extends AbstractListItem {
 		} catch (error) {
 			const failMessage = `Trying to run \`${command}\` has failed`
 
-			console.error(failMessage)
-			console.error(error)
+			req.logger.error(failMessage)
+			req.logger.error(error)
 			await req.reply(failMessage)
 		}
 	}

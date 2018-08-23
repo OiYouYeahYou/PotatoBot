@@ -4,11 +4,12 @@ import { DiscordClient } from './DiscordClient'
 import List from './List'
 // import { store } from '../discord/music/music'
 
-const MainInject = { Database }
+const MainInject = { Database, logger: console }
 
 export class Main {
 	readonly bot: DiscordClient
 	readonly database: Database
+	readonly logger: Console
 
 	constructor(
 		readonly DISCORD_TOKEN: string,
@@ -17,9 +18,10 @@ export class Main {
 		readonly music: List,
 		inject = MainInject
 	) {
-		const { Database } = injectHandler(inject, MainInject)
+		const { Database, logger } = injectHandler(inject, MainInject)
 
 		this.database = new Database()
+		this.logger = logger
 
 		this.list = list
 		this.bot = new DiscordClient(this)

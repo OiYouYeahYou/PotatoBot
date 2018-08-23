@@ -1,6 +1,5 @@
 import { Guild, Message, Snowflake, VoiceChannel } from 'discord.js'
 import { TEN_SECONDS } from '../constants'
-import { randomString } from '../util/string'
 import { timer } from '../util/tools'
 
 /**
@@ -30,24 +29,8 @@ export async function destructingReply(message: Message, text: string) {
 		// @ts-ignore
 		await msg.delete()
 	} catch (error) {
-		console.error(error)
+		// empty
 	}
-}
-
-/**
- * Replies to a user that something went wrong, with a reference that can be referenced to server logs
- * @param message
- * @param err
- */
-export async function somethingWentWrong(message: Message, err: any) {
-	const id = randomString(6)
-
-	if (err instanceof Error) {
-		err.message += ` (Event: ${id})`
-	}
-
-	console.log(err)
-	return destructingReply(message, `Something went wrong (Event: ${id})`)
 }
 
 export function guildIDNormaliser(guild: Guild | Snowflake): number {

@@ -27,7 +27,7 @@ export default function(list: List) {
 
 			raceLock = true
 
-			console.log('Shutting down by Discord command')
+			req.logger.log('Shutting down by Discord command')
 
 			await req.reply('MURRDERRRR!!!')
 			await req.app.destroy()
@@ -56,7 +56,7 @@ export default function(list: List) {
 				)
 			}
 
-			console.log('Restarting by Discord command')
+			req.logger.log('Restarting by Discord command')
 
 			await req.reply("I'll be a new bot!!!")
 			await req.app.destroy()
@@ -75,7 +75,7 @@ export default function(list: List) {
 
 			raceLock = true
 
-			console.log('Updating by Discord command')
+			req.logger.log('Updating by Discord command')
 
 			const { restartCommand } = process.env
 			const restartable = !!restartCommand

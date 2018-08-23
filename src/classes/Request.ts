@@ -1,5 +1,6 @@
 import { Message } from 'discord.js'
-import { destructingReply, somethingWentWrong } from '../discord/discordHelpers'
+import { destructingReply } from '../discord/discordHelpers'
+import { randomString } from '../util/string'
 import AbstractListItem from './AbstractListItem'
 import { SelfSendingEmbed } from './Embed'
 import List from './List'
@@ -52,6 +53,10 @@ export default class Request {
 		return this.topTrace && this.topTrace.wrapper
 	}
 
+	get logger() {
+		return this.app.logger
+	}
+
 	addTrace(command: string, wrapper: AbstractListItem) {
 		this.stackTrace.push({ wrapper, command })
 	}
@@ -76,7 +81,14 @@ export default class Request {
 	}
 
 	async somethingWentWrong(err: any) {
-		return somethingWentWrong(this.message, err)
+		const id = randomString(6)
+
+		if (err instanceof Error) {
+			err.message += ` (Event: ${id})`
+		}
+
+		this.logger.log(err)
+		return this.destructingReply(`Something went wrong (Event: ${id})`)
 	}
 
 	embed() {

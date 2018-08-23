@@ -7,7 +7,6 @@ import {
 	TextChannel,
 } from 'discord.js'
 import { prefix } from '../constants'
-import { somethingWentWrong } from '../discord/discordHelpers'
 import {
 	announceEntry,
 	announceExit,
@@ -21,6 +20,7 @@ import { injectHandler } from '../util/tools'
 import { Main } from './Main'
 
 const defaultInjection = { Client }
+const clientOptions = { fetchAllMembers: true }
 
 export class DiscordClient {
 	private get list() {
@@ -30,22 +30,24 @@ export class DiscordClient {
 	private get music() {
 		return this.app.music
 	}
+	private get logger() {
+		return this.app.logger
+	}
+
 	readonly client: Client
 
 	constructor(private app: Main, injects = {}) {
 		const { Client } = injectHandler(defaultInjection, injects)
 
-		const clientOptions = { fetchAllMembers: true }
-
 		const client = (this.client = new Client(clientOptions))
 
 		client.on('ready', () => this.ready())
-		client.on('error', this.error)
-		client.on('disconnect', this.disconnect)
-		client.on('reconnecting', this.reconnecting)
+		client.on('error', error => this.error(error))
+		client.on('disconnect', () => this.disconnect())
+		client.on('reconnecting', () => this.reconnecting())
 		client.on('message', message => this.messageRecived(message))
-		client.on('guildMemberAdd', this.guildMemberAdd)
-		client.on('guildMemberRemove', this.guildMemberRemove)
+		client.on('guildMemberAdd', member => this.guildMemberAdd(member))
+		client.on('guildMemberRemove', member => this.guildMemberRemove(member))
 	}
 
 	login(token: string) {
@@ -59,17 +61,17 @@ export class DiscordClient {
 	async ready() {
 		const invite = await this.client.generateInvite()
 
-		console.log('Discord client is ready!\n' + 'Bot invite: ' + invite)
+		this.logger.log('Discord client is ready!\n' + 'Bot invite: ' + invite)
 		initAutoPurge(this.app)
 	}
 
-	disconnect = () => console.log('Discord client has disconnected')
+	disconnect = () => this.logger.log('Discord client has disconnected')
 
-	reconnecting = () => console.log('Discord client is reconnecting')
+	reconnecting = () => this.logger.log('Discord client is reconnecting')
 
 	error(err: any) {
-		console.error('A Discord error occured')
-		console.error(err)
+		this.logger.error('A Discord error occured')
+		this.logger.error(err)
 	}
 
 	async messageRecived(message: Message) {
@@ -93,12 +95,15 @@ export class DiscordClient {
 				await this.everyoneResponse(message)
 			}
 		} catch (error) {
-			await somethingWentWrong(message, error)
+			await this.logger.log(
+				'An error occured in hanndling messages',
+				error
+			)
 		}
 	}
 
 	guildMemberAdd(member: GuildMember) {
-		console.log(member)
+		this.logger.log(member)
 		this.defaultChannelMessage(
 			member.guild,
 			`Welcome to the server, ${member}!`,
