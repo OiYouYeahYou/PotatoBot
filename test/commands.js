@@ -1,21 +1,30 @@
 import test from 'ava'
 import { createSandbox } from 'sinon'
+import { EventEmitter } from 'events'
 
-import { Bot } from '../lib/classes/Client'
+const { DiscordClient } = require('../lib/classes/DiscordClient')
 
 const botID = 'THIS_IS_AN_OBVIOUS_ID'
 
+class MockClient extends EventEmitter {
+	constructor() {
+		super()
+
+		this.user = { id: botID }
+	}
+}
+
 const app = new MockApp()
-let main = new Bot(app)
+let main = new DiscordClient(app, { Client: MockClient })
 
 function MockApp() {
-	this.bot = {
-		client: {
-			user: {
-				id: botID,
-			},
+	this.client = {
+		user: {
+			id: botID,
 		},
 	}
+	this.logger = console
+	this.database = { isFeatureEnabled: () => true }
 }
 
 function MockMessage({
@@ -40,7 +49,7 @@ function MockMessage({
  ******************************************************************************/
 
 test('handles a message that is not a command', async t => {
-	await main.messageRecived(app, new MockMessage({ content: 'hello' }))
+	await main.messageRecived(new MockMessage({ content: 'hello' }))
 
 	t.pass()
 })
