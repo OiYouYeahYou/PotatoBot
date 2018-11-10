@@ -28,7 +28,8 @@ async function helpFunction(req: Request, text: string) {
 	const commands = text
 		.replace(/ +(?= )/g, '')
 		.toLowerCase()
-		.split(' ')
+		.split(/\s+/g)
+		.filter(Boolean)
 
 	if (!commands.length) {
 		return req.usage('Missing args:')
