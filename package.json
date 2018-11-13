@@ -7,7 +7,7 @@
 		"start": "gulp && node lib/",
 		"devstart": "nodemon -w src -e ts --exec ts-node --inspect src/",
 		"map": "gulp && madge lib/index.js lib/commands/*.js --image graph.svg",
-		"postinstall": "scripts bin/ffmpeg-fix.js && gulp",
+		"postinstall": "scripts/ffmpeg-fix.js && gulp",
 		"lint": "npm run lint:prettier && npm run lint:tslint",
 		"lint:prettier": "prettier --write gulpfile.js test/**/*.js src/**/*.ts",
 		"lint:tslint": "tslint --force --fix src/**/*.ts",
