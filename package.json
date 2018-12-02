@@ -33,7 +33,7 @@
 		"gulp": "^3.9.1",
 		"gulp-sourcemaps": "^2.6.1",
 		"gulp-tslint": "^8.1.2",
-		"gulp-typescript": "^4.0.0",
+		"gulp-typescript": "^5.0.0",
 		"load-grunt-tasks": "^4.0.0",
 		"madge": "^3.0.1",
 		"nodemon": "^1.14.11",
