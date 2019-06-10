@@ -28,7 +28,7 @@
 		"@types/mongoose": "^5.0.0",
 		"@types/node": "^10.0.3",
 		"@types/sinon": "^5.0.1",
-		"ava": "^0.25.0",
+		"ava": "^2.1.0",
 		"del": "^3.0.0",
 		"gulp": "^3.9.1",
 		"gulp-sourcemaps": "^2.6.1",
